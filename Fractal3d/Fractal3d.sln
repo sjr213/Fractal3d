@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fractal3d", "Fractal3d\Fractal3d.csproj", "{DD1113DC-A76E-4AD5-9B5E-0BA48A7CE205}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicWpfLibrary", "BasicWpfLibrary\BasicWpfLibrary.csproj", "{14DB6BDF-600F-4447-9794-C0DA7CFB8BB8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageCalculator", "ImageCalculator\ImageCalculator.csproj", "{39C3A923-D84F-4751-99AD-1936AC6E2842}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FractureCommonLib", "FractureCommonLib\FractureCommonLib.csproj", "{E75005A4-C707-4D15-AE8E-D7B6D75917B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fractal3dTests", "Fractal3dTests\Fractal3dTests.csproj", "{AA4CA37A-3A68-4728-AE85-428F8B8FAD76}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DD1113DC-A76E-4AD5-9B5E-0BA48A7CE205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD1113DC-A76E-4AD5-9B5E-0BA48A7CE205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD1113DC-A76E-4AD5-9B5E-0BA48A7CE205}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD1113DC-A76E-4AD5-9B5E-0BA48A7CE205}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14DB6BDF-600F-4447-9794-C0DA7CFB8BB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14DB6BDF-600F-4447-9794-C0DA7CFB8BB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14DB6BDF-600F-4447-9794-C0DA7CFB8BB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14DB6BDF-600F-4447-9794-C0DA7CFB8BB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39C3A923-D84F-4751-99AD-1936AC6E2842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39C3A923-D84F-4751-99AD-1936AC6E2842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39C3A923-D84F-4751-99AD-1936AC6E2842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39C3A923-D84F-4751-99AD-1936AC6E2842}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E75005A4-C707-4D15-AE8E-D7B6D75917B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E75005A4-C707-4D15-AE8E-D7B6D75917B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E75005A4-C707-4D15-AE8E-D7B6D75917B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E75005A4-C707-4D15-AE8E-D7B6D75917B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA4CA37A-3A68-4728-AE85-428F8B8FAD76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA4CA37A-3A68-4728-AE85-428F8B8FAD76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA4CA37A-3A68-4728-AE85-428F8B8FAD76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA4CA37A-3A68-4728-AE85-428F8B8FAD76}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8CDF4B2-0BA1-46E8-8DC7-7F26E73BEE9B}
+	EndGlobalSection
+EndGlobal
