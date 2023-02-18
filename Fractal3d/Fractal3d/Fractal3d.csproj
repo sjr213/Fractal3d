@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BasicWpfLibrary\BasicWpfLibrary.csproj" />
+    <ProjectReference Include="..\..\Submodules\BasicWpfLibrary\BasicWpfLibrary.csproj" />
     <ProjectReference Include="..\ImageCalculator\ImageCalculator.csproj" />
   </ItemGroup>
 
