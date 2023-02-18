@@ -1,0 +1,3 @@
+[submodule "Submodules/BasicWpfLibrary"]
+	path = Submodules/BasicWpfLibrary
+	url = https://github.com/sjr213/BasicWpfLibrary.git
