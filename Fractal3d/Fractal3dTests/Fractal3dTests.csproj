@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FractureCommonLib\FractureCommonLib.csproj" />
+    <ProjectReference Include="..\..\Submodules\FractureCommonLibrary\FractureCommonLib.csproj" />
     <ProjectReference Include="..\ImageCalculator\ImageCalculator.csproj" />
   </ItemGroup>
 
