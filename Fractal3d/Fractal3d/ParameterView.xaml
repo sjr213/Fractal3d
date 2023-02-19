@@ -41,7 +41,7 @@
                             <Binding Path="ImageWidth" 
                                      UpdateSourceTrigger="PropertyChanged" >
                                 <Binding.ValidationRules>
-                                    <basicWpfLibrary:IntRangeRule Min="10" Max="10000"/>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" Max="{x:Static local:ParameterConstants.MaxImage}"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -49,17 +49,44 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,2,2,2">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Image Height" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ImageHeight}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="ImageHeight" 
+                                     UpdateSourceTrigger="PropertyChanged" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" Max="{x:Static local:ParameterConstants.MaxImage}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="1" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" Margin="2">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Display Width" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding DisplayWidth}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="DisplayWidth" 
+                                     UpdateSourceTrigger="PropertyChanged" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" Max="{x:Static local:ParameterConstants.MaxImage}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,2,2,2">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Display Height" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding DisplayHeight}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="DisplayHeight" 
+                                     UpdateSourceTrigger="PropertyChanged" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" Max="{x:Static local:ParameterConstants.MaxImage}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="2,5" Orientation="Horizontal">
