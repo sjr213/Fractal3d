@@ -136,7 +136,7 @@ public class MainVm : ViewModelBase, IDisposable
 
     protected bool CanCalculate()
     {
-        return true;
+        return AreParametersValid();
     }
 
     private BitmapImage _image = new();
@@ -456,6 +456,23 @@ public class MainVm : ViewModelBase, IDisposable
             }
                 
         }
+    }
+
+    private bool AreParametersValid()
+    {
+        if(_fractalParams.ImageSize.Width < ParameterConstants.MinImage || _fractalParams.ImageSize.Width > ParameterConstants.MaxImage)
+            return false;
+
+        if (_fractalParams.ImageSize.Height < ParameterConstants.MinImage || _fractalParams.ImageSize.Height > ParameterConstants.MaxImage)
+            return false;
+
+        if (_fractalParams.DisplaySize.Width < ParameterConstants.MinImage || _fractalParams.DisplaySize.Width > ParameterConstants.MaxImage)
+            return false;
+
+        if (_fractalParams.DisplaySize.Height < ParameterConstants.MinImage || _fractalParams.DisplaySize.Height > ParameterConstants.MaxImage)
+            return false;
+
+        return true;
     }
 }
 
