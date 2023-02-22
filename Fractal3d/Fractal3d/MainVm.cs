@@ -460,7 +460,7 @@ public class MainVm : ViewModelBase, IDisposable
 
     private bool AreParametersValid()
     {
-        if(_fractalParams.ImageSize.Width < ParameterConstants.MinImage || _fractalParams.ImageSize.Width > ParameterConstants.MaxImage)
+        if (_fractalParams.ImageSize.Width < ParameterConstants.MinImage || _fractalParams.ImageSize.Width > ParameterConstants.MaxImage)
             return false;
 
         if (_fractalParams.ImageSize.Height < ParameterConstants.MinImage || _fractalParams.ImageSize.Height > ParameterConstants.MaxImage)

@@ -4,6 +4,7 @@ using BasicWpfLibrary;
 using ImageCalculator;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 public class ParameterVm : ViewModelBase
 {
@@ -17,6 +18,7 @@ public class ParameterVm : ViewModelBase
     {
         _fractalParams = fractalParams;
         _onParamsChanged = paramsChanged;
+        IsVisibleChangedCommand = new RelayCommand(param => ExecuteIsVisibleChangedCommand(param is DependencyPropertyChangedEventArgs args ? args : default));
 
         AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
         {
@@ -26,14 +28,25 @@ public class ParameterVm : ViewModelBase
         AimToOrigin = _fractalParams.AimToOrigin;
     }
 
+    public RelayCommand IsVisibleChangedCommand { get; }
+
+    public void ExecuteIsVisibleChangedCommand(DependencyPropertyChangedEventArgs e)
+    {
+        if (e.NewValue != null && (bool)e.NewValue)
+        {
+            ImageWidth = _fractalParams.ImageSize.Width;
+            ImageHeight = _fractalParams.ImageSize.Height;
+            DisplayWidth = _fractalParams.ImageSize.Width;
+            DisplayHeight = _fractalParams.ImageSize.Height;
+        }
+        
+    }
+
     public int ImageWidth
     {
-        get { return _fractalParams.ImageSize.Width; }
+        get => _fractalParams.ImageSize.Width;
         set 
         {
-            if (_fractalParams.ImageSize.Width == value)
-                return;
-
             var size = _fractalParams.ImageSize;
             size.Width = value;
             _fractalParams.ImageSize = size;
@@ -45,11 +58,9 @@ public class ParameterVm : ViewModelBase
 
     public int ImageHeight
     {
-        get { return _fractalParams.ImageSize.Height; }
+        get => _fractalParams.ImageSize.Height;
         set
         {
-            if (_fractalParams.ImageSize.Height == value)
-                return;
             var size = _fractalParams.ImageSize;
             size.Height= value;
             _fractalParams.ImageSize = size;
@@ -61,12 +72,9 @@ public class ParameterVm : ViewModelBase
 
     public int DisplayWidth
     {
-        get { return _fractalParams.DisplaySize.Width; }
+        get => _fractalParams.DisplaySize.Width;
         set
         {
-            if (_fractalParams.DisplaySize.Width == value)
-                return;
-
             var size = _fractalParams.DisplaySize;
             size.Width = value;
             _fractalParams.DisplaySize = size;
@@ -78,11 +86,9 @@ public class ParameterVm : ViewModelBase
 
     public int DisplayHeight
     {
-        get { return _fractalParams.DisplaySize.Height; }
+        get => _fractalParams.DisplaySize.Height;
         set
         {
-            if (_fractalParams.DisplaySize.Height == value)
-                return;
             var size = _fractalParams.DisplaySize;
             size.Height = value;
             _fractalParams.DisplaySize = size;
@@ -94,7 +100,7 @@ public class ParameterVm : ViewModelBase
 
     public float FromX
     {
-        get { return _fractalParams.FromX; }
+        get => _fractalParams.FromX;
         set
         {
             if (Math.Abs(_fractalParams.FromX - value) < FloatTolerance)
@@ -108,7 +114,7 @@ public class ParameterVm : ViewModelBase
 
     public float ToX
     {
-        get { return _fractalParams.ToX; }
+        get => _fractalParams.ToX;
         set
         {
             if (Math.Abs(_fractalParams.ToX - value) < FloatTolerance)
@@ -122,7 +128,7 @@ public class ParameterVm : ViewModelBase
 
     public float FromY
     {
-        get { return _fractalParams.FromY; }
+        get => _fractalParams.FromY;
         set
         {
             if (Math.Abs(_fractalParams.FromY - value) < FloatTolerance)
@@ -136,7 +142,7 @@ public class ParameterVm : ViewModelBase
 
     public float ToY
     {
-        get { return _fractalParams.ToY; }
+        get => _fractalParams.ToY;
         set
         {
             if (Math.Abs(_fractalParams.ToY - value) < FloatTolerance)
@@ -150,7 +156,7 @@ public class ParameterVm : ViewModelBase
 
     public float Bailout
     {
-        get { return _fractalParams.Bailout; }
+        get => _fractalParams.Bailout;
         set
         {
             if (Math.Abs(_fractalParams.Bailout - value) < FloatTolerance)
@@ -164,7 +170,7 @@ public class ParameterVm : ViewModelBase
 
     public int Iterations
     {
-        get { return _fractalParams.Iterations; }
+        get => _fractalParams.Iterations;
         set
         {
             if (value == _fractalParams.Iterations)
@@ -177,7 +183,7 @@ public class ParameterVm : ViewModelBase
 
     public float Cw
     {
-        get { return _fractalParams.C4.W; }
+        get => _fractalParams.C4.W;
         set
         {
             if (Math.Abs(value - _fractalParams.C4.W) < FloatTolerance)
@@ -193,7 +199,7 @@ public class ParameterVm : ViewModelBase
 
     public float Cx
     {
-        get { return _fractalParams.C4.X; }
+        get => _fractalParams.C4.X;
         set
         {
             if (Math.Abs(value - _fractalParams.C4.X) < FloatTolerance)
@@ -209,7 +215,7 @@ public class ParameterVm : ViewModelBase
 
     public float Cy
     {
-        get { return _fractalParams.C4.Y; }
+        get => _fractalParams.C4.Y;
         set
         {
             if (Math.Abs(value - _fractalParams.C4.Y) < FloatTolerance)
@@ -225,7 +231,7 @@ public class ParameterVm : ViewModelBase
 
     public float Cz
     {
-        get { return _fractalParams.C4.Z; }
+        get => _fractalParams.C4.Z;
         set
         {
             if (Math.Abs(value - _fractalParams.C4.Z) < FloatTolerance)
@@ -241,7 +247,7 @@ public class ParameterVm : ViewModelBase
 
     public int MaxRaySteps
     {
-        get { return _fractalParams.MaxRaySteps; }
+        get => _fractalParams.MaxRaySteps;
         set
         {
             if (value == _fractalParams.MaxRaySteps)
@@ -254,7 +260,7 @@ public class ParameterVm : ViewModelBase
 
     public float MinRayDistance
     {
-        get { return _fractalParams.MinRayDistance; }
+        get => _fractalParams.MinRayDistance;
         set
         {
             if (Math.Abs(value - _fractalParams.MinRayDistance) < FloatTolerance)
@@ -267,7 +273,7 @@ public class ParameterVm : ViewModelBase
 
     public float Distance
     {
-        get { return _fractalParams.Distance; }
+        get => _fractalParams.Distance;
         set
         {
             if (Math.Abs(value - _fractalParams.Distance) < FloatTolerance)
@@ -280,7 +286,7 @@ public class ParameterVm : ViewModelBase
 
     public float MaxDistance
     {
-        get { return _fractalParams.MaxDistance; }
+        get => _fractalParams.MaxDistance;
         set
         {
             if (Math.Abs(value - _fractalParams.MaxDistance) < FloatTolerance)
@@ -293,7 +299,7 @@ public class ParameterVm : ViewModelBase
 
     public float StepDivisor
     {
-        get { return _fractalParams.StepDivisor; }
+        get => _fractalParams.StepDivisor;
         set
         {
             if (Math.Abs(value - _fractalParams.StepDivisor) < FloatTolerance)
@@ -308,7 +314,7 @@ public class ParameterVm : ViewModelBase
     public ObservableCollection<QuaternionEquationType> AllowedQuatEquations
     {
         get => _allowedQuatEquations;
-        set { SetProperty(ref _allowedQuatEquations, value); }
+        set => SetProperty(ref _allowedQuatEquations, value);
     }
 
     public QuaternionEquationType SelectedQuatEquationType

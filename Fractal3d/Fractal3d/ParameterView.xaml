@@ -7,7 +7,8 @@
              xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=local:ParameterVm}">
+             d:DataContext="{d:DesignInstance Type=local:ParameterVm}"
+             basicWpfLibrary:UserControlBehavior.IsVisibleChangedCommand="{Binding IsVisibleChangedCommand}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,8 +16,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-
-    <Border Width="400" Height="450" Style="{StaticResource BorderStyle}">
+    <Border Width="400" Height="450" Style="{StaticResource BorderStyle}"
+        >
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -39,9 +40,10 @@
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
                             <Binding Path="ImageWidth" 
-                                     UpdateSourceTrigger="PropertyChanged" >
+                                     UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" Max="{x:Static local:ParameterConstants.MaxImage}"/>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" 
+                                                                  Max="{x:Static local:ParameterConstants.MaxImage}"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -49,12 +51,13 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,2,2,2">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Image Height" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
+                    <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
                             <Binding Path="ImageHeight" 
-                                     UpdateSourceTrigger="PropertyChanged" >
+                                     UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" Max="{x:Static local:ParameterConstants.MaxImage}"/>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" 
+                                                                  Max="{x:Static local:ParameterConstants.MaxImage}"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -69,7 +72,8 @@
                             <Binding Path="DisplayWidth" 
                                      UpdateSourceTrigger="PropertyChanged" >
                                 <Binding.ValidationRules>
-                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" Max="{x:Static local:ParameterConstants.MaxImage}"/>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" 
+                                                                  Max="{x:Static local:ParameterConstants.MaxImage}"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
@@ -82,7 +86,8 @@
                             <Binding Path="DisplayHeight" 
                                      UpdateSourceTrigger="PropertyChanged" >
                                 <Binding.ValidationRules>
-                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" Max="{x:Static local:ParameterConstants.MaxImage}"/>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinImage}" 
+                                                                  Max="{x:Static local:ParameterConstants.MaxImage}"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
