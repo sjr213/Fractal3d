@@ -26,6 +26,18 @@ public class DisplayInfoVm : ViewModelBase
         };
     }
 
+    public void OnIsVisibleChanged()
+    {
+        MinRed = _displayInfo.MinRgb[0];
+        MaxRed = _displayInfo.MaxRgb[0];
+
+        MinGreen = _displayInfo.MinRgb[1];
+        MaxGreen = _displayInfo.MaxRgb[1];
+
+        MinBlue = _displayInfo.MinRgb[2];
+        MaxBlue = _displayInfo.MaxRgb[2];
+    }
+
     private ObservableCollection<DisplayMode> _allowedColorModes = null!;
     public ObservableCollection<DisplayMode> AllowedColorModes
     {
@@ -69,9 +81,6 @@ public class DisplayInfoVm : ViewModelBase
 
         set
         {
-            if (value == _displayInfo.MinRgb[0])
-                return;
-
             if (value > MaxRed)
                 MaxRed = value;
 
@@ -87,9 +96,6 @@ public class DisplayInfoVm : ViewModelBase
 
         set
         {
-            if (value == _displayInfo.MaxRgb[0])
-                return;
-
             if (value < MinRed)
                 MinRed = value;
 
@@ -105,9 +111,6 @@ public class DisplayInfoVm : ViewModelBase
 
         set
         {
-            if (value == _displayInfo.MinRgb[1])
-                return;
-
             if (value > MaxGreen)
                 MaxGreen = value;
 
@@ -123,9 +126,6 @@ public class DisplayInfoVm : ViewModelBase
 
         set
         {
-            if (value == _displayInfo.MaxRgb[1])
-                return;
-
             if (value < MinGreen)
                 MinGreen = value;
 
@@ -141,9 +141,6 @@ public class DisplayInfoVm : ViewModelBase
 
         set
         {
-            if (value == _displayInfo.MinRgb[2])
-                return;
-
             if (value > MaxBlue)
                 MaxBlue = value;
 
@@ -159,9 +156,6 @@ public class DisplayInfoVm : ViewModelBase
 
         set
         {
-            if (value == _displayInfo.MaxRgb[2])
-                return;
-
             if (value < MinBlue)
                 MinBlue = value;
 

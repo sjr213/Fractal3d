@@ -9,6 +9,8 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Forms;
+using System.Windows.Controls;
+using System.Windows;
 
 namespace Fractal3d
 {
@@ -43,6 +45,17 @@ namespace Fractal3d
             CreateTicItems();
             PaletteItems = PaletteFileUtil.LoadPaletteItems(PalettePath);
             DisplayInfoViewModel = new DisplayInfoVm(displayInfo, OnDisplayInfoChanged);
+            IsVisibleChangedCommand = new RelayCommand(param => ExecuteIsVisibleChangedCommand(param is DependencyPropertyChangedEventArgs args ? args : default));
+        }
+
+        public RelayCommand IsVisibleChangedCommand { get; }
+
+        public void ExecuteIsVisibleChangedCommand(DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != null && (bool)e.NewValue)
+            {
+                DisplayInfoViewModel.OnIsVisibleChanged();
+            }
         }
 
         private void OnDisplayInfoChanged(DisplayInfo displayInfo)
