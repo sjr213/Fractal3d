@@ -460,16 +460,34 @@ public class MainVm : ViewModelBase, IDisposable
 
     private bool AreParametersValid()
     {
-        if (_fractalParams.ImageSize.Width < ParameterConstants.MinImage || _fractalParams.ImageSize.Width > ParameterConstants.MaxImage)
+        if (_fractalParams.ImageSize.Width is < ParameterConstants.MinImage or > ParameterConstants.MaxImage)
             return false;
 
-        if (_fractalParams.ImageSize.Height < ParameterConstants.MinImage || _fractalParams.ImageSize.Height > ParameterConstants.MaxImage)
+        if (_fractalParams.ImageSize.Height is < ParameterConstants.MinImage or > ParameterConstants.MaxImage)
             return false;
 
-        if (_fractalParams.DisplaySize.Width < ParameterConstants.MinImage || _fractalParams.DisplaySize.Width > ParameterConstants.MaxImage)
+        if (_fractalParams.DisplaySize.Width is < ParameterConstants.MinImage or > ParameterConstants.MaxImage)
             return false;
 
-        if (_fractalParams.DisplaySize.Height < ParameterConstants.MinImage || _fractalParams.DisplaySize.Height > ParameterConstants.MaxImage)
+        if (_fractalParams.DisplaySize.Height is < ParameterConstants.MinImage or > ParameterConstants.MaxImage)
+            return false;
+
+        if (_fractalParams.FromX is < ParameterConstants.MinFromTo or > ParameterConstants.MaxFromTo)
+            return false;
+
+        if (_fractalParams.ToX is < ParameterConstants.MinFromTo or > ParameterConstants.MaxFromTo)
+            return false;
+
+        if(_fractalParams.FromY is < ParameterConstants.MinFromTo or > ParameterConstants.MaxFromTo)
+            return false;
+
+        if (_fractalParams.ToY is < ParameterConstants.MinFromTo or > ParameterConstants.MaxFromTo)
+            return false;
+
+        if (_fractalParams.FromX > _fractalParams.ToX)
+            return false;
+
+        if (_fractalParams.FromY > _fractalParams.ToY)
             return false;
 
         return true;

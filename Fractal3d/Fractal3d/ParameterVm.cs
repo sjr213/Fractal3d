@@ -9,8 +9,8 @@ using System.Windows;
 public class ParameterVm : ViewModelBase
 {
     private const float FloatTolerance = 0.00001f;
-    private FractalParams _fractalParams;
-    private Action<FractalParams> _onParamsChanged;
+    private readonly FractalParams _fractalParams;
+    private readonly Action<FractalParams> _onParamsChanged;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public ParameterVm(FractalParams fractalParams, Action<FractalParams> paramsChanged)
@@ -38,6 +38,10 @@ public class ParameterVm : ViewModelBase
             ImageHeight = _fractalParams.ImageSize.Height;
             DisplayWidth = _fractalParams.ImageSize.Width;
             DisplayHeight = _fractalParams.ImageSize.Height;
+            FromX = _fractalParams.FromX;
+            ToX = _fractalParams.ToX;
+            FromY = _fractalParams.FromY;
+            ToY = _fractalParams.ToY;
         }
         
     }
@@ -103,10 +107,17 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.FromX;
         set
         {
-            if (Math.Abs(_fractalParams.FromX - value) < FloatTolerance)
-                return;
-            _fractalParams.FromX = value;
-
+            if (value > ToX)
+            {
+                var from = ToX;
+                ToX = value;
+                _fractalParams.FromX = from;
+            }
+            else
+            {
+                _fractalParams.FromX = value;
+            }
+            
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -117,10 +128,17 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.ToX;
         set
         {
-            if (Math.Abs(_fractalParams.ToX - value) < FloatTolerance)
-                return;
-            _fractalParams.ToX = value;
-
+            if (value < FromX)
+            {
+                var to = FromX;
+                FromX = value;
+                _fractalParams.ToX = to;
+            }
+            else
+            {
+                _fractalParams.ToX = value;
+            }
+            
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -131,9 +149,16 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.FromY;
         set
         {
-            if (Math.Abs(_fractalParams.FromY - value) < FloatTolerance)
-                return;
-            _fractalParams.FromY = value;
+            if (value > ToY)
+            {
+                var from = ToY;
+                ToY = value;
+                _fractalParams.FromY = from;
+            }
+            else
+            {
+                _fractalParams.FromY = value;
+            }
 
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
@@ -145,9 +170,16 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.ToY;
         set
         {
-            if (Math.Abs(_fractalParams.ToY - value) < FloatTolerance)
-                return;
-            _fractalParams.ToY = value;
+            if (value < FromY)
+            {
+                var to = FromY;
+                FromY = value;
+                _fractalParams.ToY = to;
+            }
+            else
+            {
+                _fractalParams.ToY = value;
+            }
 
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
