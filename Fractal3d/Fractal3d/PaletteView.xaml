@@ -105,12 +105,12 @@
                     <StackPanel Margin="2" Orientation="Horizontal">
                         <StackPanel Margin="2" Orientation="Horizontal">
                             <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Palette Directory" />
-                            <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PalettePath}" />
+                            <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PalettePath}" IsReadOnly="True"/>
                             <Button Margin="2" Padding="2" Command="{Binding ChangePathCommand}">Change Path</Button>
                         </StackPanel>
                         <StackPanel Margin="10,2,2,2" Orientation="Horizontal">
                             <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Selected Palette" />
-                            <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding SelectedPaletteName}" />
+                            <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding SelectedPaletteName}" IsReadOnly="True" />
                             <Button Margin="2" Padding="2" Command="{Binding LoadPaletteCommand}">Load</Button>
                             <Button Margin="2" Padding="2" Command="{Binding UndoPaletteCommand}">Undo</Button>
                             <Button Margin="2" Padding="2" Command="{Binding RedoPaletteCommand}">Redo</Button>

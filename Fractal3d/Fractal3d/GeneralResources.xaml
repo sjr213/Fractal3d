@@ -121,7 +121,7 @@
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Position" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ColorPosition}" />
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ColorPosition}" IsReadOnly="True"/>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <Button Margin="2" Padding="2" Command="{Binding AddCommand}">Add</Button>
