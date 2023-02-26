@@ -111,7 +111,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="20,2,2,2">
+                <StackPanel Orientation="Horizontal" Margin="5,2,2,2">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="To X" />
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -125,7 +125,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="20,2,2,2">
+                <StackPanel Orientation="Horizontal" Margin="5,2,2,2">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="From Y" />
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -139,7 +139,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="20,2,2,2">
+                <StackPanel Orientation="Horizontal" Margin="5,2,2,2">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="To Y" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
@@ -175,19 +175,19 @@
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="W:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding Cw}" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cw}" />
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding Cx}" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cx}" />
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding Cy}" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cy}" />
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding Cz}" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cz}" />
                 </StackPanel>
             </StackPanel>
             <Separator Grid.Row="7"/>
