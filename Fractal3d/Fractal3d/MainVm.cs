@@ -490,6 +490,28 @@ public class MainVm : ViewModelBase, IDisposable
         if (_fractalParams.FromY > _fractalParams.ToY)
             return false;
 
+        if(_fractalParams.Bailout is < ParameterConstants.MinBailout or > ParameterConstants.MaxBailout)
+            return false;
+
+        if (_fractalParams.Iterations is < ParameterConstants.MinIterations or > ParameterConstants.MaxIterations)
+            return false;
+
+        if (_fractalParams.MaxRaySteps is < ParameterConstants.MinMaxRaySteps or > ParameterConstants.MaxMaxRaySteps)
+            return false;
+
+        if (_fractalParams.MinRayDistance is < ParameterConstants.MinMinRayDistance
+            or > ParameterConstants.MaxMinRayDistance)
+            return false;
+
+        if(_fractalParams.Distance is < ParameterConstants.MinDistance or > ParameterConstants.MaxDistance)
+            return false;
+
+        if (_fractalParams.MaxDistance is < ParameterConstants.MinDistance or > ParameterConstants.MaxDistance)
+            return false;
+
+        if (_fractalParams.StepDivisor is < ParameterConstants.MinStepDivisor or > ParameterConstants.MaxStepDivisor)
+            return false;
+
         return true;
     }
 }

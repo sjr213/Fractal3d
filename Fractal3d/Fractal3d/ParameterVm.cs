@@ -42,6 +42,13 @@ public class ParameterVm : ViewModelBase
             ToX = _fractalParams.ToX;
             FromY = _fractalParams.FromY;
             ToY = _fractalParams.ToY;
+            Bailout = _fractalParams.Bailout;
+            Iterations = _fractalParams.Iterations;
+            MaxRaySteps = _fractalParams.MaxRaySteps;
+            MinRayDistance = _fractalParams.MinRayDistance;
+            Distance = _fractalParams.Distance;
+            MaxDistance = _fractalParams.MaxDistance;
+            StepDivisor = _fractalParams.StepDivisor;
         }
         
     }
@@ -191,8 +198,6 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.Bailout;
         set
         {
-            if (Math.Abs(_fractalParams.Bailout - value) < FloatTolerance)
-                return;
             _fractalParams.Bailout = value;
 
             OnPropertyChanged();
@@ -205,8 +210,6 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.Iterations;
         set
         {
-            if (value == _fractalParams.Iterations)
-                return;
             _fractalParams.Iterations = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
@@ -282,8 +285,6 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.MaxRaySteps;
         set
         {
-            if (value == _fractalParams.MaxRaySteps)
-                return;
             _fractalParams.MaxRaySteps = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
@@ -295,8 +296,6 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.MinRayDistance;
         set
         {
-            if (Math.Abs(value - _fractalParams.MinRayDistance) < FloatTolerance)
-                return;
             _fractalParams.MinRayDistance = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
@@ -308,8 +307,6 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.Distance;
         set
         {
-            if (Math.Abs(value - _fractalParams.Distance) < FloatTolerance)
-                return;
             _fractalParams.Distance = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
@@ -321,8 +318,6 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.MaxDistance;
         set
         {
-            if (Math.Abs(value - _fractalParams.MaxDistance) < FloatTolerance)
-                return;
             _fractalParams.MaxDistance = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
@@ -334,8 +329,6 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.StepDivisor;
         set
         {
-            if (Math.Abs(value - _fractalParams.StepDivisor) < FloatTolerance)
-                return;
             _fractalParams.StepDivisor = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);

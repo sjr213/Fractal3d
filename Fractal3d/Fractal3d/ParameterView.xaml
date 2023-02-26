@@ -193,35 +193,105 @@
             <Separator Grid.Row="7"/>
             <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Bailout" />
-                <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding Bailout}" />
+                <TextBox Style="{StaticResource TextBoxInError}" >
+                    <TextBox.Text>
+                        <Binding Path="Bailout" 
+                                 UpdateSourceTrigger="LostFocus" >
+                            <Binding.ValidationRules>
+                                <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinBailout}" 
+                                                                Max="{x:Static local:ParameterConstants.MaxBailout}"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
             </StackPanel>
             <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Iterations" />
-                <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding Iterations}" />
+                <TextBox Style="{StaticResource TextBoxInError}" >
+                    <TextBox.Text>
+                        <Binding Path="Iterations" 
+                                 UpdateSourceTrigger="LostFocus" >
+                            <Binding.ValidationRules>
+                                <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinIterations}" 
+                                                                Max="{x:Static local:ParameterConstants.MaxIterations}"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
             </StackPanel>
             <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Min Ray Distance" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding MinRayDistance}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="MinRayDistance" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinMinRayDistance}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxMinRayDistance}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Max Ray Steps" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding MaxRaySteps}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="MaxRaySteps" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinMaxRaySteps}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxMaxRaySteps}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Distance" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding Distance}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="Distance" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinDistance}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxDistance}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Max Distance" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding MaxDistance}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="MaxDistance" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinDistance}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxDistance}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="12" Margin="2, 5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Step Divisor" />
-                <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding StepDivisor}" />
+                <TextBox Style="{StaticResource TextBoxInError}" >
+                    <TextBox.Text>
+                        <Binding Path="StepDivisor" 
+                                 UpdateSourceTrigger="LostFocus" >
+                            <Binding.ValidationRules>
+                                <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinStepDivisor}" 
+                                                                Max="{x:Static local:ParameterConstants.MaxStepDivisor}"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
             </StackPanel>
 
         </Grid>

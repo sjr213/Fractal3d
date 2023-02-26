@@ -7,5 +7,24 @@ public static class ParameterConstants
 
     public const float MinFromTo = -10000f;
     public const float MaxFromTo = 10000f;
+
+    public const float MinBailout = 0.01f;
+    public const float MaxBailout = 1e9f;
+
+    public const int MinMaxRaySteps = 1;
+    public const int MaxMaxRaySteps = 1000000;
+
+    public const float MinMinRayDistance = 1e-6f;
+    public const float MaxMinRayDistance = 1f;
+
+    public const float MinStepDivisor = 1f;
+    public const float MaxStepDivisor = 1000f;
+
+    public const int MinIterations = 2;
+    public const int MaxIterations = 1000000;
+
+    public const float MinDistance = 0.0001f;
+    public const float MaxDistance = 10000f;
+
 }
 
