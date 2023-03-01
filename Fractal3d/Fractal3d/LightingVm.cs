@@ -4,11 +4,12 @@ using BasicWpfLibrary;
 using ImageCalculator;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 public class LightingVm : ViewModelBase
 {
-    private FractalParams _fractalParams;
-    private Action<FractalParams> _onParamsChanged;
+    private readonly FractalParams _fractalParams;
+    private readonly Action<FractalParams> _onParamsChanged;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public LightingVm(FractalParams fractalParams, Action<FractalParams> onParamsChanged)
@@ -16,6 +17,7 @@ public class LightingVm : ViewModelBase
     {
         _fractalParams = fractalParams;
         _onParamsChanged = onParamsChanged;
+        IsVisibleChangedCommand = new RelayCommand(param => ExecuteIsVisibleChangedCommand(param is DependencyPropertyChangedEventArgs args ? args : default));
 
         AllowedLightingTypes = new ObservableCollection<LightingType>
         {
@@ -24,277 +26,258 @@ public class LightingVm : ViewModelBase
         SelectedLightingType = _fractalParams.Light.LightingType;
     }
 
+    public RelayCommand IsVisibleChangedCommand { get; }
+
+    public void ExecuteIsVisibleChangedCommand(DependencyPropertyChangedEventArgs e)
+    {
+        if (e.NewValue != null && (bool)e.NewValue)
+        {
+            NormalDistance = _fractalParams.NormalDistance;
+            DiffuseColorRed = _fractalParams.Light.DiffuseColor.X;
+            DiffuseColorGreen = _fractalParams.Light.DiffuseColor.Y;
+            DiffuseColorBlue = _fractalParams.Light.DiffuseColor.Z;
+            DiffusePower = _fractalParams.Light.DiffusePower;
+            SpecularColorRed = _fractalParams.Light.SpecularColor.X;
+            SpecularColorGreen = _fractalParams.Light.SpecularColor.Y;
+            SpecularColorBlue = _fractalParams.Light.SpecularColor.Z;
+            SpecularPower = _fractalParams.Light.SpecularPower;
+            Shininess = _fractalParams.Light.Shininess;
+            LightColorRed = _fractalParams.Light.LightColor.X;
+            LightColorGreen = _fractalParams.Light.LightColor.Y;
+            LightColorBlue = _fractalParams.Light.LightColor.Z;
+            ScreenGamma = _fractalParams.Light.ScreenGamma;
+            AmbientPower = _fractalParams.Light.AmbientPower;
+        }
+
+    }
+
     public float NormalDistance
     {
-        get { return _fractalParams.NormalDistance; }
+        get => _fractalParams.NormalDistance;
         set
         {
-            if (value == _fractalParams.NormalDistance)
-                return;
             _fractalParams.NormalDistance = value;
-            OnPropertyChanged(nameof(NormalDistance));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float LightPositionX
     {
-        get { return _fractalParams.Light.Position.X; }
+        get => _fractalParams.Light.Position.X;
         set
         {
-            if (value == _fractalParams.Light.Position.X)
+            if (Math.Abs(value - _fractalParams.Light.Position.X) < ParameterConstants.FloatTolerance)
                 return;
 
             var pos = _fractalParams.Light.Position;
             pos.X = value;
             _fractalParams.Light.Position = pos;
-            OnPropertyChanged(nameof(LightPositionX));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float LightPositionY
     {
-        get { return _fractalParams.Light.Position.Y; }
+        get => _fractalParams.Light.Position.Y;
         set
         {
-            if (value == _fractalParams.Light.Position.Y)
+            if (Math.Abs(value - _fractalParams.Light.Position.Y) < ParameterConstants.FloatTolerance)
                 return;
 
             var pos = _fractalParams.Light.Position;
             pos.Y = value;
             _fractalParams.Light.Position = pos;
-            OnPropertyChanged(nameof(LightPositionY));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float LightPositionZ
     {
-        get { return _fractalParams.Light.Position.Z; }
+        get => _fractalParams.Light.Position.Z;
         set
         {
-            if (value == _fractalParams.Light.Position.Z)
+            if (Math.Abs(value - _fractalParams.Light.Position.Z) < ParameterConstants.FloatTolerance)
                 return;
 
             var pos = _fractalParams.Light.Position;
             pos.Z = value;
             _fractalParams.Light.Position = pos;
-            OnPropertyChanged(nameof(LightPositionZ));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float DiffuseColorRed
     {
-        get { return _fractalParams.Light.DiffuseColor.X; }
+        get => _fractalParams.Light.DiffuseColor.X;
         set
         {
-            if (value == _fractalParams.Light.DiffuseColor.X)
-                return;
-
             var color = _fractalParams.Light.DiffuseColor;
             color.X = value;
             _fractalParams.Light.DiffuseColor = color;
-            OnPropertyChanged(nameof(DiffuseColorRed));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float DiffuseColorGreen
     {
-        get { return _fractalParams.Light.DiffuseColor.Y; }
+        get => _fractalParams.Light.DiffuseColor.Y;
         set
         {
-            if (value == _fractalParams.Light.DiffuseColor.Y)
-                return;
-
             var color = _fractalParams.Light.DiffuseColor;
             color.Y = value;
             _fractalParams.Light.DiffuseColor = color;
-            OnPropertyChanged(nameof(DiffuseColorGreen));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float DiffuseColorBlue
     {
-        get { return _fractalParams.Light.DiffuseColor.Z; }
+        get => _fractalParams.Light.DiffuseColor.Z;
         set
         {
-            if (value == _fractalParams.Light.DiffuseColor.Z)
-                return;
-
             var color = _fractalParams.Light.DiffuseColor;
             color.Z = value;
             _fractalParams.Light.DiffuseColor = color;
-            OnPropertyChanged(nameof(DiffuseColorBlue));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float DiffusePower
     {
-        get { return _fractalParams.Light.DiffusePower; }
+        get => _fractalParams.Light.DiffusePower;
         set
         {
-            if (value == _fractalParams.Light.DiffusePower)
-                return;
-
             _fractalParams.Light.DiffusePower = value;
-            OnPropertyChanged(nameof(DiffusePower));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float SpecularColorRed
     {
-        get { return _fractalParams.Light.SpecularColor.X; }
+        get => _fractalParams.Light.SpecularColor.X;
         set
         {
-            if (value == _fractalParams.Light.SpecularColor.X)
-                return;
-
             var color = _fractalParams.Light.SpecularColor;
             color.X = value;
             _fractalParams.Light.SpecularColor = color;
-            OnPropertyChanged(nameof(SpecularColorRed));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float SpecularColorGreen
     {
-        get { return _fractalParams.Light.SpecularColor.Y; }
+        get => _fractalParams.Light.SpecularColor.Y;
         set
         {
-            if (value == _fractalParams.Light.SpecularColor.Y)
-                return;
-
             var color = _fractalParams.Light.SpecularColor;
             color.Y = value;
             _fractalParams.Light.SpecularColor = color;
-            OnPropertyChanged(nameof(SpecularColorGreen));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float SpecularColorBlue
     {
-        get { return _fractalParams.Light.SpecularColor.Z; }
+        get => _fractalParams.Light.SpecularColor.Z;
         set
         {
-            if (value == _fractalParams.Light.SpecularColor.Z)
-                return;
-
             var color = _fractalParams.Light.SpecularColor;
             color.Z = value;
             _fractalParams.Light.SpecularColor = color;
-            OnPropertyChanged(nameof(SpecularColorBlue));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float SpecularPower
     {
-        get { return _fractalParams.Light.SpecularPower; }
+        get => _fractalParams.Light.SpecularPower;
         set
         {
-            if (value == _fractalParams.Light.SpecularPower)
-                return;
-
             _fractalParams.Light.SpecularPower = value;
-            OnPropertyChanged(nameof(SpecularPower));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float Shininess
     {
-        get { return _fractalParams.Light.Shininess; }
+        get => _fractalParams.Light.Shininess;
         set
         {
-            if (value == _fractalParams.Light.Shininess)
-                return;
-
             _fractalParams.Light.Shininess = value;
-            OnPropertyChanged(nameof(Shininess));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float LightColorRed
     {
-        get { return _fractalParams.Light.LightColor.X; }
+        get => _fractalParams.Light.LightColor.X;
         set
         {
-            if (value == _fractalParams.Light.LightColor.X)
-                return;
-
             var color = _fractalParams.Light.LightColor;
             color.X = value;
             _fractalParams.Light.LightColor = color;
-            OnPropertyChanged(nameof(LightColorRed));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float LightColorGreen
     {
-        get { return _fractalParams.Light.LightColor.Y; }
+        get => _fractalParams.Light.LightColor.Y;
         set
         {
-            if (value == _fractalParams.Light.LightColor.Y)
-                return;
-
             var color = _fractalParams.Light.LightColor;
             color.Y = value;
             _fractalParams.Light.LightColor = color;
-            OnPropertyChanged(nameof(LightColorGreen));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float LightColorBlue
     {
-        get { return _fractalParams.Light.LightColor.Z; }
+        get => _fractalParams.Light.LightColor.Z;
         set
         {
-            if (value == _fractalParams.Light.LightColor.Z)
-                return;
-
             var color = _fractalParams.Light.LightColor;
             color.Z = value;
             _fractalParams.Light.LightColor = color;
-            OnPropertyChanged(nameof(LightColorBlue));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float ScreenGamma
     {
-        get { return _fractalParams.Light.ScreenGamma; }
+        get => _fractalParams.Light.ScreenGamma;
         set
         {
-            if (value == _fractalParams.Light.ScreenGamma)
-                return;
-
             _fractalParams.Light.ScreenGamma = value;
-            OnPropertyChanged(nameof(ScreenGamma));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
 
     public float AmbientPower
     {
-        get { return _fractalParams.Light.AmbientPower; }
+        get => _fractalParams.Light.AmbientPower;
         set
         {
-            if (value == _fractalParams.Light.AmbientPower)
-                return;
-
             _fractalParams.Light.AmbientPower = value;
-            OnPropertyChanged(nameof(AmbientPower));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }
@@ -303,7 +286,7 @@ public class LightingVm : ViewModelBase
     public ObservableCollection<LightingType> AllowedLightingTypes
     {
         get => _allowedLightingTypes;
-        set { SetProperty(ref _allowedLightingTypes, value); }
+        set => SetProperty(ref _allowedLightingTypes, value);
     }
 
     public LightingType SelectedLightingType
@@ -314,7 +297,7 @@ public class LightingVm : ViewModelBase
             if (value == _fractalParams.Light.LightingType)
                 return;
             _fractalParams.Light.LightingType = value;
-            OnPropertyChanged(nameof(SelectedLightingType));
+            OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }

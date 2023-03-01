@@ -2,6 +2,8 @@
 
 public static class ParameterConstants
 {
+    public const float FloatTolerance = 0.00001f;
+
     public const int MinImage = 10;
     public const int MaxImage = 10000;
 

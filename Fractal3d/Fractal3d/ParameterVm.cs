@@ -8,7 +8,6 @@ using System.Windows;
 
 public class ParameterVm : ViewModelBase
 {
-    private const float FloatTolerance = 0.00001f;
     private readonly FractalParams _fractalParams;
     private readonly Action<FractalParams> _onParamsChanged;
 
@@ -221,7 +220,7 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.C4.W;
         set
         {
-            if (Math.Abs(value - _fractalParams.C4.W) < FloatTolerance)
+            if (Math.Abs(value - _fractalParams.C4.W) < ParameterConstants.FloatTolerance)
                 return;
 
             var c4 = _fractalParams.C4;
@@ -237,7 +236,7 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.C4.X;
         set
         {
-            if (Math.Abs(value - _fractalParams.C4.X) < FloatTolerance)
+            if (Math.Abs(value - _fractalParams.C4.X) < ParameterConstants.FloatTolerance)
                 return;
 
             var c4 = _fractalParams.C4;
@@ -253,7 +252,7 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.C4.Y;
         set
         {
-            if (Math.Abs(value - _fractalParams.C4.Y) < FloatTolerance)
+            if (Math.Abs(value - _fractalParams.C4.Y) < ParameterConstants.FloatTolerance)
                 return;
 
             var c4 = _fractalParams.C4;
@@ -269,7 +268,7 @@ public class ParameterVm : ViewModelBase
         get => _fractalParams.C4.Z;
         set
         {
-            if (Math.Abs(value - _fractalParams.C4.Z) < FloatTolerance)
+            if (Math.Abs(value - _fractalParams.C4.Z) < ParameterConstants.FloatTolerance)
                 return;
 
             var c4 = _fractalParams.C4;
