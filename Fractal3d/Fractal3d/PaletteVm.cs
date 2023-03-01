@@ -55,6 +55,7 @@ namespace Fractal3d
             if (e.NewValue != null && (bool)e.NewValue)
             {
                 DisplayInfoViewModel.OnIsVisibleChanged();
+                NumberOfColors = _palette.NumberOfColors;
             }
         }
 
@@ -123,9 +124,6 @@ namespace Fractal3d
             get => _palette.NumberOfColors;
             set
             {
-                if (_palette.NumberOfColors == value)
-                    return;
-
                 _palette.NumberOfColors = value;
                 OnPropertyChanged();
 

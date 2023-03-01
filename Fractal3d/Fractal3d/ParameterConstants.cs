@@ -42,5 +42,8 @@ public static class ParameterConstants
 
     public const float MinScreenGamma = 0.001f;
     public const float MaxScreenGamma = 1e6f;
+
+    public const int MinPaletteColors = 2;
+    public const int MaxPaletteColors = 100000;
 }
 

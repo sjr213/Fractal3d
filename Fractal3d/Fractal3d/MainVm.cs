@@ -573,6 +573,10 @@ public class MainVm : ViewModelBase, IDisposable
         if (AreLightingParametersValid() == false)
             return false;
 
+        if (_fractalParams.Palette.NumberOfColors is < ParameterConstants.MinPaletteColors
+            or > ParameterConstants.MaxPaletteColors)
+            return false;
+
         return true;
     }
 }

@@ -33,7 +33,17 @@
         </StackPanel>
         <StackPanel Grid.Row="1" Margin="2" Orientation="Horizontal" >
             <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Number of Colors" />
-            <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding NumberOfColors}" />
+            <TextBox Style="{StaticResource TextBoxInError}">
+                <TextBox.Text>
+                    <Binding Path="NumberOfColors" 
+                             UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <wpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinPaletteColors}" 
+                                                          Max="{x:Static local:ParameterConstants.MaxPaletteColors}"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </StackPanel>
         <Border Grid.Row="2" Style="{StaticResource BorderStyle}">
             <StackPanel Orientation="Vertical" Margin="2">
