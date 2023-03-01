@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Fractal3d"
+             xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:LightingVm}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -32,7 +33,17 @@
             <StackPanel Grid.Row="0" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Normal Distance" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding NormalDistance}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="NormalDistance" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinNormalDistance}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxNormalDistance}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="1" Margin="2,5" Orientation="Horizontal">
@@ -41,15 +52,15 @@
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding LightPositionX}" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding LightPositionX}" />
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding LightPositionY}" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding LightPositionY}" />
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding LightPositionZ}" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding LightPositionZ}" />
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="2,5" Orientation="Horizontal">
@@ -58,21 +69,61 @@
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Red:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding LightColorRed}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="LightColorRed" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Green:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding LightColorGreen}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="LightColorGreen" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Blue:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding LightColorBlue}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="LightColorBlue" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="3" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ambient Power" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding AmbientPower}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="AmbientPower" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinPower}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxPower}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="4" Margin="2,5" Orientation="Horizontal">
@@ -81,21 +132,61 @@
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Red:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding DiffuseColorRed}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="DiffuseColorRed" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Green:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding DiffuseColorGreen}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="DiffuseColorGreen" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Blue:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding DiffuseColorBlue}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="DiffuseColorBlue" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="5" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Diffuse Power" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding DiffusePower}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="DiffusePower" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinPower}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxPower}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal">
@@ -104,33 +195,93 @@
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Red:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding SpecularColorRed}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="SpecularColorRed" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Green:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding SpecularColorGreen}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="SpecularColorGreen" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Blue:" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding SpecularColorBlue}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="SpecularColorBlue" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="7" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Specular Power" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding SpecularPower}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="SpecularPower" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinPower}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxPower}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Shininess" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding Shininess}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="Shininess" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinShininess}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxShininess}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Screen Gamma" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ScreenGamma}" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="ScreenGamma" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinScreenGamma}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxScreenGamma}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal">

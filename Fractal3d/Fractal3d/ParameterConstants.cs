@@ -26,5 +26,19 @@ public static class ParameterConstants
     public const float MinDistance = 0.0001f;
     public const float MaxDistance = 10000f;
 
+    public const float MinNormalDistance = 0.00001f;
+    public const float MaxNormalDistance = 1000f;
+
+    public const float MinFloatColor = 0f;
+    public const float MaxFloatColor = 1f;
+
+    public const float MinPower = 0f;
+    public const float MaxPower = 1f;
+
+    public const float MinShininess = 1f;
+    public const float MaxShininess = 128f;
+
+    public const float MinScreenGamma = 0.001f;
+    public const float MaxScreenGamma = 1e6f;
 }
 
