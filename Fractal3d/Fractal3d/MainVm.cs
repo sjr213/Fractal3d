@@ -458,7 +458,7 @@ public class MainVm : ViewModelBase, IDisposable
         }
     }
 
-    private bool AreParametersValid()
+    private bool AreFractalParametersValid()
     {
         if (_fractalParams.ImageSize.Width is < ParameterConstants.MinImage or > ParameterConstants.MaxImage)
             return false;
@@ -478,7 +478,7 @@ public class MainVm : ViewModelBase, IDisposable
         if (_fractalParams.ToX is < ParameterConstants.MinFromTo or > ParameterConstants.MaxFromTo)
             return false;
 
-        if(_fractalParams.FromY is < ParameterConstants.MinFromTo or > ParameterConstants.MaxFromTo)
+        if (_fractalParams.FromY is < ParameterConstants.MinFromTo or > ParameterConstants.MaxFromTo)
             return false;
 
         if (_fractalParams.ToY is < ParameterConstants.MinFromTo or > ParameterConstants.MaxFromTo)
@@ -490,7 +490,7 @@ public class MainVm : ViewModelBase, IDisposable
         if (_fractalParams.FromY > _fractalParams.ToY)
             return false;
 
-        if(_fractalParams.Bailout is < ParameterConstants.MinBailout or > ParameterConstants.MaxBailout)
+        if (_fractalParams.Bailout is < ParameterConstants.MinBailout or > ParameterConstants.MaxBailout)
             return false;
 
         if (_fractalParams.Iterations is < ParameterConstants.MinIterations or > ParameterConstants.MaxIterations)
@@ -503,13 +503,74 @@ public class MainVm : ViewModelBase, IDisposable
             or > ParameterConstants.MaxMinRayDistance)
             return false;
 
-        if(_fractalParams.Distance is < ParameterConstants.MinDistance or > ParameterConstants.MaxDistance)
+        if (_fractalParams.Distance is < ParameterConstants.MinDistance or > ParameterConstants.MaxDistance)
             return false;
 
         if (_fractalParams.MaxDistance is < ParameterConstants.MinDistance or > ParameterConstants.MaxDistance)
             return false;
 
         if (_fractalParams.StepDivisor is < ParameterConstants.MinStepDivisor or > ParameterConstants.MaxStepDivisor)
+            return false;
+
+        return true;
+    }
+
+    private bool AreLightingParametersValid()
+    {
+        if (_fractalParams.NormalDistance is < ParameterConstants.MinNormalDistance or > ParameterConstants.MaxNormalDistance)
+            return false;
+
+        if (_fractalParams.Light.DiffuseColor.X is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
+            return false;
+
+        if (_fractalParams.Light.DiffuseColor.Y is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
+            return false;
+
+        if (_fractalParams.Light.DiffuseColor.Z is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
+            return false;
+
+        if (_fractalParams.Light.SpecularColor.X is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
+            return false;
+
+        if (_fractalParams.Light.SpecularColor.Y is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
+            return false;
+
+        if (_fractalParams.Light.SpecularColor.Z is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
+            return false;
+
+        if (_fractalParams.Light.LightColor.X is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
+            return false;
+
+        if (_fractalParams.Light.LightColor.Y is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
+            return false;
+
+        if (_fractalParams.Light.LightColor.Z is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
+            return false;
+
+        if (_fractalParams.Light.DiffusePower is < ParameterConstants.MinPower or > ParameterConstants.MaxPower)
+            return false;
+
+        if (_fractalParams.Light.SpecularPower is < ParameterConstants.MinPower or > ParameterConstants.MaxPower)
+            return false;
+
+        if (_fractalParams.Light.AmbientPower is < ParameterConstants.MinPower or > ParameterConstants.MaxPower)
+            return false;
+
+        if (_fractalParams.Light.Shininess is < ParameterConstants.MinShininess or > ParameterConstants.MaxShininess)
+            return false;
+
+        if (_fractalParams.Light.ScreenGamma is < ParameterConstants.MinScreenGamma or > ParameterConstants.MaxScreenGamma)
+            return false;
+
+        return true;
+    }
+
+    private bool AreParametersValid()
+    {
+        if (AreFractalParametersValid() == false)
+            return false;
+
+        if (AreLightingParametersValid() == false)
             return false;
 
         return true;
