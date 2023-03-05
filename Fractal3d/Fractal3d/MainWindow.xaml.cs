@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Reflection;
+using System;
+using System.Windows;
 
 namespace Fractal3d
 {
@@ -10,6 +12,10 @@ namespace Fractal3d
         public MainWindow()
         {
             InitializeComponent();
+
+            var assembly = Assembly.GetExecutingAssembly();
+            var version = assembly.GetName().Version;
+            Title = "Fractal 3D - Version " + version;
         }
     }
 }
