@@ -40,9 +40,6 @@ public static class ParameterConstants
     public const float MinShininess = 1f;
     public const float MaxShininess = 128f;
 
-    public const float MinScreenGamma = 0.001f;
-    public const float MaxScreenGamma = 1e6f;
-
     public const int MinPaletteColors = 2;
     public const int MaxPaletteColors = 100000;
 }

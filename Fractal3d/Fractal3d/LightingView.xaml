@@ -29,7 +29,6 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal">
@@ -270,22 +269,6 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal">
-                <StackPanel Margin="2" Orientation="Horizontal" >
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Screen Gamma" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
-                        <TextBox.Text>
-                            <Binding Path="ScreenGamma" 
-                                     UpdateSourceTrigger="LostFocus" >
-                                <Binding.ValidationRules>
-                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinScreenGamma}" 
-                                                                    Max="{x:Static local:ParameterConstants.MaxScreenGamma}"/>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Lighting Type" />
                 <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedLightingTypes}" SelectedItem="{Binding SelectedLightingType}">
                     <ComboBox.ItemTemplate>

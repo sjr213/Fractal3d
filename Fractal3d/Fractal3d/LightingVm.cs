@@ -45,7 +45,6 @@ public class LightingVm : ViewModelBase
             LightColorRed = _fractalParams.Light.LightColor.X;
             LightColorGreen = _fractalParams.Light.LightColor.Y;
             LightColorBlue = _fractalParams.Light.LightColor.Z;
-            ScreenGamma = _fractalParams.Light.ScreenGamma;
             AmbientPower = _fractalParams.Light.AmbientPower;
         }
 
@@ -255,17 +254,6 @@ public class LightingVm : ViewModelBase
             var color = _fractalParams.Light.LightColor;
             color.Z = value;
             _fractalParams.Light.LightColor = color;
-            OnPropertyChanged();
-            _onParamsChanged(_fractalParams);
-        }
-    }
-
-    public float ScreenGamma
-    {
-        get => _fractalParams.Light.ScreenGamma;
-        set
-        {
-            _fractalParams.Light.ScreenGamma = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }

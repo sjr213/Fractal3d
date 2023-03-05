@@ -559,9 +559,6 @@ public class MainVm : ViewModelBase, IDisposable
         if (_fractalParams.Light.Shininess is < ParameterConstants.MinShininess or > ParameterConstants.MaxShininess)
             return false;
 
-        if (_fractalParams.Light.ScreenGamma is < ParameterConstants.MinScreenGamma or > ParameterConstants.MaxScreenGamma)
-            return false;
-
         return true;
     }
 
