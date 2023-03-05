@@ -22,7 +22,7 @@ public static class LightUtil
         // up to here * note we need to multiply both colors by the light.Color too
 
         // Calculate the diffuse light factoring in light color, power and the attenuation
-        lighting.Diffuse = intensity * light.DiffuseColor * light.LightColor * light.DiffusePower / distance;
+        lighting.Diffuse = intensity * light.DiffuseColor * light.DiffusePower / distance;
 
         Vector3 viewDir = viewPos - pos3D;
 
@@ -44,7 +44,7 @@ public static class LightUtil
             intensity = (float)Math.Pow(specAngle, light.Shininess / 4.0f);
         }
         //Sum up the specular light factoring
-        lighting.Specular = intensity * light.SpecularColor * light.LightColor * light.SpecularPower / distance;
+        lighting.Specular = intensity * light.SpecularColor * light.SpecularPower / distance;
 
         return lighting;
     }

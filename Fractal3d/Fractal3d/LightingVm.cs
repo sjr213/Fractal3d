@@ -42,9 +42,6 @@ public class LightingVm : ViewModelBase
             SpecularColorBlue = _fractalParams.Light.SpecularColor.Z;
             SpecularPower = _fractalParams.Light.SpecularPower;
             Shininess = _fractalParams.Light.Shininess;
-            LightColorRed = _fractalParams.Light.LightColor.X;
-            LightColorGreen = _fractalParams.Light.LightColor.Y;
-            LightColorBlue = _fractalParams.Light.LightColor.Z;
             AmbientPower = _fractalParams.Light.AmbientPower;
         }
 
@@ -215,45 +212,6 @@ public class LightingVm : ViewModelBase
         set
         {
             _fractalParams.Light.Shininess = value;
-            OnPropertyChanged();
-            _onParamsChanged(_fractalParams);
-        }
-    }
-
-    public float LightColorRed
-    {
-        get => _fractalParams.Light.LightColor.X;
-        set
-        {
-            var color = _fractalParams.Light.LightColor;
-            color.X = value;
-            _fractalParams.Light.LightColor = color;
-            OnPropertyChanged();
-            _onParamsChanged(_fractalParams);
-        }
-    }
-
-    public float LightColorGreen
-    {
-        get => _fractalParams.Light.LightColor.Y;
-        set
-        {
-            var color = _fractalParams.Light.LightColor;
-            color.Y = value;
-            _fractalParams.Light.LightColor = color;
-            OnPropertyChanged();
-            _onParamsChanged(_fractalParams);
-        }
-    }
-
-    public float LightColorBlue
-    {
-        get => _fractalParams.Light.LightColor.Z;
-        set
-        {
-            var color = _fractalParams.Light.LightColor;
-            color.Z = value;
-            _fractalParams.Light.LightColor = color;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }

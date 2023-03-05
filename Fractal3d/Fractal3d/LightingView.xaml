@@ -28,7 +28,6 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal">
@@ -64,53 +63,6 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="2,5" Orientation="Horizontal">
-                <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Light color (0-1.0)" />
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Red:" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
-                        <TextBox.Text>
-                            <Binding Path="LightColorRed" 
-                                     UpdateSourceTrigger="LostFocus" >
-                                <Binding.ValidationRules>
-                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
-                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Green:" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
-                        <TextBox.Text>
-                            <Binding Path="LightColorGreen" 
-                                     UpdateSourceTrigger="LostFocus" >
-                                <Binding.ValidationRules>
-                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
-                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Blue:" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
-                        <TextBox.Text>
-                            <Binding Path="LightColorBlue" 
-                                     UpdateSourceTrigger="LostFocus" >
-                                <Binding.ValidationRules>
-                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFloatColor}" 
-                                                                    Max="{x:Static local:ParameterConstants.MaxFloatColor}"/>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="3" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ambient Power" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -126,7 +78,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="4" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="3" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Diffuse color (0-1.0)" />
                 </StackPanel>
@@ -173,7 +125,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="5" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="4" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Diffuse Power" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -189,7 +141,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="5" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Specular color (0-1.0)" />
                 </StackPanel>
@@ -236,7 +188,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="7" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Specular Power" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -252,7 +204,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="7" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Shininess" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -268,7 +220,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Lighting Type" />
                 <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedLightingTypes}" SelectedItem="{Binding SelectedLightingType}">
                     <ComboBox.ItemTemplate>

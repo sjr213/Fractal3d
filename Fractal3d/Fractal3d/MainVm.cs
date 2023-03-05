@@ -538,15 +538,6 @@ public class MainVm : ViewModelBase, IDisposable
         if (_fractalParams.Light.SpecularColor.Z is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
             return false;
 
-        if (_fractalParams.Light.LightColor.X is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
-            return false;
-
-        if (_fractalParams.Light.LightColor.Y is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
-            return false;
-
-        if (_fractalParams.Light.LightColor.Z is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
-            return false;
-
         if (_fractalParams.Light.DiffusePower is < ParameterConstants.MinPower or > ParameterConstants.MaxPower)
             return false;
 
