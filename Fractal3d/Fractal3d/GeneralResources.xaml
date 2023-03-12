@@ -146,6 +146,9 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -164,12 +167,18 @@
                     <TextBlock Grid.Row="5" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Y Range</TextBlock>
                     <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=RangeY }"/>
 
-                    <TextBlock Grid.Row="6" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Max Steps</TextBlock>
-                    <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MaxRaySteps }"/>
-                    <TextBlock Grid.Row="7" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Distance</TextBlock>
-                    <TextBlock Grid.Row="7" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=Distance }"/>
-                    <TextBlock Grid.Row="8" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Step Divisor</TextBlock>
-                    <TextBlock Grid.Row="8" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=StepDivisor }"/>
+                    <TextBlock Grid.Row="6" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Iterations</TextBlock>
+                    <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=Iterations }"/>
+                    <TextBlock Grid.Row="7" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Max Steps</TextBlock>
+                    <TextBlock Grid.Row="7" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MaxRaySteps }"/>
+                    <TextBlock Grid.Row="8" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Distance</TextBlock>
+                    <TextBlock Grid.Row="8" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=Distance }"/>
+                    <TextBlock Grid.Row="9" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Max Distance</TextBlock>
+                    <TextBlock Grid.Row="9" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MaxDistance }"/>
+                    <TextBlock Grid.Row="10" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Step Divisor</TextBlock>
+                    <TextBlock Grid.Row="10" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=StepDivisor }"/>
+                    <TextBlock Grid.Row="11" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Aim to Origin</TextBlock>
+                    <TextBlock Grid.Row="11" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=AimToOrigin }"/>
                 </Grid>
             </Expander>
         </Border>

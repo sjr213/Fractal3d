@@ -128,6 +128,17 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
+    public int Iterations
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return 0;
+
+            return _fractalResult.Params.Iterations;
+        }
+    }
+
     public int MaxRaySteps
     {
         get
@@ -150,6 +161,17 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
+    public string MaxDistance
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+
+            return TruncateFloatStringOnRight(_fractalResult.Params.MaxDistance);
+        }
+    }
+
     public string StepDivisor
     {
         get
@@ -161,7 +183,18 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
-    public FractalResult Result => _fractalResult;
+    public string AimToOrigin
+    {
+        get
+        {
+            if(_fractalResult.Params == null)
+                return string.Empty;
+
+            return _fractalResult.Params.AimToOrigin ? "Yes" : "No";
+        }
+    }
+
+public FractalResult Result => _fractalResult;
 
 };
 
