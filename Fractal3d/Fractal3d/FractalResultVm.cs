@@ -51,7 +51,12 @@ public class FractalResultVm : ViewModelBase
     public string TruncateFloatStringOnRight(float val)
     {
         var str = val.ToString("F4");
-        char[] charsToTrim = { '0', ' ', '.' };
+        if (str.IndexOf('.', 0) > -1)
+        {
+            char[] charToTrim = { '0' };
+            str = str.TrimEnd(charToTrim);
+        }
+        char[] charsToTrim = { ' ', '.' };
         return str.TrimEnd(charsToTrim);
     }
 
