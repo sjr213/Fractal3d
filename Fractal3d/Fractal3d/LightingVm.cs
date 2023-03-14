@@ -5,6 +5,7 @@ using ImageCalculator;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
 
 public class LightingVm : ViewModelBase
 {
@@ -23,7 +24,11 @@ public class LightingVm : ViewModelBase
         {
             LightingType.BlinnPhong, LightingType.Phong
         };
-        SelectedLightingType = _fractalParams.Light.LightingType;
+        UpdateLightIndices();
+        SelectedLightingType = _fractalParams.Lights[SelectedLightIndex-1].LightingType;
+
+        _addLightCommand = new RelayCommand(_ => AddLight(), _ => true);
+        _deleteLightCommand = new RelayCommand(_ => DeleteLight(), _ => CanDeleteLight());
     }
 
     public RelayCommand IsVisibleChangedCommand { get; }
@@ -33,18 +38,31 @@ public class LightingVm : ViewModelBase
         if (e.NewValue != null && (bool)e.NewValue)
         {
             NormalDistance = _fractalParams.NormalDistance;
-            DiffuseColorRed = _fractalParams.Light.DiffuseColor.X;
-            DiffuseColorGreen = _fractalParams.Light.DiffuseColor.Y;
-            DiffuseColorBlue = _fractalParams.Light.DiffuseColor.Z;
-            DiffusePower = _fractalParams.Light.DiffusePower;
-            SpecularColorRed = _fractalParams.Light.SpecularColor.X;
-            SpecularColorGreen = _fractalParams.Light.SpecularColor.Y;
-            SpecularColorBlue = _fractalParams.Light.SpecularColor.Z;
-            SpecularPower = _fractalParams.Light.SpecularPower;
-            Shininess = _fractalParams.Light.Shininess;
-            AmbientPower = _fractalParams.Light.AmbientPower;
+            AmbientPower = _fractalParams.AmbientPower;
+            UpdateFields();
         }
 
+    }
+
+    protected void UpdateFields()
+    {
+        var light = CurrentLight();
+        
+        DiffuseColorRed = light.DiffuseColor.X;
+        DiffuseColorGreen = light.DiffuseColor.Y;
+        DiffuseColorBlue = light.DiffuseColor.Z;
+        DiffusePower = light.DiffusePower;
+        SpecularColorRed = light.SpecularColor.X;
+        SpecularColorGreen = light.SpecularColor.Y;
+        SpecularColorBlue = light.SpecularColor.Z;
+        SpecularPower = light.SpecularPower;
+        Shininess = light.Shininess;
+
+        // Non-validated fields
+        LightPositionX = light.Position.X;
+        LightPositionY = light.Position.Y;
+        LightPositionZ = light.Position.Z;
+        SelectedLightingType = light.LightingType;
     }
 
     public float NormalDistance
@@ -58,17 +76,80 @@ public class LightingVm : ViewModelBase
         }
     }
 
-    public float LightPositionX
+    private ObservableCollection<int> _allowedLightIndices;
+    public ObservableCollection<int> AllowedLightIndices
     {
-        get => _fractalParams.Light.Position.X;
+        get => _allowedLightIndices;
+        set => SetProperty(ref _allowedLightIndices, value);
+    }
+
+    private int _selectedLightIndex = 0;
+
+    public int SelectedLightIndex
+    {
+        get => _selectedLightIndex;
         set
         {
-            if (Math.Abs(value - _fractalParams.Light.Position.X) < ParameterConstants.FloatTolerance)
-                return;
+            SetProperty(ref _selectedLightIndex, value);
+            UpdateFields();
+        }
+    }
 
-            var pos = _fractalParams.Light.Position;
+    protected PointLight CurrentLight()
+    {
+        if( _fractalParams.Lights.Count == 0) return new PointLight();
+
+        if( SelectedLightIndex < 1 || SelectedLightIndex > _fractalParams.Lights.Count)
+            return new PointLight();
+
+        return _fractalParams.Lights[SelectedLightIndex-1];
+    }
+
+    private readonly RelayCommand _addLightCommand;
+    public ICommand AddLightCommand => _addLightCommand;
+
+    private readonly RelayCommand _deleteLightCommand;
+    public ICommand DeleteLightCommand => _deleteLightCommand;
+
+    protected void AddLight()
+    {
+        _fractalParams.Lights.Add(new PointLight());
+        UpdateLightIndices();
+    }
+
+    protected void DeleteLight()
+    {
+        _fractalParams.Lights.RemoveAt(SelectedLightIndex-1);
+        UpdateLightIndices();
+    }
+
+    protected bool CanDeleteLight()
+    {
+        return _fractalParams.Lights.Count > 1;
+    }
+
+    private void UpdateLightIndices()
+    {
+        ObservableCollection<int> indices = new();
+        for (int i = 1; i <= _fractalParams.Lights.Count; i++)
+        {
+            indices.Add(i);
+        }
+
+        AllowedLightIndices = indices;
+        SelectedLightIndex = 1;
+    }
+
+    public float LightPositionX
+    {
+        get => CurrentLight().Position.X;
+        set
+        {
+            var light = CurrentLight();
+
+            var pos = light.Position;
             pos.X = value;
-            _fractalParams.Light.Position = pos;
+            light.Position = pos;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -76,15 +157,14 @@ public class LightingVm : ViewModelBase
 
     public float LightPositionY
     {
-        get => _fractalParams.Light.Position.Y;
+        get => CurrentLight().Position.Y;
         set
         {
-            if (Math.Abs(value - _fractalParams.Light.Position.Y) < ParameterConstants.FloatTolerance)
-                return;
+            var light = CurrentLight();
 
-            var pos = _fractalParams.Light.Position;
+            var pos = light.Position;
             pos.Y = value;
-            _fractalParams.Light.Position = pos;
+            light.Position = pos;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -92,15 +172,14 @@ public class LightingVm : ViewModelBase
 
     public float LightPositionZ
     {
-        get => _fractalParams.Light.Position.Z;
+        get => CurrentLight().Position.Z;
         set
         {
-            if (Math.Abs(value - _fractalParams.Light.Position.Z) < ParameterConstants.FloatTolerance)
-                return;
+            var light = CurrentLight();
 
-            var pos = _fractalParams.Light.Position;
+            var pos = light.Position;
             pos.Z = value;
-            _fractalParams.Light.Position = pos;
+            light.Position = pos;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -108,12 +187,13 @@ public class LightingVm : ViewModelBase
 
     public float DiffuseColorRed
     {
-        get => _fractalParams.Light.DiffuseColor.X;
+        get => CurrentLight().DiffuseColor.X;
         set
         {
-            var color = _fractalParams.Light.DiffuseColor;
+            var light = CurrentLight();
+            var color = light.DiffuseColor;
             color.X = value;
-            _fractalParams.Light.DiffuseColor = color;
+            light.DiffuseColor = color;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -121,12 +201,13 @@ public class LightingVm : ViewModelBase
 
     public float DiffuseColorGreen
     {
-        get => _fractalParams.Light.DiffuseColor.Y;
+        get => CurrentLight().DiffuseColor.Y;
         set
         {
-            var color = _fractalParams.Light.DiffuseColor;
+            var light = CurrentLight();
+            var color = light.DiffuseColor;
             color.Y = value;
-            _fractalParams.Light.DiffuseColor = color;
+            light.DiffuseColor = color;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -134,12 +215,13 @@ public class LightingVm : ViewModelBase
 
     public float DiffuseColorBlue
     {
-        get => _fractalParams.Light.DiffuseColor.Z;
+        get => CurrentLight().DiffuseColor.Z;
         set
         {
-            var color = _fractalParams.Light.DiffuseColor;
+            var light = CurrentLight();
+            var color = light.DiffuseColor;
             color.Z = value;
-            _fractalParams.Light.DiffuseColor = color;
+            light.DiffuseColor = color;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -147,10 +229,10 @@ public class LightingVm : ViewModelBase
 
     public float DiffusePower
     {
-        get => _fractalParams.Light.DiffusePower;
+        get => CurrentLight().DiffusePower;
         set
         {
-            _fractalParams.Light.DiffusePower = value;
+            CurrentLight().DiffusePower = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -158,12 +240,13 @@ public class LightingVm : ViewModelBase
 
     public float SpecularColorRed
     {
-        get => _fractalParams.Light.SpecularColor.X;
+        get => CurrentLight().SpecularColor.X;
         set
         {
-            var color = _fractalParams.Light.SpecularColor;
+            var light = CurrentLight();
+            var color = light.SpecularColor;
             color.X = value;
-            _fractalParams.Light.SpecularColor = color;
+            light.SpecularColor = color;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -171,12 +254,13 @@ public class LightingVm : ViewModelBase
 
     public float SpecularColorGreen
     {
-        get => _fractalParams.Light.SpecularColor.Y;
+        get => CurrentLight().SpecularColor.Y;
         set
         {
-            var color = _fractalParams.Light.SpecularColor;
+            var light = CurrentLight();
+            var color = light.SpecularColor;
             color.Y = value;
-            _fractalParams.Light.SpecularColor = color;
+            light.SpecularColor = color;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -184,12 +268,13 @@ public class LightingVm : ViewModelBase
 
     public float SpecularColorBlue
     {
-        get => _fractalParams.Light.SpecularColor.Z;
+        get => CurrentLight().SpecularColor.Z;
         set
         {
-            var color = _fractalParams.Light.SpecularColor;
+            var light = CurrentLight();
+            var color = light.SpecularColor;
             color.Z = value;
-            _fractalParams.Light.SpecularColor = color;
+            light.SpecularColor = color;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -197,10 +282,10 @@ public class LightingVm : ViewModelBase
 
     public float SpecularPower
     {
-        get => _fractalParams.Light.SpecularPower;
+        get => CurrentLight().SpecularPower;
         set
         {
-            _fractalParams.Light.SpecularPower = value;
+            CurrentLight().SpecularPower = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -208,10 +293,10 @@ public class LightingVm : ViewModelBase
 
     public float Shininess
     {
-        get => _fractalParams.Light.Shininess;
+        get => CurrentLight().Shininess;
         set
         {
-            _fractalParams.Light.Shininess = value;
+            CurrentLight().Shininess = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -219,10 +304,10 @@ public class LightingVm : ViewModelBase
 
     public float AmbientPower
     {
-        get => _fractalParams.Light.AmbientPower;
+        get => _fractalParams.AmbientPower;
         set
         {
-            _fractalParams.Light.AmbientPower = value;
+            _fractalParams.AmbientPower = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -237,12 +322,11 @@ public class LightingVm : ViewModelBase
 
     public LightingType SelectedLightingType
     {
-        get => _fractalParams.Light.LightingType;
+        get => CurrentLight().LightingType;
         set
         {
-            if (value == _fractalParams.Light.LightingType)
-                return;
-            _fractalParams.Light.LightingType = value;
+            var light = CurrentLight();
+            light.LightingType = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }

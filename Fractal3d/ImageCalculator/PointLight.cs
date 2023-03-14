@@ -23,7 +23,6 @@ public class PointLight : ICloneable
     public Vector3 SpecularColor { get; set; } = new Vector3(0.8f, 0.2f, 0.2f);
     public float SpecularPower { get; set; } = 0.5f;
     public float Shininess = 16.0f;
-    public float AmbientPower { get; set; } = 0.5f;
 
     public object Clone()
     {

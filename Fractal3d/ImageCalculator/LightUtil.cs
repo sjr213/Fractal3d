@@ -13,7 +13,7 @@ public static class LightUtil
         Vector3 lightDir = light.Position - pos3D; //3D position in space of the surface
         float distance = lightDir.Length();
         lightDir /= distance; // = normalize(lightDir);
-        distance *= distance; //This line may be optimised using Inverse square root
+        distance *= distance; //This line may be optimized using Inverse square root
 
         //Intensity of the diffuse light. Saturate to keep within the 0-1 range.
         float NdotL = Vector3.Dot(normal, lightDir);

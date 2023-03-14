@@ -141,7 +141,7 @@ public class FractalFactory : IDisposable
                     distance = 1.0f;
 
                 var normal = NormalCalculator.CalculateNormal(EstimateDistance, fractalParams.NormalDistance, outPt);
-                Lighting lighting = LightUtil.GetPointLight(fractalParams.Light, outPt, viewPos, normal);
+                Lighting lighting = LightUtil.GetPointLight(fractalParams.Lights[0], outPt, viewPos, normal);
 
                 int depth = (int)(distance * (palette.NumberOfColors-1));
 

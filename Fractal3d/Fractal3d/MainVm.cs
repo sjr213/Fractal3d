@@ -126,7 +126,7 @@ public class MainVm : ViewModelBase, IDisposable
         if (result.Image == null || result.Params == null)
             return;
 
-        var bmp = result.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.Light.AmbientPower);
+        var bmp = result.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
 
         Width = result.Params.DisplaySize.Width;
         Height = result.Params.DisplaySize.Height;
@@ -274,7 +274,7 @@ public class MainVm : ViewModelBase, IDisposable
         string filename = saveFileDialog.FileName;
         string ext = Path.GetExtension(filename);
 
-        var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.Light.AmbientPower);
+        var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
 
         if (string.Compare(ext, ".jpg", StringComparison.OrdinalIgnoreCase) == 0)
         {
@@ -388,7 +388,7 @@ public class MainVm : ViewModelBase, IDisposable
             if (_fractalResult.Image == null)
                 return;
 
-            var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.Light.AmbientPower);
+            var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
 
             Image = ImageUtil.BitmapToImageSource(bmp);
         }
@@ -520,34 +520,7 @@ public class MainVm : ViewModelBase, IDisposable
         if (_fractalParams.NormalDistance is < ParameterConstants.MinNormalDistance or > ParameterConstants.MaxNormalDistance)
             return false;
 
-        if (_fractalParams.Light.DiffuseColor.X is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
-            return false;
-
-        if (_fractalParams.Light.DiffuseColor.Y is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
-            return false;
-
-        if (_fractalParams.Light.DiffuseColor.Z is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
-            return false;
-
-        if (_fractalParams.Light.SpecularColor.X is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
-            return false;
-
-        if (_fractalParams.Light.SpecularColor.Y is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
-            return false;
-
-        if (_fractalParams.Light.SpecularColor.Z is < ParameterConstants.MinFloatColor or > ParameterConstants.MaxFloatColor)
-            return false;
-
-        if (_fractalParams.Light.DiffusePower is < ParameterConstants.MinPower or > ParameterConstants.MaxPower)
-            return false;
-
-        if (_fractalParams.Light.SpecularPower is < ParameterConstants.MinPower or > ParameterConstants.MaxPower)
-            return false;
-
-        if (_fractalParams.Light.AmbientPower is < ParameterConstants.MinPower or > ParameterConstants.MaxPower)
-            return false;
-
-        if (_fractalParams.Light.Shininess is < ParameterConstants.MinShininess or > ParameterConstants.MaxShininess)
+        if(_fractalParams.Lights.Count == 0) 
             return false;
 
         return true;

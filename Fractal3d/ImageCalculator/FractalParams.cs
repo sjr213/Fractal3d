@@ -40,13 +40,16 @@ public class FractalParams : ICloneable
     public bool AimToOrigin { get; set; } = false;
 
     public float NormalDistance { get; set; } = 0.01f;
-    public PointLight Light {get; set;} = new ();
+    public float AmbientPower { get; set; } = 0.5f;
+    public List<PointLight> Lights { get; set; } = new List<PointLight>() { new PointLight() };
     public DisplayInfo ColorInfo { get; set; } = new();
 
     public object Clone()
     {
         var copy = (FractalParams)MemberwiseClone();
-        copy.Light = (PointLight)Light.Clone();
+        copy.Lights = new List<PointLight>();
+        foreach(var light in Lights )
+            copy.Lights.Add( (PointLight)light.Clone() );
         copy.ColorInfo = (DisplayInfo)ColorInfo.Clone();
         copy.Palette = (Palette)Palette.Clone();    
         return copy;
