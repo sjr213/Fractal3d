@@ -27,6 +27,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal">
@@ -45,13 +46,24 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="1" Margin="2,5" Orientation="Horizontal">
+                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Light Combination Mode" />
+                <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedLightComboModes}" 
+                          SelectedItem="{Binding SelectedLightComboMode}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Margin="2,5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Light Index" />
                 <ComboBox Margin="2" Padding="2" Width="40"  ItemsSource="{Binding AllowedLightIndices}" 
                           SelectedItem="{Binding Mode=TwoWay, Path=SelectedLightIndex}" />
                 <Button Margin="2" Padding="2" MinWidth="30" Command="{Binding AddLightCommand}">Add</Button>
                 <Button Margin="2" Padding="2" MinWidth="30" Command="{Binding DeleteLightCommand}">Delete</Button>
             </StackPanel>
-            <StackPanel Grid.Row="2" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="3" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Light Position" />
                 </StackPanel>
@@ -68,7 +80,7 @@
                     <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding LightPositionZ}" />
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="3" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="4" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ambient Power" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -112,7 +124,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="4" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="5" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Diffuse color (0-1.0)" />
                 </StackPanel>
@@ -159,7 +171,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="5" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Specular color (0-1.0)" />
                 </StackPanel>
@@ -206,7 +218,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="7" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Shininess" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -222,7 +234,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="7" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Lighting Type" />
                 <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedLightingTypes}" SelectedItem="{Binding SelectedLightingType}">
                     <ComboBox.ItemTemplate>

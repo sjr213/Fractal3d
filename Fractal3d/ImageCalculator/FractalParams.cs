@@ -17,6 +17,15 @@ public enum QuaternionEquationType
 }
 
 [Serializable]
+public enum LightCombinationMode
+{
+    [Description("Average")]
+    Average,
+    [Description("Sum")]
+    Sum
+}
+
+[Serializable]
 public class FractalParams : ICloneable
 {
     public Size ImageSize { get; set; } = new(400, 400);
@@ -41,6 +50,7 @@ public class FractalParams : ICloneable
 
     public float NormalDistance { get; set; } = 0.01f;
     public float AmbientPower { get; set; } = 0.5f;
+    public LightCombinationMode LightComboMode { get; set; } = LightCombinationMode.Average;
     public List<PointLight> Lights { get; set; } = new List<PointLight>() { new PointLight() };
     public DisplayInfo ColorInfo { get; set; } = new();
 

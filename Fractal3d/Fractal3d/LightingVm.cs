@@ -24,6 +24,13 @@ public class LightingVm : ViewModelBase
         {
             LightingType.BlinnPhong, LightingType.Phong
         };
+
+        AllowedLightComboModes = new ObservableCollection<LightCombinationMode>
+        {
+            LightCombinationMode.Average, LightCombinationMode.Sum
+        };
+
+        SelectedLightComboMode = _fractalParams.LightComboMode;
         UpdateLightIndices();
         SelectedLightingType = _fractalParams.Lights[SelectedLightIndex-1].LightingType;
 
@@ -38,6 +45,7 @@ public class LightingVm : ViewModelBase
         if (e.NewValue != null && (bool)e.NewValue)
         {
             NormalDistance = _fractalParams.NormalDistance;
+            SelectedLightComboMode = _fractalParams.LightComboMode;
             AmbientPower = _fractalParams.AmbientPower;
             UpdateFields();
         }
@@ -71,6 +79,24 @@ public class LightingVm : ViewModelBase
         set
         {
             _fractalParams.NormalDistance = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    private ObservableCollection<LightCombinationMode> _allowedLightComboModes;
+    public ObservableCollection<LightCombinationMode> AllowedLightComboModes
+    {
+        get => _allowedLightComboModes;
+        set => SetProperty(ref _allowedLightComboModes, value);
+    }
+
+    public LightCombinationMode SelectedLightComboMode
+    {
+        get => _fractalParams.LightComboMode;
+        set
+        {
+            _fractalParams.LightComboMode = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
