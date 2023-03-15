@@ -1,22 +1,20 @@
 ﻿namespace ImageCalculator;
 
 using FractureCommonLib;
-using System.Net.Http.Headers;
 using System.Numerics;
-using System.Reactive;
 using System.Reactive.Subjects;
 
 public class FractalFactory : IDisposable
 {
-    public delegate void QuatCalcDel(Vector4 Q, Vector4 C, out Vector4 Q1, out Vector4 dQ1);
+    public delegate void QuatCalcDel(Vector4 q, Vector4 c, out Vector4 q1, out Vector4 dQ1);
      
-    private FractalParams _fractalParams = new FractalParams();
+    private FractalParams _fractalParams = new();
     private QuatCalcDel _nextCycle = QuadMath.CalculateNextCycleSquared;
-    private Subject<int> _progressSubject = new Subject<int>();
+    private readonly Subject<int> _progressSubject = new();
 
     public IObservable<int> Progress => _progressSubject;
 
-    bool _isDisposed = false;
+    bool _isDisposed;
 
     public void Dispose()
     {
@@ -49,9 +47,7 @@ public class FractalFactory : IDisposable
         {
             if (r > _fractalParams.Bailout)
                 break;
-            Vector4 dz1;
-            Vector4 z1;
-            _nextCycle(z, _fractalParams.C4, out z1, out dz1);
+            _nextCycle(z, _fractalParams.C4, out var z1, out var dz1);
 
             if (NumericExtensions.IsNan(z1))
                 break;
@@ -128,11 +124,10 @@ public class FractalFactory : IDisposable
                 Vector3 to = (_fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, targetZ): new Vector3(fx, fy, targetZ);
                 
                 Vector3 startPt = from * fractalParams.Distance + to;
-                Vector3 outPt = new Vector3();
 
                 Vector3 direction = -1.0f * (to - from);
 
-                float distance = RayMarch(startPt, direction, out outPt);
+                float distance = RayMarch(startPt, direction, out var outPt);
 
                 if (distance < 0.0f)
                     distance = 0.0f;
@@ -141,7 +136,7 @@ public class FractalFactory : IDisposable
                     distance = 1.0f;
 
                 var normal = NormalCalculator.CalculateNormal(EstimateDistance, fractalParams.NormalDistance, outPt);
-                Lighting lighting = LightUtil.GetPointLight(fractalParams.Lights[0], outPt, viewPos, normal);
+                Lighting lighting = LightUtil.GetPointLight(fractalParams.Lights, fractalParams.LightComboMode, outPt, viewPos, normal);
 
                 int depth = (int)(distance * (palette.NumberOfColors-1));
 
