@@ -76,6 +76,7 @@ public class LightingVm : ViewModelBase
         LightPositionY = light.Position.Y;
         LightPositionZ = light.Position.Z;
         SelectedReflectionType = light.ReflectionType;
+        SelectedLightType = light.LightType;
     }
 
     public float NormalDistance

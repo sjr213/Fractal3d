@@ -51,9 +51,41 @@ public class FractalParams : ICloneable
     public float NormalDistance { get; set; } = 0.01f;
     public float AmbientPower { get; set; } = 0.5f;
     public LightCombinationMode LightComboMode { get; set; } = LightCombinationMode.Average;
-    public List<Light> Lights { get; set; } = new List<Light>() { new Light() };
+    public List<Light> Lights { get; set; } = MakeLights();
     public DisplayInfo ColorInfo { get; set; } = new();
     public bool PlainShader = false;
+
+    public static List<Light> MakeLights()
+    {
+        var light1 = new Light()
+        {
+            LightType = LightType.DirectionalLight,
+            Position = new Vector3(0f, -0.1f, -1f),
+            DiffusePower = 0.2f,
+            SpecularPower = 0.05f,
+            Shininess = 5
+        };
+
+        var light2 = new Light()
+        {
+            LightType = LightType.PointLight,
+            Position = new Vector3(-0.7f, -0.7f, -0.8f),
+            DiffusePower = 0.5f,
+            SpecularPower = 0.3f,
+            Shininess = 16
+        };
+
+        var light3 = new Light()
+        {
+            LightType = LightType.PointLight,
+            Position = new Vector3(0.4f,0.3f, -1f),
+            DiffusePower = 0.3f,
+            SpecularPower = 0.1f,
+            Shininess = 5
+        };
+
+        return new List<Light>() { light1, light2, light3 };
+    }
 
     public object Clone()
     {
