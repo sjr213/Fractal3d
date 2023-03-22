@@ -51,15 +51,16 @@ public class FractalParams : ICloneable
     public float NormalDistance { get; set; } = 0.01f;
     public float AmbientPower { get; set; } = 0.5f;
     public LightCombinationMode LightComboMode { get; set; } = LightCombinationMode.Average;
-    public List<PointLight> Lights { get; set; } = new List<PointLight>() { new PointLight() };
+    public List<Light> Lights { get; set; } = new List<Light>() { new Light() };
     public DisplayInfo ColorInfo { get; set; } = new();
+    public bool PlainShader = false;
 
     public object Clone()
     {
         var copy = (FractalParams)MemberwiseClone();
-        copy.Lights = new List<PointLight>();
+        copy.Lights = new List<Light>();
         foreach(var light in Lights )
-            copy.Lights.Add( (PointLight)light.Clone() );
+            copy.Lights.Add( (Light)light.Clone() );
         copy.ColorInfo = (DisplayInfo)ColorInfo.Clone();
         copy.Palette = (Palette)Palette.Clone();    
         return copy;

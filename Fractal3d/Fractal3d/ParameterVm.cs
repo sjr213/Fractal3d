@@ -367,4 +367,15 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public bool Shader
+    {
+        get => _fractalParams.PlainShader;
+        set
+        {
+            _fractalParams.PlainShader = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
 }

@@ -53,5 +53,6 @@ public static class QuadMath
 		Q1 = QuadCubeIngles(Q) + C;
 		dQ1 = QuadSquareIngles(Q);
     }
+
 }
 

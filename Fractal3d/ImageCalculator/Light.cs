@@ -5,7 +5,7 @@ using System.Numerics;
 namespace ImageCalculator;
 
 [Serializable]
-public enum LightingType
+public enum ReflectionType
 {
     [Description("Blinn-Phong")]
     BlinnPhong,
@@ -14,9 +14,19 @@ public enum LightingType
 }
 
 [Serializable]
-public class PointLight : ICloneable
+public enum LightType
 {
-    public LightingType LightingType { get; set; } = LightingType.BlinnPhong;
+    [Description("Point")]
+    PointLight,
+    [Description("Directional")]
+    DirectionalLight
+}
+
+[Serializable]
+public class Light : ICloneable
+{
+    public LightType LightType { get; set; } = LightType.PointLight;
+    public ReflectionType ReflectionType { get; set; } = ReflectionType.BlinnPhong;
     public Vector3 Position { get; set; } = new Vector3(-0.3f, -0.5f, -1.0f);
     public Vector3 DiffuseColor { get; set; } = new Vector3(0.5f, 0.5f, 0.8f);
     public float DiffusePower { get; set; } = 0.5f;

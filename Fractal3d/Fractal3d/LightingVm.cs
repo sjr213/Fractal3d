@@ -20,9 +20,14 @@ public class LightingVm : ViewModelBase
         _onParamsChanged = onParamsChanged;
         IsVisibleChangedCommand = new RelayCommand(param => ExecuteIsVisibleChangedCommand(param is DependencyPropertyChangedEventArgs args ? args : default));
 
-        AllowedLightingTypes = new ObservableCollection<LightingType>
+        AllowedLightTypes = new ObservableCollection<LightType>
         {
-            LightingType.BlinnPhong, LightingType.Phong
+            LightType.PointLight, LightType.DirectionalLight
+        };
+
+        AllowedReflectionTypes = new ObservableCollection<ReflectionType>
+        {
+            ReflectionType.BlinnPhong, ReflectionType.Phong
         };
 
         AllowedLightComboModes = new ObservableCollection<LightCombinationMode>
@@ -30,9 +35,10 @@ public class LightingVm : ViewModelBase
             LightCombinationMode.Average, LightCombinationMode.Sum
         };
 
+        SelectedLightType = _fractalParams.Lights[SelectedLightIndex - 1].LightType;
         SelectedLightComboMode = _fractalParams.LightComboMode;
         UpdateLightIndices();
-        SelectedLightingType = _fractalParams.Lights[SelectedLightIndex-1].LightingType;
+        SelectedReflectionType = _fractalParams.Lights[SelectedLightIndex-1].ReflectionType;
 
         _addLightCommand = new RelayCommand(_ => AddLight(), _ => true);
         _deleteLightCommand = new RelayCommand(_ => DeleteLight(), _ => CanDeleteLight());
@@ -49,7 +55,6 @@ public class LightingVm : ViewModelBase
             AmbientPower = _fractalParams.AmbientPower;
             UpdateFields();
         }
-
     }
 
     protected void UpdateFields()
@@ -70,7 +75,7 @@ public class LightingVm : ViewModelBase
         LightPositionX = light.Position.X;
         LightPositionY = light.Position.Y;
         LightPositionZ = light.Position.Z;
-        SelectedLightingType = light.LightingType;
+        SelectedReflectionType = light.ReflectionType;
     }
 
     public float NormalDistance
@@ -109,7 +114,7 @@ public class LightingVm : ViewModelBase
         set => SetProperty(ref _allowedLightIndices, value);
     }
 
-    private int _selectedLightIndex = 0;
+    private int _selectedLightIndex = 1;
 
     public int SelectedLightIndex
     {
@@ -121,12 +126,12 @@ public class LightingVm : ViewModelBase
         }
     }
 
-    protected PointLight CurrentLight()
+    protected Light CurrentLight()
     {
-        if( _fractalParams.Lights.Count == 0) return new PointLight();
+        if( _fractalParams.Lights.Count == 0) return new Light();
 
         if( SelectedLightIndex < 1 || SelectedLightIndex > _fractalParams.Lights.Count)
-            return new PointLight();
+            return new Light();
 
         return _fractalParams.Lights[SelectedLightIndex-1];
     }
@@ -139,7 +144,7 @@ public class LightingVm : ViewModelBase
 
     protected void AddLight()
     {
-        _fractalParams.Lights.Add(new PointLight());
+        _fractalParams.Lights.Add(new Light());
         UpdateLightIndices();
     }
 
@@ -339,20 +344,39 @@ public class LightingVm : ViewModelBase
         }
     }
 
-    private ObservableCollection<LightingType> _allowedLightingTypes;
-    public ObservableCollection<LightingType> AllowedLightingTypes
+    private ObservableCollection<LightType> _allowedLightTypes;
+    public ObservableCollection<LightType> AllowedLightTypes
     {
-        get => _allowedLightingTypes;
-        set => SetProperty(ref _allowedLightingTypes, value);
+        get => _allowedLightTypes;
+        set => SetProperty(ref _allowedLightTypes, value);
     }
 
-    public LightingType SelectedLightingType
+    public LightType SelectedLightType
     {
-        get => CurrentLight().LightingType;
+        get => CurrentLight().LightType;
         set
         {
             var light = CurrentLight();
-            light.LightingType = value;
+            light.LightType = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    private ObservableCollection<ReflectionType> _allowedReflectionTypes;
+    public ObservableCollection<ReflectionType> AllowedReflectionTypes
+    {
+        get => _allowedReflectionTypes;
+        set => SetProperty(ref _allowedReflectionTypes, value);
+    }
+
+    public ReflectionType SelectedReflectionType
+    {
+        get => CurrentLight().ReflectionType;
+        set
+        {
+            var light = CurrentLight();
+            light.ReflectionType = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }

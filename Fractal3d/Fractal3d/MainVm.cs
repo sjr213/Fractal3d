@@ -24,10 +24,12 @@ public class MainVm : ViewModelBase, IDisposable
     const int NumberOfColors = 1000;
 
     private readonly FractalFactory _fractalFactory = new();
+    private readonly ShaderFactory _shaderFactory = new();
     private FractalParams _fractalParams = new() { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
     private FractalResult? _fractalResult;
     private bool _isDisposed;
     private readonly IDisposable? _progressSubject;
+    private readonly IDisposable? _progressShaderSubject;
     private CancellationTokenSource _cancelSource = new();
     private int _fractalNumber = 1;
      
@@ -52,6 +54,9 @@ public class MainVm : ViewModelBase, IDisposable
         {
             _progressSubject = _fractalFactory.Progress.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(progress => PercentProgress = progress);
+
+            _progressShaderSubject = _shaderFactory.Progress.ObserveOn(SynchronizationContext.Current)
+                .Subscribe(progress => PercentProgress = progress);
         }
     }
 
@@ -70,7 +75,9 @@ public class MainVm : ViewModelBase, IDisposable
         if (disposing)
         {
             _progressSubject?.Dispose();
+            _progressShaderSubject?.Dispose();
             _fractalFactory.Dispose();
+            _shaderFactory.Dispose();
         }
 
         _isDisposed = true;
@@ -103,7 +110,10 @@ public class MainVm : ViewModelBase, IDisposable
         var cancelToken = _cancelSource.Token;
         ProgressVisibility = Visibility.Visible;
 
-        _fractalResult = await _fractalFactory.CreateFractalAsync(_fractalParams, cancelToken);
+        if(_fractalParams.PlainShader)
+            _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, cancelToken);
+        else
+            _fractalResult = await _fractalFactory.CreateFractalAsync(_fractalParams, cancelToken);
 
         if (cancelToken.IsCancellationRequested)
         {
