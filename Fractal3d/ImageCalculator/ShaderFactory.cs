@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ImageCalculator;
+﻿namespace ImageCalculator;
 
 using FractureCommonLib;
 using System.Numerics;
@@ -8,11 +6,15 @@ using System.Reactive.Subjects;
 
 public class ShaderFactory : IDisposable
 {
+    // p is the point being tested
+ //   public delegate float SceneDel(Vector3 p);
+
     private FractalParams _fractalParams = new();
     private readonly Subject<int> _progressSubject = new();
     public IObservable<int> Progress => _progressSubject;
+    private Func<Vector3, float> _distanceEstimator = EstimateDistanceSphere;
 
-    bool _isDisposed;
+    private bool _isDisposed;
 
     public void Dispose()
     {
@@ -34,11 +36,18 @@ public class ShaderFactory : IDisposable
         _isDisposed = true;
     }
 
-    public static float EstimateDistance(Vector3 p)
+    public static float EstimateDistanceSphere(Vector3 p)
     {
         // sphere at origin 0,0,0 of radius 0.4
         // (p-circleOrigin).Length - radius
         return p.Length() - 0.4f;
+    }
+
+    public static float EstimateDistanceBox(Vector3 p)
+    {
+        Vector3 box = new Vector3(0.4f, 0.2f, 0.1f);
+        Vector3 q = Vector3.Abs(p) - box;
+        return Vector3.Max(q, Vector3.Zero).Length() + Math.Min(Math.Max(Math.Max(q.Y, q.Z), q.X), 0.0f);
     }
 
     private Tuple<bool, float> RayMarch(Vector3 startPt, Vector3 direction, out Vector3 pt)
@@ -53,7 +62,7 @@ public class ShaderFactory : IDisposable
         for (steps = 0; steps < _fractalParams.MaxRaySteps; steps++)
         {
             pt = totalDistance * direction + startPt;
-            float distance = EstimateDistance(pt);
+            float distance = _distanceEstimator(pt);
             totalDistance += distance / _fractalParams.StepDivisor;
             if (distance < _fractalParams.MinRayDistance)
             {
@@ -118,7 +127,7 @@ public class ShaderFactory : IDisposable
                 if (distance > 1.0f)
                     distance = 1.0f;
 
-                var normal = NormalCalculator.CalculateNormal(EstimateDistance, fractalParams.NormalDistance, outPt);
+                var normal = NormalCalculator.CalculateNormal(_distanceEstimator, fractalParams.NormalDistance, outPt);
 
                 var lighting = (hit) ? LightUtil.GetPointLight(fractalParams.Lights, fractalParams.LightComboMode, outPt, viewPos, normal) : 
                     new Lighting();
@@ -140,13 +149,26 @@ public class ShaderFactory : IDisposable
         _progressSubject.OnNext(100);
     }
 
+    private static Func<Vector3, float> GetSceneDel(ShaderSceneType sceneType)
+    {
+        switch (sceneType)
+        {
+            case ShaderSceneType.Sphere:
+                return EstimateDistanceSphere;
+            case ShaderSceneType.Box:
+                return EstimateDistanceBox;
+            default:
+                throw new ArgumentException("Unknown Scene Type");
+        }
+    }
+
     public async Task<FractalResult> CreateShaderAsync(FractalParams fractalParams, CancellationToken cancelToken)
     {
         _fractalParams = fractalParams;
         var size = fractalParams.ImageSize;
         var raw = new RawLightedImage(size.Width, size.Height, fractalParams.Palette.NumberOfColors);
 
-  //      _nextCycle = GetQuatCalcDel(_fractalParams.QuatEquation);
+        _distanceEstimator = GetSceneDel(fractalParams.SceneType);
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();

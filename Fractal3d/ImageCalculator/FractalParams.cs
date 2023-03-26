@@ -17,6 +17,15 @@ public enum QuaternionEquationType
 }
 
 [Serializable]
+public enum ShaderSceneType
+{
+    [Description("Sphere")]
+    Sphere,
+    [Description("Box")]
+    Box
+}
+
+[Serializable]
 public enum LightCombinationMode
 {
     [Description("Average")]
@@ -54,6 +63,7 @@ public class FractalParams : ICloneable
     public List<Light> Lights { get; set; } = MakeLights();
     public DisplayInfo ColorInfo { get; set; } = new();
     public bool PlainShader = false;
+    public ShaderSceneType SceneType = ShaderSceneType.Sphere;
 
     public static List<Light> MakeLights()
     {

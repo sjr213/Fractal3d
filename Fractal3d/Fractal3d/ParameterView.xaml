@@ -294,8 +294,17 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <StackPanel Grid.Row="13" Margin="2, 5" Orientation="Horizontal">
-                <CheckBox Margin="2" IsChecked="{Binding Shader}">Plain Shader</CheckBox>
+            <StackPanel Grid.Row="13" Margin="2, 5" Orientation="Horizontal" VerticalAlignment="Center">
+                <CheckBox Margin="2" IsChecked="{Binding Shader}" VerticalAlignment="Center">Plain Shader</CheckBox>
+                <ComboBox Margin="10,2,2,2" Padding="2" VerticalAlignment="Center"
+                          ItemsSource="{Binding AllowedSceneTypes}" 
+                          SelectedItem="{Binding SelectedSceneType}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
         </Grid>
     </Border>

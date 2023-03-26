@@ -1,4 +1,6 @@
-﻿namespace Fractal3d;
+﻿using System.Collections.Generic;
+
+namespace Fractal3d;
 
 using BasicWpfLibrary;
 using ImageCalculator;
@@ -23,7 +25,14 @@ public class ParameterVm : ViewModelBase
         {
             QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_InglesCubed
         };
+
+        AllowedSceneTypes = new List<ShaderSceneType>
+        {
+            ShaderSceneType.Sphere, ShaderSceneType.Box
+        };
+
         SelectedQuatEquationType = _fractalParams.QuatEquation;
+        SelectedSceneType = _fractalParams.SceneType;
         AimToOrigin = _fractalParams.AimToOrigin;
     }
 
@@ -48,6 +57,9 @@ public class ParameterVm : ViewModelBase
             Distance = _fractalParams.Distance;
             MaxDistance = _fractalParams.MaxDistance;
             StepDivisor = _fractalParams.StepDivisor;
+
+            SelectedQuatEquationType = _fractalParams.QuatEquation;
+            SelectedSceneType = _fractalParams.SceneType;
         }
         
     }
@@ -373,6 +385,26 @@ public class ParameterVm : ViewModelBase
         set
         {
             _fractalParams.PlainShader = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    private List<ShaderSceneType> _allowedSceneType;
+    public List<ShaderSceneType> AllowedSceneTypes
+    {
+        get => _allowedSceneType;
+        set => SetProperty(ref _allowedSceneType, value);
+    }
+
+    public ShaderSceneType SelectedSceneType
+    {
+        get => _fractalParams.SceneType;
+        set
+        {
+            if (value == _fractalParams.SceneType)
+                return;
+            _fractalParams.SceneType = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
