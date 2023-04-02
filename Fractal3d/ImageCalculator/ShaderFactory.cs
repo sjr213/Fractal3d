@@ -96,7 +96,7 @@ public class ShaderFactory : IDisposable
         float bottom = Math.Min(_fractalParams.FromY, _fractalParams.ToY);
         float top = Math.Max(_fractalParams.FromY, _fractalParams.ToY);
 
-        float z = -1.0f;
+        float fromZ = _fractalParams.FromZ;
         float targetZ = 0.0f;
 
         float xRange = (right - left) / size.Width;
@@ -109,7 +109,7 @@ public class ShaderFactory : IDisposable
                 float fx = x * xRange + left;
                 float fy = y * yRange + bottom;
 
-                Vector3 from = new Vector3(fx, fy, z);
+                Vector3 from = new Vector3(fx, fy, fromZ);
 
                 Vector3 to = (_fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, targetZ) : new Vector3(fx, fy, targetZ);
 

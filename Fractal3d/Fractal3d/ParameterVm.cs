@@ -53,6 +53,7 @@ public class ParameterVm : ViewModelBase
             ToX = _fractalParams.ToX;
             FromY = _fractalParams.FromY;
             ToY = _fractalParams.ToY;
+            FromZ = _fractalParams.FromZ;
             Bailout = _fractalParams.Bailout;
             Iterations = _fractalParams.Iterations;
             MaxRaySteps = _fractalParams.MaxRaySteps;
@@ -203,6 +204,18 @@ public class ParameterVm : ViewModelBase
             }
 
             OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public float FromZ
+    {
+        get => _fractalParams.FromZ;
+        set
+        {
+            _fractalParams.FromZ = value;
+
+                OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
     }

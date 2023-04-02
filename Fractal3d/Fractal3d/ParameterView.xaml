@@ -18,10 +18,11 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Width="420" Height="490" Style="{StaticResource BorderStyle}"
+    <Border Width="420" Height="500" Style="{StaticResource BorderStyle}"
         >
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
@@ -156,11 +157,27 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="3" Margin="2,5" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="From Z" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="FromZ" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFromTo}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxFromTo}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="4" Margin="2,5" Orientation="Horizontal">
                 <CheckBox Margin="5" Padding="2" VerticalContentAlignment="Center"
                   IsChecked="{Binding AimToOrigin}">Aim to origin</CheckBox>
             </StackPanel>
-            <Separator Grid.Row="4"/>
-            <StackPanel Grid.Row="5" Margin="2,5" Orientation="Horizontal">
+            <Separator Grid.Row="5"/>
+            <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Quaterion Equation Type" />
                 <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedQuatEquations}" SelectedItem="{Binding SelectedQuatEquationType}">
                     <ComboBox.ItemTemplate>
@@ -170,7 +187,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
-            <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="7" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Constant C" />
                 </StackPanel>
@@ -191,8 +208,8 @@
                     <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cz}" />
                 </StackPanel>
             </StackPanel>
-            <Separator Grid.Row="7"/>
-            <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal">
+            <Separator Grid.Row="8"/>
+            <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Bailout" />
                 <TextBox Style="{StaticResource TextBoxInError}" >
                     <TextBox.Text>
@@ -206,7 +223,7 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Iterations" />
                 <TextBox Style="{StaticResource TextBoxInError}" >
                     <TextBox.Text>
@@ -220,7 +237,7 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Min Ray Distance" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -250,7 +267,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="12" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Distance" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -280,7 +297,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="12" Margin="2, 5" Orientation="Horizontal">
+            <StackPanel Grid.Row="13" Margin="2, 5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Step Divisor" />
                 <TextBox Style="{StaticResource TextBoxInError}" >
                     <TextBox.Text>
@@ -294,7 +311,7 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <StackPanel Grid.Row="13" Margin="2, 5" Orientation="Horizontal" VerticalAlignment="Center">
+            <StackPanel Grid.Row="14" Margin="2, 5" Orientation="Horizontal" VerticalAlignment="Center">
                 <CheckBox Margin="2" IsChecked="{Binding Shader}" VerticalAlignment="Center">Plain Shader</CheckBox>
                 <ComboBox Margin="10,2,2,2" Padding="2" VerticalAlignment="Center"
                           ItemsSource="{Binding AllowedSceneTypes}" 

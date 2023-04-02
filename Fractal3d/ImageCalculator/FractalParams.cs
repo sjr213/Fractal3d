@@ -44,6 +44,7 @@ public class FractalParams : ICloneable
     public float ToX { get; set; } = 1.0f;
     public float FromY { get; set; } = -1.0f;
     public float ToY { get; set; } = 1.0f;
+    public float FromZ { get; set; } = -1.0f;
 
     public float Bailout { get; set; } = 2.0f;
     public int Iterations { get; set; } = 256;
