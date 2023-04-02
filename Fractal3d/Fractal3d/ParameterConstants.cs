@@ -35,7 +35,7 @@ public static class ParameterConstants
     public const float MaxFloatColor = 1f;
 
     public const float MinPower = 0f;
-    public const float MaxPower = 1f;
+    public const float MaxPower = 2f;
 
     public const float MinShininess = 1f;
     public const float MaxShininess = 128f;
