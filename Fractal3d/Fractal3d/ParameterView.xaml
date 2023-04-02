@@ -18,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Width="420" Height="470" Style="{StaticResource BorderStyle}"
+    <Border Width="420" Height="490" Style="{StaticResource BorderStyle}"
         >
         <Grid>
             <Grid.RowDefinitions>
@@ -306,6 +306,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
+
         </Grid>
     </Border>
 </UserControl>

@@ -3,7 +3,6 @@
 using BasicWpfLibrary;
 using FractureCommonLib;
 using ImageCalculator;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Windows;
 using System;
@@ -16,6 +15,8 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
+using System.ComponentModel;
 
 //using System.Windows.Forms;
 
@@ -32,6 +33,7 @@ public class MainVm : ViewModelBase, IDisposable
     private readonly IDisposable? _progressShaderSubject;
     private CancellationTokenSource _cancelSource = new();
     private int _fractalNumber = 1;
+    private bool _isDirty;
      
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public MainVm()
@@ -104,6 +106,14 @@ public class MainVm : ViewModelBase, IDisposable
     private readonly RelayCommand _cancelCommand;
     public ICommand CancelCommand => _cancelCommand;
 
+    public void OnWindowClosing(object sender, CancelEventArgs e)
+    {
+        if (_isDirty)
+        {
+            DoYouWantToSaveResults();
+        }
+    }
+
     protected async void Calculate()
     {
         _cancelSource = new();
@@ -129,6 +139,8 @@ public class MainVm : ViewModelBase, IDisposable
         ProgressVisibility = Visibility.Hidden;
 
         FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
+
+        _isDirty = true;
     }
 
     protected void DisplayImage(FractalResult result)
@@ -223,12 +235,12 @@ public class MainVm : ViewModelBase, IDisposable
         if (_fractalResult == null)
             return;
 
-        SaveFileDialog saveFileDialog = new SaveFileDialog
+        var saveFileDialog = new SaveFileDialog
         {
             Filter = "Fractal3D file (*.f3d)|*.f3d"
         };
 
-        if (saveFileDialog.ShowDialog() != true) return;
+        if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
         try
         {
             var results = FractalResults.Select(rvm => rvm.Result).ToList();
@@ -236,10 +248,11 @@ public class MainVm : ViewModelBase, IDisposable
 
             //write string to file
             File.WriteAllText(saveFileDialog.FileName, jsonString);
+            _isDirty = false;
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Cannot save result to file");
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot save result to file");
         }
     }
 
@@ -253,7 +266,7 @@ public class MainVm : ViewModelBase, IDisposable
             Filter = "Fractal3D file (*.f3d)|*.f3d"
         };
 
-        if (saveFileDialog.ShowDialog() != true) return;
+        if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
         try
         {
             List<FractalResult> results = new() { _fractalResult };
@@ -261,10 +274,15 @@ public class MainVm : ViewModelBase, IDisposable
 
             //write string to file
             File.WriteAllText(saveFileDialog.FileName, jsonString);
+
+            if (FractalResults.Count <= 1)
+            {
+                _isDirty = false;
+            }
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Cannot save result to file");
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot save result to file");
         }
     }
 
@@ -278,7 +296,7 @@ public class MainVm : ViewModelBase, IDisposable
             Filter = "Jpeg Files (*.jpg)|*.jpg|bitmap Files (*.bmp)|*.bmp|Png Files (*.png)|*.png"
         };
 
-        if (saveFileDialog.ShowDialog() != true)
+        if (saveFileDialog.ShowDialog() != DialogResult.OK)
             return;
         
         string filename = saveFileDialog.FileName;
@@ -319,7 +337,7 @@ public class MainVm : ViewModelBase, IDisposable
         var myImageCodecInfo = GetEncoderInfo("image/jpeg");
         if (myImageCodecInfo == null)
         {
-            MessageBox.Show("Cannot get codex for jpg", "Error");
+            System.Windows.Forms.MessageBox.Show("Cannot get codex for jpg", "Error");
             return;
         }
         ImageCodecInfo info = myImageCodecInfo;
@@ -337,7 +355,7 @@ public class MainVm : ViewModelBase, IDisposable
         var myImageCodecInfo = GetEncoderInfo("image/png");
         if (myImageCodecInfo == null)
         {
-            MessageBox.Show("Cannot get codex for jpg", "Error");
+            System.Windows.Forms.MessageBox.Show("Cannot get codex for jpg", "Error");
             return;
         }
         ImageCodecInfo info = myImageCodecInfo;
@@ -354,11 +372,7 @@ public class MainVm : ViewModelBase, IDisposable
     {
         if (_fractalResult != null)
         {
-            var reply = MessageBox.Show("Opening file will result in loss of current images", "Warning",
-                MessageBoxButton.OKCancel);
-
-            if (reply == MessageBoxResult.Cancel)
-                return;
+            DoYouWantToSaveResults();
         }
         
         var openFileDialog = new OpenFileDialog
@@ -366,7 +380,7 @@ public class MainVm : ViewModelBase, IDisposable
             Filter = "Fractal3D file (*.f3d)|*.f3d|All files (*.*)|*.*"
         };
 
-        if (openFileDialog.ShowDialog() != true) return;
+        if (openFileDialog.ShowDialog() != DialogResult.OK) return;
         try
         {
             string jsonString = File.ReadAllText(openFileDialog.FileName);
@@ -382,11 +396,12 @@ public class MainVm : ViewModelBase, IDisposable
                 FractalResults.Add(new FractalResultVm(fractalResult, _fractalNumber++));
             }
  
-            _fractalResult = results.Last();   
+            _fractalResult = results.Last();
+            _isDirty = false;
 
             if(_fractalResult.Params == null)
             {
-                MessageBox.Show("Can't load", "Params came back null");
+                System.Windows.Forms.MessageBox.Show("Can't load", "Params came back null");
                 return;
             }
             _fractalParams = _fractalResult.Params;
@@ -404,7 +419,7 @@ public class MainVm : ViewModelBase, IDisposable
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Cannot load result from file");
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot load result from file");
         }
     }
 
@@ -423,6 +438,11 @@ public class MainVm : ViewModelBase, IDisposable
             }
             FractalResults = newResults;
             _selectedFractalResult = null;
+        }
+
+        if (FractalResults.Count == 0)
+        {
+            _isDirty = false;
         }
     }
 
@@ -549,6 +569,15 @@ public class MainVm : ViewModelBase, IDisposable
             return false;
 
         return true;
+    }
+
+    private void DoYouWantToSaveResults()
+    {
+        DialogResult result = System.Windows.Forms.MessageBox.Show("Do you want to save your results?", "Unsaved Changes", MessageBoxButtons.YesNo);
+        if (result == DialogResult.Yes)
+        {
+            OnSaveAll();
+        }
     }
 }
 

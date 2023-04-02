@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Printing;
+using System.Windows.Forms.VisualStyles;
 
 namespace Fractal3d;
 
@@ -34,6 +36,7 @@ public class ParameterVm : ViewModelBase
         SelectedQuatEquationType = _fractalParams.QuatEquation;
         SelectedSceneType = _fractalParams.SceneType;
         AimToOrigin = _fractalParams.AimToOrigin;
+
     }
 
     public RelayCommand IsVisibleChangedCommand { get; }
