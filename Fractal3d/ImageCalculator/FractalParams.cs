@@ -65,6 +65,7 @@ public class FractalParams : ICloneable
     public DisplayInfo ColorInfo { get; set; } = new();
     public bool PlainShader = false;
     public ShaderSceneType SceneType = ShaderSceneType.Sphere;
+    public TransformationParams TransformParams = new TransformationParams();
 
     public static List<Light> MakeLights()
     {
@@ -105,7 +106,8 @@ public class FractalParams : ICloneable
         foreach(var light in Lights )
             copy.Lights.Add( (Light)light.Clone() );
         copy.ColorInfo = (DisplayInfo)ColorInfo.Clone();
-        copy.Palette = (Palette)Palette.Clone();    
+        copy.Palette = (Palette)Palette.Clone();
+        copy.TransformParams = (TransformationParams)TransformParams.Clone();
         return copy;
     }
 }
