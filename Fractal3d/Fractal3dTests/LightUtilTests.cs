@@ -1,5 +1,4 @@
 using FractureCommonLib;
-using ImageCalculator;
 using System.Drawing;
 using System.Numerics;
 
