@@ -49,6 +49,7 @@ public class MainVm : ViewModelBase, IDisposable
         MakePaletteViewModel();
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
+        TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         Width = _fractalParams.DisplaySize.Width;
         Height = _fractalParams.DisplaySize.Height;
 
@@ -188,6 +189,14 @@ public class MainVm : ViewModelBase, IDisposable
     {
         get => _lightingVm;
         set => SetProperty(ref _lightingVm, value);
+    }
+
+    private TransformVm _transformVm;
+
+    public TransformVm TransformViewModel
+    {
+        get => _transformVm;
+        set => SetProperty(ref _transformVm, value);
     }
 
     private int _width;
@@ -482,6 +491,7 @@ public class MainVm : ViewModelBase, IDisposable
                 MakePaletteViewModel();
                 ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
                 LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
+                TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
                 DisplayImage(_fractalResult);
             }
                 

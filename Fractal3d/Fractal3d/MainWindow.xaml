@@ -107,5 +107,14 @@
                 </ContentPresenter.Resources>
             </ContentPresenter>
         </TabItem>
+        <TabItem Header="Transform" DataContext="{Binding}">
+            <ContentPresenter Content="{Binding TransformViewModel}">
+                <ContentPresenter.Resources>
+                    <DataTemplate DataType="{x:Type local:TransformVm}">
+                        <local:TransformView/>
+                    </DataTemplate>
+                </ContentPresenter.Resources>
+            </ContentPresenter>
+        </TabItem>
     </TabControl>
 </Window>

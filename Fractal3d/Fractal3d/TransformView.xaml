@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="Fractal3d.TransformView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Fractal3d"
+             d:DataContext="{d:DesignInstance Type=local:TransformVm}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="GeneralResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Width="450" Height="400" Style="{StaticResource BorderStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Margin="2" Orientation="Vertical">
+                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Translation"/>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X"/>
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding TranslateX}"/>
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y"/>
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding TranslateY}"/>
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z"/>
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding TranslateZ}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Margin="2" Orientation="Vertical">
+                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Rotation Angle (deg)"/>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X"/>
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding RotateX}"/>
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y"/>
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding RotateY}"/>
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z"/>
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding RotateZ}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Margin="2" Orientation="Vertical">
+                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Scale"/>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X"/>
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ScaleX}"/>
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y"/>
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ScaleY}"/>
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z"/>
+                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ScaleZ}"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
