@@ -42,5 +42,14 @@ public static class ParameterConstants
 
     public const int MinPaletteColors = 2;
     public const int MaxPaletteColors = 100000;
+
+    public const float MinTranslation = -100.0f;
+    public const float MaxTranslation = 100.0f;
+
+    public const float MinRotation = -360.0f;
+    public const float MaxRotation = 360.0f;
+
+    public const float MinScale = 1e-5f;
+    public const float MaxScale = 1e+5f;
 }
 

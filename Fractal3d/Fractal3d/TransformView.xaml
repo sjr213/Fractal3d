@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Fractal3d"
+             xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
              d:DataContext="{d:DesignInstance Type=local:TransformVm}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -25,45 +26,135 @@
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Translation"/>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X"/>
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding TranslateX}"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="TranslateX" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinTranslation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxTranslation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y"/>
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding TranslateY}"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="TranslateY" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinTranslation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxTranslation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z"/>
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding TranslateZ}"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="TranslateZ" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinTranslation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxTranslation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="1" Margin="2" Orientation="Vertical">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Rotation Angle (deg)"/>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X"/>
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding RotateX}"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="RotateX" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinRotation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxRotation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y"/>
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding RotateY}"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="RotateY" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinRotation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxRotation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z"/>
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding RotateZ}"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="RotateZ" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinRotation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxRotation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="2" Orientation="Vertical">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Scale"/>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X"/>
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ScaleX}"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="ScaleX" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinScale}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxScale}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y"/>
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ScaleY}"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="ScaleY" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinScale}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxScale}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z"/>
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding ScaleZ}"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="ScaleZ" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinScale}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxScale}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
         </Grid>
