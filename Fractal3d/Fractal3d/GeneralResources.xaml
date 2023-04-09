@@ -67,6 +67,11 @@
         <Setter Property="FontWeight" Value="Normal" />
     </Style>
 
+    <Style TargetType="TextBlock" BasedOn="{StaticResource PlainTextBlockStyle}" x:Key="TitleTextBlockStyle">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
     <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MinWidthTextBoxStyle}">
         <Style.Triggers>
             <Trigger Property="Validation.HasError" Value="true">

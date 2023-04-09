@@ -23,8 +23,8 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Margin="2" Orientation="Vertical">
-                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Translation"/>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Translation"/>
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X"/>
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -38,7 +38,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y"/>
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -52,7 +52,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z"/>
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -68,8 +68,8 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="1" Margin="2" Orientation="Vertical">
-                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Rotation Angle (deg)"/>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Rotation Angle (deg)"/>
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X"/>
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -83,7 +83,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y"/>
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -97,7 +97,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z"/>
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -113,8 +113,8 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="2" Orientation="Vertical">
-                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Scale"/>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Scale"/>
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X"/>
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -128,7 +128,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y"/>
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
@@ -142,7 +142,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z"/>
                     <TextBox Style="{StaticResource TextBoxInError}">
                         <TextBox.Text>
