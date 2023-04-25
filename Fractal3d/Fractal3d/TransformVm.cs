@@ -75,7 +75,7 @@ public class TransformVm : ViewModelBase
         get => _fractalParams.TransformParams.RotateZ;
         set
         {
-            _fractalParams.TransformParams.RotateX = value;
+            _fractalParams.TransformParams.RotateZ = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
@@ -108,7 +108,7 @@ public class TransformVm : ViewModelBase
         get => _fractalParams.TransformParams.ScaleZ;
         set
         {
-            _fractalParams.TransformParams.ScaleX = value;
+            _fractalParams.TransformParams.ScaleZ = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
