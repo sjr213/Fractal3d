@@ -123,7 +123,7 @@ public class FractalFactory : IDisposable
 
                 Vector3 to = (_fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, targetZ): new Vector3(fx, fy, targetZ);
                 
-                Vector3 startPt = from * fractalParams.Distance + to;
+                Vector3 startPt = from + fractalParams.Distance * to;
 
                 Vector3 direction = -1.0f * (to - from);
 
