@@ -27,11 +27,16 @@ public static class TransformationCalculator
         return transformation;
     }
 
+    public static Matrix4x4 CreateInvertedTransformationMatrix(TransformationParams transParams)
+    {
+        var t = CreateTransformationMatrix(transParams);
 
+        return (Matrix4x4.Invert(t, out var inverted) ? inverted : t);
+    }
 
-// According to http://www.codinglabs.net/article_world_view_projection_matrix.aspx
-// we need this but this is column vector notation. MS code is row vector notation
-public static Vector4 Multiply(Matrix4x4 m, Vector4 v)
+    // According to http://www.codinglabs.net/article_world_view_projection_matrix.aspx
+    // we need this but this is column vector notation. MS code is row vector notation
+    public static Vector4 Multiply(Matrix4x4 m, Vector4 v)
     {
         return new Vector4(
             (m.M11 * v.X) + (m.M12 * v.Y) + (m.M13 * v.Z) + (m.M14 * v.W),
