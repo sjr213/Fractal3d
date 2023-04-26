@@ -30,7 +30,7 @@ public class ParameterVm : ViewModelBase
 
         AllowedSceneTypes = new List<ShaderSceneType>
         {
-            ShaderSceneType.Sphere, ShaderSceneType.Box
+            ShaderSceneType.Sphere, ShaderSceneType.Box, ShaderSceneType.Torus
         };
 
         SelectedQuatEquationType = _fractalParams.QuatEquation;

@@ -22,7 +22,9 @@ public enum ShaderSceneType
     [Description("Sphere")]
     Sphere,
     [Description("Box")]
-    Box
+    Box,
+    [Description("Torus")]
+    Torus
 }
 
 [Serializable]

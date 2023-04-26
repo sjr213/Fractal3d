@@ -6,9 +6,6 @@ using System.Reactive.Subjects;
 
 public class ShaderFactory : IDisposable
 {
-    // p is the point being tested
- //   public delegate float SceneDel(Vector3 p);
-
     private FractalParams _fractalParams = new();
     private readonly Subject<int> _progressSubject = new();
     public IObservable<int> Progress => _progressSubject;
@@ -43,14 +40,30 @@ public class ShaderFactory : IDisposable
         return p.Length() - 0.4f;
     }
 
+    /*
+        float sdBox( vec3 p, vec3 b )
+        {
+            vec3 q = abs(p) - b;
+            return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+        }
+     */
     public static float EstimateDistanceBox(Vector3 p)
     {
-        Vector3 box = new Vector3(0.4f, 0.2f, 0.1f);
-        Vector3 q = Vector3.Abs(p) - box;
-        return Vector3.Max(q, Vector3.Zero).Length() + Math.Min(Math.Max(Math.Max(q.Y, q.Z), q.X), 0.0f);
+        p -= new Vector3(1f, 0.25f, 0.1f);  // this moves the box to the right
+        var box = new Vector3(0.3f, 0.25f, 0.1f);
+        var q = Vector3.Abs(p) - box;
+        return (Vector3.Max(q, Vector3.Zero)).Length() + Math.Min(Math.Max(Math.Max(q.Y, q.Z), q.X), 0.0f);
     }
 
-    private Tuple<bool, float> RayMarch(Vector3 startPt, Vector3 direction, out Vector3 pt)
+    public static float EstimateDistanceTorus(Vector3 p)
+    {
+        Vector2 t = new Vector2(0.25f, 0.05f);
+        Vector2 pxz = new Vector2(p.X, p.Z);
+        Vector2 q = new Vector2(pxz.Length() - t.X, p.Y);
+        return q.Length() - t.Y;
+    }
+
+    private Tuple<bool, float> RayMarch(Vector3 startPt, Vector3 direction, Matrix4x4 transformMatrix, out Vector3 pt)
     {
         float totalDistance = 0.0f;
         int steps;
@@ -62,7 +75,8 @@ public class ShaderFactory : IDisposable
         for (steps = 0; steps < _fractalParams.MaxRaySteps; steps++)
         {
             pt = totalDistance * direction + startPt;
-            float distance = _distanceEstimator(pt);
+            var transformedPt = TransformationCalculator.Transform(transformMatrix, pt);
+            float distance = _distanceEstimator(transformedPt);
             totalDistance += distance / _fractalParams.StepDivisor;
             if (distance < _fractalParams.MinRayDistance)
             {
@@ -90,7 +104,7 @@ public class ShaderFactory : IDisposable
         var size = fractalParams.ImageSize;
         var palette = fractalParams.Palette;
         var viewPos = new Vector3(0, 0, -1.0f);
-
+         
         float left = Math.Min(_fractalParams.FromX, _fractalParams.ToX);
         float right = Math.Max(_fractalParams.FromX, _fractalParams.ToX);
         float bottom = Math.Min(_fractalParams.FromY, _fractalParams.ToY);
@@ -101,6 +115,8 @@ public class ShaderFactory : IDisposable
 
         float xRange = (right - left) / size.Width;
         float yRange = (top - bottom) / size.Height;
+
+        var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
 
         for (int x = 0; x < size.Width; ++x)
         {
@@ -117,7 +133,7 @@ public class ShaderFactory : IDisposable
 
                 Vector3 direction = -1.0f * (to - from);
 
-                var tuple = RayMarch(startPt, direction, out var outPt);
+                var tuple = RayMarch(startPt, direction, transformMatrix, out var outPt);
                 bool hit = tuple.Item1;
                 float distance = tuple.Item2;
 
@@ -127,12 +143,13 @@ public class ShaderFactory : IDisposable
                 if (distance > 1.0f)
                     distance = 1.0f;
 
-                var normal = NormalCalculator.CalculateNormal(_distanceEstimator, fractalParams.NormalDistance, outPt);
+                var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
+                var normal = NormalCalculator.CalculateNormal(_distanceEstimator, fractalParams.NormalDistance, transformedPt);
 
                 var lighting = (hit) ? LightUtil.GetPointLight(fractalParams.Lights, fractalParams.LightComboMode, outPt, viewPos, normal) : 
                     new Lighting();
 
-                int depth = (int)(distance * (palette.NumberOfColors - 1));
+                int depth = (hit) ? (palette.NumberOfColors - 1) : 0;
 
                 // need a new raw image that stores Vector3
                 var light = lighting.Diffuse + lighting.Specular;
@@ -157,6 +174,8 @@ public class ShaderFactory : IDisposable
                 return EstimateDistanceSphere;
             case ShaderSceneType.Box:
                 return EstimateDistanceBox;
+            case ShaderSceneType.Torus:
+                return EstimateDistanceTorus;
             default:
                 throw new ArgumentException("Unknown Scene Type");
         }
