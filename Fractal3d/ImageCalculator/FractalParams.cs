@@ -39,6 +39,15 @@ public enum LightCombinationMode
 [Serializable]
 public class FractalParams : ICloneable
 {
+    public FractalParams()
+    {
+    }
+
+    public FractalParams(List<Light> lights)
+    {
+        Lights = lights;
+    }
+
     public Size ImageSize { get; set; } = new(400, 400);
     public Size DisplaySize { get; set; } = new(400, 400);
     public Palette Palette { get; set; } = new(256);
@@ -64,7 +73,7 @@ public class FractalParams : ICloneable
     public float NormalDistance { get; set; } = 0.01f;
     public float AmbientPower { get; set; } = 0.5f;
     public LightCombinationMode LightComboMode { get; set; } = LightCombinationMode.Average;
-    public List<Light> Lights { get; set; } = MakeLights();
+    public List<Light> Lights { get; set; } = new List<Light>();
     public DisplayInfo ColorInfo { get; set; } = new();
     public bool PlainShader = false;
     public ShaderSceneType SceneType = ShaderSceneType.Sphere;

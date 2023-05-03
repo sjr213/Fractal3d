@@ -26,7 +26,7 @@ public class MainVm : ViewModelBase, IDisposable
 
     private readonly FractalFactory _fractalFactory = new();
     private readonly ShaderFactory _shaderFactory = new();
-    private FractalParams _fractalParams = new() { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
+    private FractalParams _fractalParams = new(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
     private FractalResult? _fractalResult;
     private bool _isDisposed;
     private readonly IDisposable? _progressSubject;
@@ -425,6 +425,7 @@ public class MainVm : ViewModelBase, IDisposable
             var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
 
             Image = ImageUtil.BitmapToImageSource(bmp);
+            SelectedFractalResult = FractalResults.FirstOrDefault();
         }
         catch (Exception ex)
         {

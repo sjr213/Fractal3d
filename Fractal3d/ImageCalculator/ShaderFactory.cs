@@ -6,7 +6,7 @@ using System.Reactive.Subjects;
 
 public class ShaderFactory : IDisposable
 {
-    private FractalParams _fractalParams = new();
+    private FractalParams _fractalParams = new(FractalParams.MakeLights());
     private readonly Subject<int> _progressSubject = new();
     public IObservable<int> Progress => _progressSubject;
     private Func<Vector3, float> _distanceEstimator = EstimateDistanceSphere;
