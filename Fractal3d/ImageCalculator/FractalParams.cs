@@ -84,27 +84,27 @@ public class FractalParams : ICloneable
         var light1 = new Light()
         {
             LightType = LightType.DirectionalLight,
-            Position = new Vector3(0f, -0.1f, -1f),
-            DiffusePower = 0.2f,
-            SpecularPower = 0.05f,
+            Position = new Vector3(0.2f, 0.3f, 1f),
+            DiffusePower = 0.5f,
+            SpecularPower = 0.2f,
             Shininess = 5
         };
 
         var light2 = new Light()
         {
             LightType = LightType.PointLight,
-            Position = new Vector3(-0.7f, -0.7f, -0.8f),
+            Position = new Vector3(-0.3f, -0.5f, 1f),
             DiffusePower = 0.5f,
-            SpecularPower = 0.3f,
-            Shininess = 16
+            SpecularPower = 0.2f,
+            Shininess = 5
         };
 
         var light3 = new Light()
         {
             LightType = LightType.PointLight,
-            Position = new Vector3(0.4f,0.3f, -1f),
-            DiffusePower = 0.3f,
-            SpecularPower = 0.1f,
+            Position = new Vector3(0.2f,0.2f, -0.5f),
+            DiffusePower = 0.5f,
+            SpecularPower = 0.2f,
             Shininess = 5
         };
 
