@@ -107,7 +107,7 @@ public class FractalFactory : IDisposable
         float top = Math.Max(_fractalParams.FromY, _fractalParams.ToY);
 
         float fromZ = _fractalParams.FromZ;
-        float targetZ = 0.0f;
+        float toZ = _fractalParams.ToZ;
 
         float xRange = (right - left) / size.Width;
         float yRange = (top - bottom) / size.Height;
@@ -121,7 +121,7 @@ public class FractalFactory : IDisposable
 
                 Vector3 from = new Vector3(fx, fy, fromZ);
 
-                Vector3 to = (_fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, targetZ): new Vector3(fx, fy, targetZ);
+                Vector3 to = (_fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, toZ): new Vector3(fx, fy, toZ);
                 
                 Vector3 startPt = from + fractalParams.Distance * to;
 
