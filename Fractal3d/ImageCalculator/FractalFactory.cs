@@ -125,7 +125,7 @@ public class FractalFactory : IDisposable
                 
                 Vector3 startPt = from + fractalParams.Distance * to;
 
-                Vector3 direction = -1.0f * (to - from);
+                Vector3 direction = to - from;
 
                 float distance = RayMarch(startPt, direction, out var outPt);
 
