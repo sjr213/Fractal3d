@@ -129,9 +129,9 @@ public class ShaderFactory : IDisposable
 
                 Vector3 to = (_fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, toZ) : new Vector3(fx, fy, toZ);
 
-                Vector3 startPt = from * fractalParams.Distance + to;
+                Vector3 startPt = from + fractalParams.Distance * to;
 
-                Vector3 direction = -1.0f * (to - from);
+                Vector3 direction = 1.0f * (to - from);
 
                 var tuple = RayMarch(startPt, direction, transformMatrix, out var outPt);
                 bool hit = tuple.Item1;
