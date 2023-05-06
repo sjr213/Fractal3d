@@ -84,7 +84,7 @@ public class FractalParams : ICloneable
         var light1 = new Light()
         {
             LightType = LightType.DirectionalLight,
-            Position = new Vector3(0.2f, 0.3f, 1f),
+            Position = new Vector3(0.2f, 0.3f, -1f),
             DiffusePower = 0.5f,
             SpecularPower = 0.2f,
             Shininess = 5
@@ -93,7 +93,7 @@ public class FractalParams : ICloneable
         var light2 = new Light()
         {
             LightType = LightType.PointLight,
-            Position = new Vector3(-0.3f, -0.5f, 1f),
+            Position = new Vector3(-0.3f, -0.5f, -1f),
             DiffusePower = 0.5f,
             SpecularPower = 0.2f,
             Shininess = 5
@@ -102,7 +102,7 @@ public class FractalParams : ICloneable
         var light3 = new Light()
         {
             LightType = LightType.PointLight,
-            Position = new Vector3(0.2f,0.2f, -0.5f),
+            Position = new Vector3(0.2f,0.2f, 0.5f),
             DiffusePower = 0.5f,
             SpecularPower = 0.2f,
             Shininess = 5
