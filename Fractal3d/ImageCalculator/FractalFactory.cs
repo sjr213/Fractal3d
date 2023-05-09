@@ -65,7 +65,7 @@ public class FractalFactory : IDisposable
         return ((float)Math.Log(r) * r) / dr;
     }
 
-    private float RayMarch(Vector3 startPt, Vector3 direction, out Vector3 pt)
+    private float RayMarch(Vector3 startPt, Vector3 direction, Matrix4x4 transformMatrix, out Vector3 pt)
     {
         float totalDistance = 0.0f;
         int steps;
@@ -76,7 +76,8 @@ public class FractalFactory : IDisposable
         for (steps = 0; steps < _fractalParams.MaxRaySteps; steps++)
         {
             pt = totalDistance * direction + startPt;
-            float distance = EstimateDistance(pt);
+            var transformedPt = TransformationCalculator.Transform(transformMatrix, pt);
+            float distance = EstimateDistance(transformedPt);
             totalDistance += distance / _fractalParams.StepDivisor;               
             if (distance < _fractalParams.MinRayDistance)
                 break;
@@ -112,6 +113,8 @@ public class FractalFactory : IDisposable
         float xRange = (right - left) / size.Width;
         float yRange = (top - bottom) / size.Height;
 
+        var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
+
         for (int x = 0; x < size.Width; ++x)
         {
             for (int y = 0; y < size.Height; ++y)
@@ -127,7 +130,7 @@ public class FractalFactory : IDisposable
 
                 Vector3 direction = to - from;
 
-                float distance = RayMarch(startPt, direction, out var outPt);
+                float distance = RayMarch(startPt, direction, transformMatrix, out var outPt);
 
                 if (distance < 0.0f)
                     distance = 0.0f;
@@ -135,7 +138,8 @@ public class FractalFactory : IDisposable
                 if (distance > 1.0f)
                     distance = 1.0f;
 
-                var normal = NormalCalculator.CalculateNormal(EstimateDistance, fractalParams.NormalDistance, outPt);
+                var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
+                var normal = NormalCalculator.CalculateNormal(EstimateDistance, fractalParams.NormalDistance, transformedPt);
                 Lighting lighting = LightUtil.GetPointLight(fractalParams.Lights, fractalParams.LightComboMode, outPt, viewPos, normal);
 
                 int depth = (int)(distance * (palette.NumberOfColors-1));
