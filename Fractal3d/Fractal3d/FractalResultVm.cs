@@ -133,6 +133,17 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
+    public string RangeZ
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+
+            return GetRangeString(_fractalResult.Params.FromZ, "Z", _fractalResult.Params.ToZ);
+        }
+    }
+
     public int Iterations
     {
         get
