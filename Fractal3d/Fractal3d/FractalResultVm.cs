@@ -155,6 +155,17 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
+    public string MinRayDistance
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+
+            return TruncateFloatStringOnRight(_fractalResult.Params.MinRayDistance);
+        }
+    }
+
     public int MaxRaySteps
     {
         get
