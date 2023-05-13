@@ -103,7 +103,7 @@ public class ShaderFactory : IDisposable
 
         var size = fractalParams.ImageSize;
         var palette = fractalParams.Palette;
-        var viewPos = new Vector3(0, 0, -1.0f);
+        
          
         float left = Math.Min(_fractalParams.FromX, _fractalParams.ToX);
         float right = Math.Max(_fractalParams.FromX, _fractalParams.ToX);
@@ -116,22 +116,26 @@ public class ShaderFactory : IDisposable
         float xRange = (right - left) / size.Width;
         float yRange = (top - bottom) / size.Height;
 
+        var viewPos = new Vector3(0, 0, fromZ);
+
         var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
+        var transformedLights = LightUtil.TransformLights(_fractalParams.Lights, transformMatrix);
+        var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
 
-        for (int x = 0; x < size.Width; ++x)
+        for (var x = 0; x < size.Width; ++x)
         {
-            for (int y = 0; y < size.Height; ++y)
+            for (var y = 0; y < size.Height; ++y)
             {
-                float fx = x * xRange + left;
-                float fy = y * yRange + bottom;
+                var fx = x * xRange + left;
+                var fy = y * yRange + bottom;
 
-                Vector3 from = new Vector3(fx, fy, fromZ);
+                var from = new Vector3(fx, fy, fromZ);
 
-                Vector3 to = (_fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, toZ) : new Vector3(fx, fy, toZ);
+                var to = (_fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, toZ) : new Vector3(fx, fy, toZ);
 
-                Vector3 startPt = from + fractalParams.Distance * to;
+                var startPt = from + fractalParams.Distance * to;
 
-                Vector3 direction = to - from;
+                var direction = to - from;
 
                 var tuple = RayMarch(startPt, direction, transformMatrix, out var outPt);
                 bool hit = tuple.Item1;
@@ -146,10 +150,10 @@ public class ShaderFactory : IDisposable
                 var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
                 var normal = NormalCalculator.CalculateNormal(_distanceEstimator, fractalParams.NormalDistance, transformedPt);
 
-                var lighting = (hit) ? LightUtil.GetPointLight(fractalParams.Lights, fractalParams.LightComboMode, outPt, viewPos, normal) : 
+                var lighting = (hit) ? LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal) : 
                     new Lighting();
 
-                int depth = (hit) ? (palette.NumberOfColors - 1) : 0;
+                var depth = (hit) ? (palette.NumberOfColors - 1) : 0;
 
                 // need a new raw image that stores Vector3
                 var light = lighting.Diffuse + lighting.Specular;
@@ -159,7 +163,7 @@ public class ShaderFactory : IDisposable
             if (cancelToken.IsCancellationRequested)
                 return;
 
-            int percentDone = (int)100.0 * x / size.Width;
+            var percentDone = (int)100.0 * x / size.Width;
             _progressSubject.OnNext(percentDone);
         }
 

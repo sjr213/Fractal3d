@@ -129,4 +129,16 @@ public static class LightUtil
 
         return lighting;
     }
+
+    public static List<Light> TransformLights(List<Light> lights, Matrix4x4 transMatrix)
+    {
+        var transLights = new List<Light>();
+        foreach (var cpy in lights.Select(light => (Light)light.Clone()))
+        {
+            cpy.Position = TransformationCalculator.Transform(transMatrix, cpy.Position);
+            transLights.Add(cpy);
+        }
+
+        return transLights;
+    }
 }
