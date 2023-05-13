@@ -36,6 +36,12 @@ public class Light : ICloneable
 
     public object Clone()
     {
-        return MemberwiseClone();
+        var cpy = (Light)MemberwiseClone();
+
+        cpy.Position = new Vector3(Position.X, Position.Y, Position.Z);
+        cpy.DiffuseColor = new Vector3(DiffuseColor.X, DiffuseColor.Y, DiffuseColor.Z);
+        cpy.SpecularColor = new Vector3(SpecularColor.X, SpecularColor.Y, SpecularColor.Z);
+
+        return cpy;
     }
 }
