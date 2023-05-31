@@ -26,6 +26,7 @@ public class MainVm : ViewModelBase, IDisposable
 
     private readonly FractalFactory _fractalFactory = new();
     private readonly ShaderFactory _shaderFactory = new();
+    private readonly ParallelFractalFactory _fractalParallelFactory = new();
     private FractalParams _fractalParams = new(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
     private FractalResult? _fractalResult;
     private bool _isDisposed;
@@ -81,6 +82,7 @@ public class MainVm : ViewModelBase, IDisposable
             _progressShaderSubject?.Dispose();
             _fractalFactory.Dispose();
             _shaderFactory.Dispose();
+            _fractalParallelFactory.Dispose();
         }
 
         _isDisposed = true;
@@ -124,7 +126,8 @@ public class MainVm : ViewModelBase, IDisposable
         if(_fractalParams.PlainShader)
             _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, cancelToken);
         else
-            _fractalResult = await _fractalFactory.CreateFractalAsync(_fractalParams, cancelToken);
+            //_fractalResult = await _fractalFactory.CreateFractalAsync(_fractalParams, cancelToken);
+            _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, cancelToken);
 
         if (cancelToken.IsCancellationRequested)
         {
@@ -136,6 +139,7 @@ public class MainVm : ViewModelBase, IDisposable
             return;
 
         DisplayImage(_fractalResult);
+        Time = _fractalResult.Time;
 
         ProgressVisibility = Visibility.Hidden;
 
@@ -225,6 +229,14 @@ public class MainVm : ViewModelBase, IDisposable
     {
         get => _percentProgress;
         set => SetProperty(ref _percentProgress, value);
+    }
+
+    private long _time = 0;
+
+    public long Time
+    {
+        get => _time;
+        set => SetProperty(ref _time, value);
     }
 
     protected void OnPaletteChanged(Palette palette)

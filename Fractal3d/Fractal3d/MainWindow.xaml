@@ -36,6 +36,10 @@
                         <Button Margin="2" Padding="2" Command="{Binding SaveAllCommand}">Save All</Button>
                         <Button Margin="2" Padding="2" Command="{Binding OpenCommand}">Open</Button>
                         <Button Margin="2" Padding="2" Command="{Binding DeleteCommand}">Delete</Button>
+                        <StackPanel Margin="2" Orientation="Horizontal">
+                            <TextBlock Margin="2" Padding="2">Time (ms):</TextBlock>
+                            <TextBlock Margin="2" Padding="2" Text="{Binding Time}"/>
+                        </StackPanel>
                         <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ProgressVisibility}">
                             <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Percent Progress" />
                             <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PercentProgress}" />

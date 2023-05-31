@@ -1,6 +1,10 @@
-﻿namespace ImageCalculator;
+﻿using System.Collections.Concurrent;
+using System.Drawing;
+
+namespace ImageCalculator;
 
 using FractureCommonLib;
+using System.Diagnostics;
 using System.Numerics;
 using System.Reactive.Subjects;
 
@@ -179,6 +183,7 @@ public class FractalFactory : IDisposable
 
     public async Task<FractalResult> CreateFractalAsync(FractalParams fractalParams, CancellationToken cancelToken)
     {
+        var watch = Stopwatch.StartNew();
         _fractalParams = fractalParams;
         var size = fractalParams.ImageSize;
         var raw = new RawLightedImage(size.Width, size.Height, fractalParams.Palette.NumberOfColors);
@@ -193,10 +198,14 @@ public class FractalFactory : IDisposable
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
 
+        watch.Stop();
+
         return new FractalResult()
         {
             Params = (FractalParams)fractalParams.Clone(),
-            Image = raw
+            Image = raw,
+            Time = watch.ElapsedMilliseconds
         };
     }
+
 }
