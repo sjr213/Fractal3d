@@ -123,11 +123,18 @@ public class MainVm : ViewModelBase, IDisposable
         var cancelToken = _cancelSource.Token;
         ProgressVisibility = Visibility.Visible;
 
-        if(_fractalParams.PlainShader)
-            _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, cancelToken);
-        else
-            //_fractalResult = await _fractalFactory.CreateFractalAsync(_fractalParams, cancelToken);
-            _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, cancelToken);
+        try
+        {
+            if (_fractalParams.PlainShader)
+                _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, cancelToken);
+            else
+                //_fractalResult = await _fractalFactory.CreateFractalAsync(_fractalParams, cancelToken);
+                _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, cancelToken);
+        }
+        catch (Exception)
+        {
+            _fractalResult = null;
+        }
 
         if (cancelToken.IsCancellationRequested)
         {
