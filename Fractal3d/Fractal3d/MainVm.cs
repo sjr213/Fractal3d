@@ -22,9 +22,8 @@ using System.ComponentModel;
 
 public class MainVm : ViewModelBase, IDisposable
 {
-    const int NumberOfColors = 1000;
+    private const int NumberOfColors = 1000;
 
-    private readonly FractalFactory _fractalFactory = new();
     private readonly ShaderFactory _shaderFactory = new();
     private readonly ParallelFractalFactory _fractalParallelFactory = new();
     private FractalParams _fractalParams = new(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
@@ -56,7 +55,7 @@ public class MainVm : ViewModelBase, IDisposable
 
         if (SynchronizationContext.Current != null)
         {
-            _progressSubject = _fractalFactory.Progress.ObserveOn(SynchronizationContext.Current)
+            _progressSubject = _fractalParallelFactory.Progress.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(progress => PercentProgress = progress);
 
             _progressShaderSubject = _shaderFactory.Progress.ObserveOn(SynchronizationContext.Current)
@@ -80,7 +79,6 @@ public class MainVm : ViewModelBase, IDisposable
         {
             _progressSubject?.Dispose();
             _progressShaderSubject?.Dispose();
-            _fractalFactory.Dispose();
             _shaderFactory.Dispose();
             _fractalParallelFactory.Dispose();
         }
@@ -128,7 +126,6 @@ public class MainVm : ViewModelBase, IDisposable
             if (_fractalParams.PlainShader)
                 _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, cancelToken);
             else
-                //_fractalResult = await _fractalFactory.CreateFractalAsync(_fractalParams, cancelToken);
                 _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, cancelToken);
         }
         catch (Exception)
@@ -238,7 +235,7 @@ public class MainVm : ViewModelBase, IDisposable
         set => SetProperty(ref _percentProgress, value);
     }
 
-    private long _time = 0;
+    private long _time;
 
     public long Time
     {
@@ -352,7 +349,6 @@ public class MainVm : ViewModelBase, IDisposable
 
         for (var i = 0; i < codec.Length; i++)
         {
-
             if (codec[i].MimeType == imageType) 
                 return codec[i];
         }

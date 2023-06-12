@@ -1,13 +1,11 @@
-﻿using System.Collections.Concurrent;
-using System.Drawing;
-
-namespace ImageCalculator;
+﻿namespace ImageCalculator;
 
 using FractureCommonLib;
 using System.Diagnostics;
 using System.Numerics;
 using System.Reactive.Subjects;
 
+// This was replaced by ParallelFractalFactory
 public class FractalFactory : IDisposable
 {
     public delegate void QuatCalcDel(Vector4 q, Vector4 c, out Vector4 q1, out Vector4 dQ1);

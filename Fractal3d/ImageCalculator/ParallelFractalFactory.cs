@@ -13,6 +13,7 @@ public class ParallelFractalFactory
 
     private CalculationDelegate _nextCycle = QuadMath.CalculateNextCycleSquared;
     private readonly Subject<int> _progressSubject = new();
+    private static int _totalProgress = 0;
 
     public IObservable<int> Progress => _progressSubject;
 
@@ -111,7 +112,7 @@ public class ParallelFractalFactory
         return 1.0f - ((float)steps) / fractalParams.MaxRaySteps;
     }
 
-    private void CalculateImageNew(PixelContainer raw, FractalParams fractalParams, CancellationToken cancelToken)
+    private void CalculateImageNew(PixelContainer raw, FractalParams fractalParams, CancellationToken cancelToken, int progress)
     {
         var size = fractalParams.ImageSize;
         var palette = fractalParams.Palette;
@@ -172,6 +173,8 @@ public class ParallelFractalFactory
                 return;
         }
 
+        Interlocked.Add(ref _totalProgress, progress);
+        _progressSubject.OnNext(_totalProgress);
     }
 
     public static IList<PixelContainer> CreateContainers(Size size, int depth, int numberOfContainers)
@@ -224,18 +227,27 @@ public class ParallelFractalFactory
     {
         var watch = Stopwatch.StartNew();
         var size = fractalParams.ImageSize;
-        
+        _totalProgress = 0;
+
         _nextCycle = GetCalculationDelegate(fractalParams.QuatEquation);
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
 
-        var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, size.Width/40);
+        _progressSubject.OnNext(0);
 
-        await Task.Run(() => Parallel.ForEach(containers, container => CalculateImageNew(container, fractalParams, cancelToken)), cancelToken);
+        int numberOfContainers = size.Width / 40;
+        var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, numberOfContainers);
+        var fractionProgress = 100 / numberOfContainers;
+
+        await Task.Run(() => Parallel.ForEach(containers, 
+            container => CalculateImageNew(container, fractalParams, cancelToken, fractionProgress)), 
+            cancelToken);
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
+
+        _progressSubject.OnNext(100);
 
         var raw = CombineContainers(fractalParams, containers);
 
