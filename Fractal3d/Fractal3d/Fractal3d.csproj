@@ -8,8 +8,8 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Copyright>Copyright © Steven Robles 2023</Copyright>
-    <AssemblyVersion>1.3.0.0</AssemblyVersion>
-    <FileVersion>1.3.0.0</FileVersion>
+    <AssemblyVersion>1.3.1.0</AssemblyVersion>
+    <FileVersion>1.3.1.0</FileVersion>
     <Title>Fractal 3D</Title>
     <ApplicationIcon>bu0030.ico</ApplicationIcon>
   </PropertyGroup>
