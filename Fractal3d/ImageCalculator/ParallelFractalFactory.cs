@@ -1,6 +1,5 @@
 ﻿using FractureCommonLib;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
@@ -38,9 +37,6 @@ public class ParallelFractalFactory
 
         _isDisposed = true;
     }
-
-    public ParallelFractalFactory()
-    {}
 
     private static CalculationDelegate GetCalculationDelegate(QuaternionEquationType equationType)
     {
@@ -137,9 +133,9 @@ public class ParallelFractalFactory
         var transformedLights = LightUtil.TransformLights(fractalParams.Lights, transformMatrix);
         var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
 
-        for (var x = 0; x < size.Width; ++x)
+        for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
         {
-            for (var y = raw.FromHeight; y <= raw.ToHeight; ++y)
+            for (var y = 0; y < size.Height; ++y)
             {
                 var fx = x * xRange + left;
                 var fy = y * yRange + bottom;
@@ -182,7 +178,7 @@ public class ParallelFractalFactory
     {
         var containers = new ConcurrentBag<PixelContainer>();
 
-        while (size.Height / numberOfContainers < 3)
+        while (size.Width / numberOfContainers < 3)
         {
             numberOfContainers--;
         }
@@ -190,18 +186,18 @@ public class ParallelFractalFactory
         if (numberOfContainers == 0)
             numberOfContainers = 1;
 
-        int containerHt = size.Height / numberOfContainers;
+        int containerWidth = size.Width / numberOfContainers;
 
         for (int i = 0; i < numberOfContainers; ++i)
         {
-            int fromHt = i * containerHt;
+            int fromWidth = i * containerWidth;
             if (i == numberOfContainers - 1)
             {
-                containers.Add(new PixelContainer(size.Width, fromHt, size.Height - 1, depth));
+                containers.Add(new PixelContainer( fromWidth, size.Width-1, size.Height, depth));
             }
             else
             {
-                containers.Add(new PixelContainer(size.Width, fromHt, fromHt + containerHt - 1, depth));
+                containers.Add(new PixelContainer(fromWidth, fromWidth + containerWidth -1, size.Height, depth));
             }
         }
 
@@ -218,8 +214,7 @@ public class ParallelFractalFactory
             var pixels = container.PixelValues;
             var lighting = container.Lighting;
 
-            // see if there is a way to copy the arrays more efficiently
-            raw.SetBlock(pixels, lighting, container.Width, container.FromHeight, container.ToHeight, container.Depth);
+            raw.SetBlock(pixels, lighting, container.FromWidth, container.ToWidth, container.Height, container.Depth);
         }
 
         return raw;
@@ -235,7 +230,7 @@ public class ParallelFractalFactory
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
 
-        var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, size.Height/40);
+        var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, size.Width/40);
 
         await Task.Run(() => Parallel.ForEach(containers, container => CalculateImageNew(container, fractalParams, cancelToken)), cancelToken);
 

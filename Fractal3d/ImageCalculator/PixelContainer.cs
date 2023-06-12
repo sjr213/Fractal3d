@@ -6,18 +6,18 @@ namespace ImageCalculator;
 public class PixelContainer
 {
     // fromHeight and toHeight are the valid index values on the ends
-    public PixelContainer(int width, int fromHeight, int toHeight, int depth)
+    public PixelContainer(int fromWidth, int toWidth, int height, int depth)
     {
-        if (width < 1)
+        if (height < 1)
         {
             Debug.Assert(false);
-            width = 1;
+            height = 1;
         }
 
-        if (toHeight - fromHeight < 1)
+        if (toWidth - fromWidth < 1)
         {
             Debug.Assert(false);
-            toHeight = fromHeight + 1;
+            toWidth = fromWidth + 1;
         }
 
         if (depth < 1)
@@ -26,10 +26,10 @@ public class PixelContainer
             depth = 1;
         }
 
-        FromHeight = fromHeight;
-        ToHeight = toHeight;
-        Width = width;
-        Height = toHeight - fromHeight + 1;
+        FromWidth = fromWidth;
+        ToWidth = toWidth;
+        Width = toWidth - fromWidth + 1;
+        Height = height;
         Depth = depth;
 
         PixelValues = new int[Width, Height];
@@ -41,13 +41,13 @@ public class PixelContainer
         SetAllLighting(new Vector3());
     }
 
-    public int FromHeight
+    public int FromWidth
     {
         get;
         private set;
     }
 
-    public int ToHeight
+    public int ToWidth
     { 
         get; 
         private set;
@@ -89,16 +89,16 @@ public class PixelContainer
     // We expect y to be from the full range
     public void SetPixel(int x, int y, int z, Vector3 light)
     {
-        if (x < 0 || x >= Width || y < FromHeight || y > ToHeight || z < 0 || z >= Depth)
+        if (x < FromWidth || x > ToWidth || y < 0 || y >= Height || z < 0 || z >= Depth)
         {
             Debug.Assert(false);
             return;
         }
 
-        var localY = y - FromHeight;
+        var localX = x - FromWidth;
 
-        PixelValues[x, localY] = z;
-        Lighting[x, localY] = light;
+        PixelValues[localX, y] = z;
+        Lighting[localX, y] = light;
     }
 }
 
