@@ -44,6 +44,7 @@ public class MainVm : ViewModelBase, IDisposable
         _saveOneCommand = new RelayCommand(_ => OnSaveOne(), _ => _fractalResult != null);
         _saveImageCommand = new RelayCommand(_ => OnSaveImage(), _ => _fractalResult != null);
         _deleteCommand = new RelayCommand(_ => OnDelete(), _ => _fractalResult != null);
+        _deleteMostCommand = new RelayCommand(_ => OnDeleteMost(), _ => CanDeleteMost());
         _openCommand = new RelayCommand(_ => OnOpen(), _ => true);
         _cancelCommand = new RelayCommand(_ => OnCancel(), _ => true);  // This should only be visible when calculating because it's in the progress Stack panel
         MakePaletteViewModel();
@@ -100,6 +101,9 @@ public class MainVm : ViewModelBase, IDisposable
 
     private readonly RelayCommand _deleteCommand;
     public ICommand DeleteCommand => _deleteCommand;
+
+    private readonly RelayCommand _deleteMostCommand;
+    public ICommand DeleteMostCommand => _deleteMostCommand;
 
     private readonly RelayCommand _openCommand;
     public ICommand OpenCommand => _openCommand;
@@ -469,6 +473,34 @@ public class MainVm : ViewModelBase, IDisposable
         {
             _isDirty = false;
         }
+    }
+
+    protected void OnDeleteMost()
+    {
+        if (_selectedFractalResult != null)
+        {
+            ObservableCollection<FractalResultVm> newResults = new();
+
+            foreach (var r in FractalResults)
+            {
+                if (r == _selectedFractalResult)
+                {
+                    newResults.Add(r);
+                }
+            }
+            FractalResults = newResults;
+            _selectedFractalResult = null;
+        }
+
+        if (FractalResults.Count == 0)
+        {
+            _isDirty = false;
+        }
+    }
+
+    protected bool CanDeleteMost()
+    {
+        return FractalResults.Count > 1;
     }
 
     protected void OnCancel()
