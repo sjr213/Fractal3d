@@ -500,7 +500,7 @@ public class MainVm : ViewModelBase, IDisposable
 
     protected bool CanDeleteMost()
     {
-        return FractalResults.Count > 1;
+        return _selectedFractalResult != null && FractalResults.Count > 1;
     }
 
     protected void OnCancel()
