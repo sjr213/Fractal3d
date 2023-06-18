@@ -59,11 +59,11 @@ public class FractalParams : ICloneable
     public float ToZ { get; set; } = 1.0f;
 
     public float Bailout { get; set; } = 2.0f;
-    public int Iterations { get; set; } = 256;
+    public int Iterations { get; set; } = 100;
     public Vector4 C4 { get; set; } = new (0.1f, -0.3f, 0.2f, 0.7f);
 
-    public int MaxRaySteps { get; set; } = 100;
-    public float MinRayDistance { get; set; } = 0.0001f;
+    public int MaxRaySteps { get; set; } = 10;
+    public float MinRayDistance { get; set; } = 0.1f;
     public float Distance { get; set; } = 0.1f;
     public float MaxDistance { get; set; } = 10.0f;
     public float StepDivisor { get; set; } = 10.0f;
