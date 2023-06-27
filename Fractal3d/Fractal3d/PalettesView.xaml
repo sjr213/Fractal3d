@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:BasicWpfLibrary.Converters;assembly=BasicWpfLibrary" 
              xmlns:wpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="400"
+             d:DesignHeight="450" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance Type=local:PaletteVm}"
              wpfLibrary:UserControlBehavior.IsVisibleChangedCommand="{Binding IsVisibleChangedCommand}">
     <UserControl.Resources>
@@ -17,8 +17,12 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Margin="2" Orientation="Vertical">
-        <StackPanel Margin="2" Orientation="Horizontal">
+    <Grid Margin="2" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Margin="2" Orientation="Vertical">
             <StackPanel Margin="2" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Palette Directory" />
                 <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PalettePath}" IsReadOnly="True"/>
@@ -32,21 +36,21 @@
                 <Button Margin="2" Padding="2" Command="{Binding RedoPaletteCommand}">Redo</Button>
             </StackPanel>
         </StackPanel>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
-                              MaxWidth="700" MaxHeight="500"  >
+        <ScrollViewer Grid.Row="1"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
+                              MaxWidth="500" MaxHeight="600">
             <DataGrid Name="PaletteGrid" Margin="2" Padding="2" RowBackground = "AliceBlue"  
                     AutoGenerateColumns = "False" ItemsSource="{Binding PaletteItems}" SelectedItem="{Binding SelectedPalette}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header = "Name" Binding = "{Binding Name, Mode=OneWay}" CanUserSort="False" />
-                    <DataGridTemplateColumn Header="Palette" IsReadOnly="True" Width="505">
+                    <DataGridTemplateColumn Header="Palette" IsReadOnly="True" Width="360">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding BmpImage}" Width="500" Height="15" Stretch="Fill"/>
+                                <Image Source="{Binding BmpImage}" Width="350" Height="15" Stretch="Fill"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </ScrollViewer>
-    </StackPanel>
+    </Grid>
 </UserControl>
