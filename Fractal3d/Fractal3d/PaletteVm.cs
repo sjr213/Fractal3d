@@ -9,7 +9,6 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Forms;
-using System.Windows.Controls;
 using System.Windows;
 
 namespace Fractal3d
@@ -18,13 +17,12 @@ namespace Fractal3d
     {
         private Palette _palette;
         private readonly Action<Palette> _onPaletteChanged;
-        private readonly Action<DisplayInfo> _onDisplayInfoChanged;
         private readonly List<Palette> _oldPalettes = new();
         private int _paletteIndex = -1;
-        private DisplayInfo _displayInfo;
+        private readonly DisplayInfo _displayInfo;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public PaletteVm(Palette palette, Action<Palette> paletteChanged, Action<DisplayInfo> displayInfoChanged, DisplayInfo displayInfo)
+        public PaletteVm(Palette palette, Action<Palette> paletteChanged, DisplayInfo displayInfo)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             PalettePath = RegistryUtil.ReadStringFromRegistry(RegistryUtil.PalettePathKey);
@@ -32,7 +30,6 @@ namespace Fractal3d
             _displayInfo = displayInfo;
             AddPalette(palette);
             _onPaletteChanged = paletteChanged;
-            _onDisplayInfoChanged = displayInfoChanged;
             _saveCommand = new RelayCommand(_ => OnSave(), _ => true);
             _openCommand = new RelayCommand(_ => OnOpen(), _ => true);
             _loadPaletteCommand = new RelayCommand(_ => OnLoadPalette(), _ => CanLoadPalette());
@@ -44,7 +41,6 @@ namespace Fractal3d
             CreateRectItems();
             CreateTicItems();
             PaletteItems = PaletteFileUtil.LoadPaletteItems(PalettePath);
-            DisplayInfoViewModel = new DisplayInfoVm(displayInfo, OnDisplayInfoChanged);
             IsVisibleChangedCommand = new RelayCommand(param => ExecuteIsVisibleChangedCommand(param is DependencyPropertyChangedEventArgs args ? args : default));
         }
 
@@ -54,16 +50,9 @@ namespace Fractal3d
         {
             if (e.NewValue != null && (bool)e.NewValue)
             {
-                DisplayInfoViewModel.OnIsVisibleChanged();
+             //   DisplayInfoViewModel.OnIsVisibleChanged();
                 NumberOfColors = _palette.NumberOfColors;
             }
-        }
-
-        private void OnDisplayInfoChanged(DisplayInfo displayInfo)
-        {
-            _displayInfo = displayInfo;
-            CreatePaletteImage();
-            _onDisplayInfoChanged(displayInfo);
         }
 
         private void AddPalette(Palette pal)
@@ -436,13 +425,6 @@ namespace Fractal3d
         }
 
         #endregion
-
-        private DisplayInfoVm _displayInfoVm;
-        public DisplayInfoVm DisplayInfoViewModel
-        {
-            get => _displayInfoVm;
-            set => SetProperty(ref _displayInfoVm, value);
-        }
 
         private void CreateTicItems()
         {

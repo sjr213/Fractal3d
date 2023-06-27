@@ -23,7 +23,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Margin="2" Orientation="Horizontal" >
             <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Palette Name:" />
@@ -110,42 +109,5 @@
                 <ContentPresenter Margin="2" Content="{Binding ColorPointViewModel}" ContentTemplate="{StaticResource ColorPointView}" />
             </StackPanel>
         </Border>
-        <StackPanel Grid.Row="3" Orientation="Horizontal">
-            <Border VerticalAlignment="Stretch" Style="{StaticResource BorderStyle}" >
-                <StackPanel Margin="2" Orientation="Vertical">
-                    <StackPanel Margin="2" Orientation="Horizontal">
-                        <StackPanel Margin="2" Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Palette Directory" />
-                            <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PalettePath}" IsReadOnly="True"/>
-                            <Button Margin="2" Padding="2" Command="{Binding ChangePathCommand}">Change Path</Button>
-                        </StackPanel>
-                        <StackPanel Margin="10,2,2,2" Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Selected Palette" />
-                            <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding SelectedPaletteName}" IsReadOnly="True" />
-                            <Button Margin="2" Padding="2" Command="{Binding LoadPaletteCommand}">Load</Button>
-                            <Button Margin="2" Padding="2" Command="{Binding UndoPaletteCommand}">Undo</Button>
-                            <Button Margin="2" Padding="2" Command="{Binding RedoPaletteCommand}">Redo</Button>
-                        </StackPanel>
-                    </StackPanel>
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
-                              MaxWidth="700" MaxHeight="500"  >
-                        <DataGrid Name="PaletteGrid" Margin="2" Padding="2" RowBackground = "AliceBlue"  
-                    AutoGenerateColumns = "False" ItemsSource="{Binding PaletteItems}" SelectedItem="{Binding SelectedPalette}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header = "Name" Binding = "{Binding Name, Mode=OneWay}" CanUserSort="False" />
-                                <DataGridTemplateColumn Header="Palette" IsReadOnly="True" Width="505">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Image Source="{Binding BmpImage}" Width="500" Height="15" Stretch="Fill"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </ScrollViewer>
-                </StackPanel>
-            </Border>
-            <ContentPresenter Content="{Binding DisplayInfoViewModel}" ContentTemplate="{StaticResource DisplayInfoView}" />
-        </StackPanel>
     </Grid>
 </UserControl>

@@ -51,6 +51,7 @@ public class MainVm : ViewModelBase, IDisposable
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
+        DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
         Width = _fractalParams.DisplaySize.Width;
         Height = _fractalParams.DisplaySize.Height;
 
@@ -209,6 +210,13 @@ public class MainVm : ViewModelBase, IDisposable
     {
         get => _transformVm;
         set => SetProperty(ref _transformVm, value);
+    }
+
+    private DisplayInfoVm _displayInfoVm;
+    public DisplayInfoVm DisplayInfoViewModel
+    {
+        get => _displayInfoVm;
+        set => SetProperty(ref _displayInfoVm, value);
     }
 
     private int _width;
@@ -522,7 +530,7 @@ public class MainVm : ViewModelBase, IDisposable
 
     private void MakePaletteViewModel()
     {
-        PaletteViewModel = new PaletteVm(_fractalParams.Palette, OnPaletteChanged, OnDisplayInfoChanged, _fractalParams.ColorInfo);
+        PaletteViewModel = new PaletteVm(_fractalParams.Palette, OnPaletteChanged, _fractalParams.ColorInfo);
     }
 
     private FractalResultVm? _selectedFractalResult;
