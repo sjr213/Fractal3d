@@ -18,96 +18,98 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Margin="2" Orientation="Horizontal" >
-            <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Palette Name:" />
-            <TextBlock Style="{StaticResource PlainTextBlockStyle}" FontWeight="DemiBold" Text="{Binding PaletteName}" />
-            <Button Margin="10,2,2,2" Padding="2" Command="{Binding OpenCommand}">Open</Button>
-            <Button Margin="2" Padding="2" Command="{Binding SaveCommand}">Save</Button>
-        </StackPanel>
-        <StackPanel Grid.Row="1" Margin="2" Orientation="Horizontal" >
-            <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Number of Colors" />
-            <TextBox Style="{StaticResource TextBoxInError}">
-                <TextBox.Text>
-                    <Binding Path="NumberOfColors" 
+    <Border Style="{StaticResource BorderStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Margin="2" Orientation="Horizontal" >
+                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Palette Name:" />
+                <TextBlock Style="{StaticResource PlainTextBlockStyle}" FontWeight="DemiBold" Text="{Binding PaletteName}" />
+                <Button Margin="10,2,2,2" Padding="2" Command="{Binding OpenCommand}">Open</Button>
+                <Button Margin="2" Padding="2" Command="{Binding SaveCommand}">Save</Button>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Margin="2" Orientation="Horizontal" >
+                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Number of Colors" />
+                <TextBox Style="{StaticResource TextBoxInError}">
+                    <TextBox.Text>
+                        <Binding Path="NumberOfColors" 
                              UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <wpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinPaletteColors}" 
+                            <Binding.ValidationRules>
+                                <wpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinPaletteColors}" 
                                                           Max="{x:Static local:ParameterConstants.MaxPaletteColors}"/>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
-        </StackPanel>
-        <Border Grid.Row="2" Style="{StaticResource BorderStyle}">
-            <StackPanel Orientation="Vertical" Margin="2">
-                <ItemsControl Margin="20,5" ItemsSource="{Binding RectItems}"  Height="100" Width="{Binding ImageWidth}">
-                    <ItemsControl.ItemsPanel >
-                        <ItemsPanelTemplate>
-                            <Canvas >
-                                <Canvas.Background>
-                                    <ImageBrush ImageSource="{Binding Image}" />
-                                </Canvas.Background>
-                            </Canvas>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="ContentPresenter">
-                            <Setter Property="Canvas.Left" Value="{Binding X, Mode=TwoWay}"/>
-                            <Setter Property="Canvas.Top" Value="{Binding Y, Mode=TwoWay}"/>
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" 
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </StackPanel>
+            <Border Grid.Row="2" Style="{StaticResource BorderStyle}">
+                <StackPanel Orientation="Vertical" Margin="2">
+                    <ItemsControl Margin="20,5" ItemsSource="{Binding RectItems}"  Height="100" Width="{Binding ImageWidth}">
+                        <ItemsControl.ItemsPanel >
+                            <ItemsPanelTemplate>
+                                <Canvas >
+                                    <Canvas.Background>
+                                        <ImageBrush ImageSource="{Binding Image}" />
+                                    </Canvas.Background>
+                                </Canvas>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X, Mode=TwoWay}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y, Mode=TwoWay}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Width="{Binding Width}" Height="{Binding Height}" 
                                    Fill="{Binding PinColor, Converter={StaticResource ColorToBrushConverter}}" Stroke="DarkGray"
                                    wpfLibrary:MouseBehaviour.MouseMoveCommand="{Binding MoveCommand}" 
                                    wpfLibrary:MouseBehaviour.MouseLeftButtonDownCommand="{Binding LeftMouseDownCommand}"
                                    wpfLibrary:MouseBehaviour.MouseLeftButtonUpCommand="{Binding LeftMouseUpCommand}"
                                    wpfLibrary:MouseBehaviour.MouseLeaveCommand="{Binding LeaveCommand}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl Margin="2,2,2,0" ItemsSource="{Binding TicItems}"  Height="12" Width="{Binding ImageWidth}">
-                    <ItemsControl.ItemsPanel >
-                        <ItemsPanelTemplate>
-                            <Canvas />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Line X1="{Binding X1}" X2="{Binding X2}" Y1="{Binding Y1}" Y2="{Binding Y2}"
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl Margin="2,2,2,0" ItemsSource="{Binding TicItems}"  Height="12" Width="{Binding ImageWidth}">
+                        <ItemsControl.ItemsPanel >
+                            <ItemsPanelTemplate>
+                                <Canvas />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Line X1="{Binding X1}" X2="{Binding X2}" Y1="{Binding Y1}" Y2="{Binding Y2}"
                                   Stroke="DarkGray" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Top" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl Margin="2,0,2,2" ItemsSource="{Binding TextItems}"  Height="18" Width="{Binding ImageWidth}">
-                    <ItemsControl.ItemsPanel >
-                        <ItemsPanelTemplate>
-                            <Canvas />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="ContentPresenter">
-                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                            <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Width="{Binding Width}" Height="{Binding Height}"
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl Margin="2,0,2,2" ItemsSource="{Binding TextItems}"  Height="18" Width="{Binding ImageWidth}">
+                        <ItemsControl.ItemsPanel >
+                            <ItemsPanelTemplate>
+                                <Canvas />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Width="{Binding Width}" Height="{Binding Height}"
                                     HorizontalAlignment="Center"  VerticalAlignment="Center"  TextAlignment="Center"
                                     Text="{Binding Text}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ContentPresenter Margin="2" Content="{Binding ColorPointViewModel}" ContentTemplate="{StaticResource ColorPointView}" />
-            </StackPanel>
-        </Border>
-    </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ContentPresenter Margin="2" Content="{Binding ColorPointViewModel}" ContentTemplate="{StaticResource ColorPointView}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
 </UserControl>
