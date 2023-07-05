@@ -46,7 +46,7 @@ public class RectItem : ViewModelBase, IComparable<RectItem>
     {
         int pos = (int)(pt.Position * canvasWidth);
 
-          RectItem item = new(parent, updatePins, selectRectItem, canvasWidth)
+        RectItem item = new(parent, updatePins, selectRectItem, canvasWidth)
         {
             X = pos - ItemWidth/2,
             Y = ItemTop,
@@ -150,7 +150,7 @@ public class RectItem : ViewModelBase, IComparable<RectItem>
         }
 
         if (left == null)
-            return CanvasLeft - ItemGap;
+            return CanvasLeft - ItemWidth/2;        
 
         return left.X;
     }
@@ -168,7 +168,7 @@ public class RectItem : ViewModelBase, IComparable<RectItem>
         }
 
         if (right == null)
-            return _canvasWidth + ItemGap;
+            return _canvasWidth - (double)ItemWidth/2;
 
         return right.X;
     }

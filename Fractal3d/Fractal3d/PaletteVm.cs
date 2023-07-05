@@ -168,8 +168,6 @@ namespace Fractal3d
             set => SetProperty(ref _image, value);
         }
 
-  //      public int ImageWidth => RectItem.CanvasRight;
-
         private double _windowWidth = 1000;
 
         public double WindowWidth
