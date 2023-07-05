@@ -4,12 +4,11 @@ using BasicWpfLibrary;
 
 public class TicItem : ViewModelBase
 {
-    public const int CanvasLeft = 0;
-    public const int CanvasRight = 1000;
+    public const int CanvasLeft = 18;       // not sure how this comes about- the canvas seems to be drawn at 32
 
-    public TicItem(double relativePosition, int numberOfColors)
+    public TicItem(double relativePosition, int numberOfColors, double canvasWidth)
     {
-        var x = CanvasLeft + relativePosition * CanvasRight;
+        var x = CanvasLeft + relativePosition * canvasWidth;
         X1 = X2 = x;
         Y1 = 0;
         Y2 = 10;

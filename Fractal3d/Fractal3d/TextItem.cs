@@ -7,13 +7,12 @@ using BasicWpfLibrary;
 public class TextItem : ViewModelBase
 {
     public const int CanvasLeft = 0;
-    public const int CanvasRight = 1000;
     public const int FixedWidth = 30;
     public const int FixedHeight = 15;
 
-    public TextItem(double relativePosition, int numberOfColors)
+    public TextItem(double relativePosition, int numberOfColors, double canvasRight)
     {
-        var x = CanvasLeft + relativePosition * CanvasRight;
+        var x = CanvasLeft + relativePosition * canvasRight;
         X = x - (double)FixedWidth / 2;
         Y = 2;
         var colorNumber = (int)(relativePosition * numberOfColors + 0.4999);

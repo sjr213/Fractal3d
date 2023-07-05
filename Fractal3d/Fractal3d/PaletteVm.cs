@@ -69,7 +69,7 @@ namespace Fractal3d
             foreach(var pin in ptList)
             {
                 var colorPt = pin.Value;
-                items.Add(RectItem.MakeColorRect(colorPt, items, UpdatePins, r => SelectedRectItem = r));
+                items.Add(RectItem.MakeColorRect(colorPt, items, UpdatePins, r => SelectedRectItem = r, _realWidth));
             }
 
             RectItems = items;
@@ -168,7 +168,44 @@ namespace Fractal3d
             set => SetProperty(ref _image, value);
         }
 
-        public int ImageWidth => RectItem.CanvasRight;
+  //      public int ImageWidth => RectItem.CanvasRight;
+
+        private double _windowWidth = 1000;
+
+        public double WindowWidth
+        {
+            get => _windowWidth;
+            set
+            {
+                if (Math.Abs(value - _windowWidth) < 0.1)
+                    return;
+
+                if (value < 500)
+                    value = 500;
+
+                SetProperty(ref _windowWidth, value);
+                RealWidth = _windowWidth - 64;      // margins 2*(4+4+2+20+2?) - don't know what an extra 2 is from
+            }
+        }
+
+        private double _realWidth = 1000;
+        public double RealWidth
+        {
+            get => _realWidth;
+            set
+            {
+                if (Math.Abs(value - _realWidth) < 0.1) 
+                    return;
+
+                if (value < 500)
+                    value = 500;
+
+                SetProperty(ref _realWidth, value);
+
+                CreateRectItems();
+                CreateTicItems();
+            }
+        }
 
         private void UpdatePins()
         {
@@ -438,8 +475,8 @@ namespace Fractal3d
             for (int i = 0; i < nTics; i++)
             {
                 var relPos = i * relativeDistance;
-                ticItems.Add(new TicItem(relPos, nColors));
-                textItems.Add(new TextItem(relPos, nColors));
+                ticItems.Add(new TicItem(relPos, nColors, _realWidth));
+                textItems.Add(new TextItem(relPos, nColors, _realWidth));
             }
 
             TicItems = ticItems;

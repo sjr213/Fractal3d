@@ -19,11 +19,12 @@ public class RectItem : ViewModelBase, IComparable<RectItem>
     public const int CanvasLeft = 0;
     public const int CanvasRight = 1000;
 
-    public RectItem(ObservableCollection<RectItem> parent, Action updatePins, Action<RectItem?> selectRectItem)
+    public RectItem(ObservableCollection<RectItem> parent, Action updatePins, Action<RectItem?> selectRectItem, double canvasWidth)
     {
         _parent = parent;
         _updatePins = updatePins;
         _selectRectItem = selectRectItem;
+        _canvasWidth = canvasWidth;
 
 #pragma warning disable CS8604 // Possible null reference argument.
         MoveCommand = new RelayCommand(param => ExecuteMouseMove(param as MouseEventArgs));
@@ -39,12 +40,13 @@ public class RectItem : ViewModelBase, IComparable<RectItem>
 
     private double _canvasX;
     private bool _rectCaptured;
+    private readonly double _canvasWidth;
 
-    public static RectItem MakeColorRect(ColorPoint pt, ObservableCollection<RectItem> parent, Action updatePins, Action<RectItem?> selectRectItem)
+    public static RectItem MakeColorRect(ColorPoint pt, ObservableCollection<RectItem> parent, Action updatePins, Action<RectItem?> selectRectItem, double canvasWidth)
     {
-        int pos = (int)(pt.Position * CanvasRight);
+        int pos = (int)(pt.Position * canvasWidth);
 
-        RectItem item = new(parent, updatePins, selectRectItem)
+          RectItem item = new(parent, updatePins, selectRectItem, canvasWidth)
         {
             X = pos - ItemWidth/2,
             Y = ItemTop,
@@ -59,7 +61,7 @@ public class RectItem : ViewModelBase, IComparable<RectItem>
     public static ColorPoint GetColorPoint(RectItem item)
     {
         double x = item.X + (double)ItemWidth/2;
-        double pos = x / CanvasRight;
+        double pos = x / item._canvasWidth;
 
         System.Drawing.Color pinColor = ImageUtil.FromMediaToDrawingColor(item.PinColor);
         return new ColorPoint(pinColor, pos);
@@ -67,7 +69,7 @@ public class RectItem : ViewModelBase, IComparable<RectItem>
 
     public void SetColorPoint(ColorPoint pt)
     {
-        int pos = (int)(pt.Position * CanvasRight);
+        int pos = (int)(pt.Position * _canvasWidth);
         X = pos - ItemWidth / 2;
         PinColor = ImageUtil.FromDrawingToMediaColor(pt.PointColor);
     }
@@ -166,7 +168,7 @@ public class RectItem : ViewModelBase, IComparable<RectItem>
         }
 
         if (right == null)
-            return CanvasRight + ItemGap;
+            return _canvasWidth + ItemGap;
 
         return right.X;
     }
