@@ -31,8 +31,7 @@
 
         <Grid Grid.Row="0" Grid.Column="0" DataContext="{Binding}">
             <Grid.RowDefinitions>
-                <RowDefinition MaxHeight="30"/>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="25"/>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -69,7 +68,6 @@
                 <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
                     <ListBox ItemsSource="{Binding Path=FractalResults}" BorderThickness="0" SelectedItem="{Binding Path=SelectedFractalResult, Mode=TwoWay}">
                         <ListBox.ItemContainerStyle>
-                            
                             <Style>
                                 <Style.Triggers>
                                     <EventTrigger RoutedEvent="Control.PreviewMouseLeftButtonDown">
@@ -144,8 +142,6 @@
             </TabItem>
          
         </TabControl>
-
-
 
         <ContentPresenter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding PaletteViewModel}">
             <ContentPresenter.Resources>
