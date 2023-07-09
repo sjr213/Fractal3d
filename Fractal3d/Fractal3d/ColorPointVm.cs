@@ -119,8 +119,8 @@ public class ColorPointVm : ViewModelBase
             if (Math.Abs(value - _position) < FloatTolerance)
                 return;
 
-            value = Math.Min(0, value);
-            value = Math.Max(1.0, value);
+            value = Math.Max(0, value);
+            value = Math.Min(1.0, value);
 
             _colorPt.Position = _position = value;
             OnPropertyChanged();
