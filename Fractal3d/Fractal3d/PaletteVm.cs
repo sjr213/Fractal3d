@@ -19,7 +19,7 @@ namespace Fractal3d
         private readonly Action<Palette> _onPaletteChanged;
         private readonly List<Palette> _oldPalettes = new();
         private int _paletteIndex = -1;
-        private readonly DisplayInfo _displayInfo;
+        private DisplayInfo _displayInfo;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PaletteVm(Palette palette, Action<Palette> paletteChanged, DisplayInfo displayInfo)
@@ -42,6 +42,18 @@ namespace Fractal3d
             CreateTicItems();
             PaletteItems = PaletteFileUtil.LoadPaletteItems(PalettePath);
             IsVisibleChangedCommand = new RelayCommand(param => ExecuteIsVisibleChangedCommand(param is DependencyPropertyChangedEventArgs args ? args : default));
+        }
+
+        public void SetNewPalette(Palette palette, DisplayInfo displayInfo)
+        {
+            _palette = palette;
+            _displayInfo = displayInfo;
+            AddPalette(palette);
+            ColorPointViewModel = new ColorPointVm(this);
+            CreatePaletteImage();
+            CreateRectItems();
+            CreateTicItems();
+            PaletteItems = PaletteFileUtil.LoadPaletteItems(PalettePath);
         }
 
         public RelayCommand IsVisibleChangedCommand { get; }
