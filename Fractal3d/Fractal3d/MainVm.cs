@@ -443,6 +443,7 @@ public class MainVm : ViewModelBase, IDisposable
             _fractalParams = _fractalResult.Params;
             PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
             ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+            DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
             Width = _fractalParams.DisplaySize.Width;
             Height = _fractalParams.DisplaySize.Height;
 
@@ -546,6 +547,7 @@ public class MainVm : ViewModelBase, IDisposable
                 _fractalParams = _fractalResult.Params != null ? (FractalParams) _fractalResult.Params.Clone(): new FractalParams();
                 PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
                 ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+                DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
                 LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
                 TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
                 DisplayImage(_fractalResult);
