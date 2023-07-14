@@ -23,6 +23,9 @@ public class DisplayInfoVm : ViewModelBase
         {
             DisplayMode.Off, DisplayMode.Contrast, DisplayMode.Hsl
         };
+
+        ContrastVisibility = _displayInfo.Mode == DisplayMode.Contrast ? Visibility.Visible : Visibility.Collapsed;
+        HslVisibility = _displayInfo.Mode == DisplayMode.Hsl ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private ObservableCollection<DisplayMode> _allowedColorModes = null!;
