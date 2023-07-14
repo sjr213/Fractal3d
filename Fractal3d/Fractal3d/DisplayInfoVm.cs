@@ -25,18 +25,6 @@ public class DisplayInfoVm : ViewModelBase
         };
     }
 
-    public void OnIsVisibleChanged()
-    {
-        MinRed = _displayInfo.MinRgb[0];
-        MaxRed = _displayInfo.MaxRgb[0];
-
-        MinGreen = _displayInfo.MinRgb[1];
-        MaxGreen = _displayInfo.MaxRgb[1];
-
-        MinBlue = _displayInfo.MinRgb[2];
-        MaxBlue = _displayInfo.MaxRgb[2];
-    }
-
     private ObservableCollection<DisplayMode> _allowedColorModes = null!;
     public ObservableCollection<DisplayMode> AllowedColorModes
     {
