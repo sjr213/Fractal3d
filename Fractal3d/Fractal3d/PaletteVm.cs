@@ -41,7 +41,6 @@ namespace Fractal3d
             CreateRectItems();
             CreateTicItems();
             PaletteItems = PaletteFileUtil.LoadPaletteItems(PalettePath);
-            IsVisibleChangedCommand = new RelayCommand(param => ExecuteIsVisibleChangedCommand(param is DependencyPropertyChangedEventArgs args ? args : default));
         }
 
         public void SetNewPalette(Palette palette, DisplayInfo displayInfo)
@@ -54,17 +53,6 @@ namespace Fractal3d
             CreateRectItems();
             CreateTicItems();
             PaletteItems = PaletteFileUtil.LoadPaletteItems(PalettePath);
-        }
-
-        public RelayCommand IsVisibleChangedCommand { get; }
-
-        public void ExecuteIsVisibleChangedCommand(DependencyPropertyChangedEventArgs e)
-        {
-            if (e.NewValue != null && (bool)e.NewValue)
-            {
-             //   DisplayInfoViewModel.OnIsVisibleChanged();
-                NumberOfColors = _palette.NumberOfColors;
-            }
         }
 
         private void AddPalette(Palette pal)
@@ -277,6 +265,7 @@ namespace Fractal3d
 
                     if (palette != null)
                     {
+                        palette.NumberOfColors = NumberOfColors;
                         _palette = palette;
                         CreatePaletteImage();
                         CreateRectItems();

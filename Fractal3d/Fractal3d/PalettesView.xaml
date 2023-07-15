@@ -8,8 +8,7 @@
              xmlns:wpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="500"
-             d:DataContext="{d:DesignInstance Type=local:PaletteVm}"
-             wpfLibrary:UserControlBehavior.IsVisibleChangedCommand="{Binding IsVisibleChangedCommand}">
+             d:DataContext="{d:DesignInstance Type=local:PaletteVm}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
