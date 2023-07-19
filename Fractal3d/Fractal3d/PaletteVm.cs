@@ -9,17 +9,43 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Forms;
-using System.Windows;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using System.Windows.Controls;
 
 namespace Fractal3d
 {
     public class PaletteVm : ViewModelBase, IColorPointVmParent
     {
+        #region fields
+
         private Palette _palette;
         private readonly Action<Palette> _onPaletteChanged;
         private readonly List<Palette> _oldPalettes = new();
         private int _paletteIndex = -1;
         private DisplayInfo _displayInfo;
+        private double _mousePosX = -1.0;
+        private string _palettePath = "";
+        private ObservableCollection<RectItem> _items = new();
+        private RectItem? _selectedRectItem;
+        private BitmapImage _image = new();
+        private double _windowWidth = 1000;
+        private double _realWidth = 1000;
+        private readonly RelayCommand _saveCommand;
+        private readonly RelayCommand _openCommand;
+        private readonly RelayCommand _loadPaletteCommand;
+        private readonly RelayCommand _undoPaletteCommand;
+        private readonly RelayCommand _redoPaletteCommand;
+        private readonly RelayCommand _changePathCommand;
+        private ObservableCollection<PaletteItem> _paletteItems = new();
+        private PaletteItem? _selectedPalette;
+        private string _selectedPaletteName = "";
+        private ColorPointVm _colorPointVm;
+        private ObservableCollection<TicItem> _ticItems = new();
+        private ObservableCollection<TextItem> _textItems = new();
+
+        #endregion
+
+        #region construction
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public PaletteVm(Palette palette, Action<Palette> paletteChanged, DisplayInfo displayInfo)
@@ -41,8 +67,13 @@ namespace Fractal3d
             CreateRectItems();
             CreateTicItems();
             PaletteItems = PaletteFileUtil.LoadPaletteItems(PalettePath);
+
+#pragma warning disable CS8604 // Possible null reference argument.
+            PaletteVmLeftMouseUpCommand = new RelayCommand(param => ExecuteLeftMouseUp((param as MouseEventArgs)));
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
+        // This is in the constructor region because it allows us to bypass the constructor
         public void SetNewPalette(Palette palette, DisplayInfo displayInfo)
         {
             _palette = palette;
@@ -55,6 +86,10 @@ namespace Fractal3d
             PaletteItems = PaletteFileUtil.LoadPaletteItems(PalettePath);
         }
 
+        #endregion
+
+        #region privateMethods
+
         private void AddPalette(Palette pal)
         {
             _oldPalettes.Add(pal);
@@ -66,7 +101,7 @@ namespace Fractal3d
             var items = new ObservableCollection<RectItem>();
 
             var ptList = _palette.GetCopyOfColorPointList();
-            foreach(var pin in ptList)
+            foreach (var pin in ptList)
             {
                 var colorPt = pin.Value;
                 items.Add(RectItem.MakeColorRect(colorPt, items, UpdatePins, r => SelectedRectItem = r, _realWidth));
@@ -75,64 +110,35 @@ namespace Fractal3d
             RectItems = items;
         }
 
+        private void CreateTicItems()
+        {
+            var ticItems = new ObservableCollection<TicItem>();
+            var textItems = new ObservableCollection<TextItem>();
+
+            var nColors = NumberOfColors;
+            var nTics = nColors > 20 ? 11 : 3;
+            var relativeDistance = 1.0 / (double)(nTics - 1);
+
+            for (int i = 0; i < nTics; i++)
+            {
+                var relPos = i * relativeDistance;
+                ticItems.Add(new TicItem(relPos, nColors, _realWidth));
+                textItems.Add(new TextItem(relPos, nColors, _realWidth));
+            }
+
+            TicItems = ticItems;
+            TextItems = textItems;
+        }
+
         private void CreatePaletteImage()
         {
             var bmp = PaletteImage.CreateBitmapForPalette(_palette, _displayInfo);
             Image = ImageUtil.BitmapToImageSource(bmp);
         }
 
-        public string PaletteName
-        {
-            get => _palette.PaletteName;
-            set
-            {
-                if (_palette.PaletteName == value)
-                    return;
-
-                _palette.PaletteName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _palettePath = "";
-        public string PalettePath
-        {
-            get => _palettePath;
-            set
-            {
-                if (_palettePath == value)
-                    return;
-
-                _palettePath = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int NumberOfColors
-        {
-            get => _palette.NumberOfColors;
-            set
-            {
-                _palette.NumberOfColors = value;
-                OnPropertyChanged();
-
-                _colorPointVm.NumberOfColors = value;
-                CreateTicItems();
-                CreatePaletteImage();
-                CreateRectItems();
-            }
-        }
-
-        private ObservableCollection<RectItem> _items = new();
-        public ObservableCollection<RectItem> RectItems
-        {
-            get => _items;
-            set => SetProperty(ref _items, value);
-        }
-
         private int? GetPinNumber(RectItem item)
         {
-            for(int i = 0; i < _items.Count; i++)
+            for (int i = 0; i < _items.Count; i++)
             {
                 if (_items[i].CompareTo(item) == 0)
                     return i + 1;
@@ -141,74 +147,10 @@ namespace Fractal3d
             return null;
         }
 
-        private RectItem? _selectedRectItem;
-        public RectItem? SelectedRectItem
-        {
-            get => _selectedRectItem;
-            set
-            {
-                if (_selectedRectItem == value)
-                    return;
-
-                _selectedRectItem = value;
-                OnPropertyChanged();
-
-                if (_selectedRectItem != null)
-                {
-                    _colorPointVm.ColorPt = RectItem.GetColorPoint(_selectedRectItem);
-                    _colorPointVm.PinNumber = GetPinNumber(_selectedRectItem);
-                }
-            }
-        }
-
-        private BitmapImage _image = new();
-        public BitmapImage Image
-        {
-            get => _image;
-            set => SetProperty(ref _image, value);
-        }
-
-        private double _windowWidth = 1000;
-
-        public double WindowWidth
-        {
-            get => _windowWidth;
-            set
-            {
-                if (Math.Abs(value - _windowWidth) < 0.1)
-                    return;
-
-                if (value < 500)
-                    value = 500;
-
-                SetProperty(ref _windowWidth, value);
-                RealWidth = _windowWidth - 64;      // margins 2*(4+4+2+20+2?) - don't know what an extra 2 is from
-            }
-        }
-
-        private double _realWidth = 1000;
-        public double RealWidth
-        {
-            get => _realWidth;
-            set
-            {
-                if (Math.Abs(value - _realWidth) < 0.1) 
-                    return;
-
-                if (value < 500)
-                    value = 500;
-
-                SetProperty(ref _realWidth, value);
-
-                CreateRectItems();
-                CreateTicItems();
-            }
-        }
-
         private void UpdatePins()
         {
             List<ColorPoint> pts = new();
-            foreach(var item in _items)
+            foreach (var item in _items)
             {
                 pts.Add(RectItem.GetColorPoint(item));
             }
@@ -221,13 +163,7 @@ namespace Fractal3d
             _onPaletteChanged(_palette);
         }
 
-        private readonly RelayCommand _saveCommand;
-        public ICommand SaveCommand => _saveCommand;
-
-        private readonly RelayCommand _openCommand;
-        public ICommand OpenCommand => _openCommand;
-
-        protected void OnSave()
+        private void OnSave()
         {
             Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
             {
@@ -249,7 +185,7 @@ namespace Fractal3d
             }
         }
 
-        protected void OnOpen()
+        private void OnOpen()
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
@@ -280,45 +216,7 @@ namespace Fractal3d
             }
         }
 
-        private ObservableCollection<PaletteItem> _paletteItems = new();
-        public ObservableCollection<PaletteItem> PaletteItems
-        {
-            get => _paletteItems;
-            set
-            {
-                _paletteItems = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private PaletteItem? _selectedPalette;
-        public PaletteItem? SelectedPalette
-        {
-            get => _selectedPalette;
-            set
-            {
-                _selectedPalette = value;
-                SelectedPaletteName = _selectedPalette != null ? _selectedPalette.Name : "";
-
-                OnPropertyChanged();
-            }
-        }
-
-        private string _selectedPaletteName = "";
-        public string SelectedPaletteName
-        {
-            get => _selectedPaletteName;
-            set
-            {
-                _selectedPaletteName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private readonly RelayCommand _loadPaletteCommand;
-        public ICommand LoadPaletteCommand => _loadPaletteCommand;
-
-        protected void OnLoadPalette()
+        private void OnLoadPalette()
         {
             if (SelectedPalette == null)
                 return;
@@ -334,15 +232,30 @@ namespace Fractal3d
             _onPaletteChanged(_palette);
         }
 
-        protected bool CanLoadPalette()
+        private bool CanLoadPalette()
         {
             return SelectedPalette != null;
         }
 
-        private readonly RelayCommand _undoPaletteCommand;
-        public ICommand UndoPaletteCommand => _undoPaletteCommand;
+        private void ExecuteLeftMouseUp(MouseEventArgs e)
+        {
+            var canvas = e.Source as Canvas;
+            if (canvas == null)
+                return;
 
-        protected void OnUndoPalette()
+            var canvasPos = e.GetPosition(canvas);
+            if (canvasPos.Y is < RectItem.ItemTop or > RectItem.ItemTop + RectItem.ItemHeight)
+            {
+                return;
+            }
+
+            if (canvas.Width == 0)
+                return;
+
+            _mousePosX = canvasPos.X / canvas.Width;
+        }
+
+        private void OnUndoPalette()
         {
             if (_paletteIndex <= 0)
                 return;
@@ -354,15 +267,12 @@ namespace Fractal3d
             _onPaletteChanged(_palette);
         }
 
-        protected bool CanUndoPalette()
+        private bool CanUndoPalette()
         {
             return _paletteIndex < _oldPalettes.Count && _paletteIndex > 0;
         }
 
-        private readonly RelayCommand _redoPaletteCommand;
-        public ICommand RedoPaletteCommand => _redoPaletteCommand;
-
-        protected void OnRedoPalette()
+        private void OnRedoPalette()
         {
             if (_paletteIndex > _oldPalettes.Count - 2)
                 return;
@@ -374,15 +284,12 @@ namespace Fractal3d
             _onPaletteChanged(_palette);
         }
 
-        protected bool CanRedoPalette()
+        private bool CanRedoPalette()
         {
             return _paletteIndex < _oldPalettes.Count - 1;
         }
 
-        private readonly RelayCommand _changePathCommand;
-        public ICommand ChangePathCommand => _changePathCommand;
-
-        protected void OnChangePath()
+        private void OnChangePath()
         {
             using var browserDlg = new FolderBrowserDialog();
             DialogResult result = browserDlg.ShowDialog();
@@ -395,15 +302,219 @@ namespace Fractal3d
             }
         }
 
-        private ColorPointVm _colorPointVm;
+        // Use the ColorPoint position if it's not close to an existing rect.
+        // Otherwise use the mousePos if it's not close to an existing rect.
+        // If both are in a rect return null
+        private double? GetBestColorPosition(double colorPosition)
+        {
+            var found = false;
+            foreach (var item in _items)
+            {
+                var pt = RectItem.GetColorPoint(item);
+                if (Math.Abs(pt.Position - colorPosition) < 0.001)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found == false)
+                return colorPosition;
+
+            // The position has to be within the canvas width
+            if (_mousePosX < 0 || _mousePosX > 1.0)
+                return null;
+
+            foreach (var item in _items)
+            {
+                var pt = RectItem.GetColorPoint(item);
+                if (Math.Abs(pt.Position - _mousePosX) < 0.001)
+                {
+                    return null;
+                }
+            }
+
+            return _mousePosX;
+        }
+
+        #endregion
+
+        #region properties
+
+        public string PaletteName
+        {
+            get => _palette.PaletteName;
+            set
+            {
+                if (_palette.PaletteName == value)
+                    return;
+
+                _palette.PaletteName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string PalettePath
+        {
+            get => _palettePath;
+            set
+            {
+                if (_palettePath == value)
+                    return;
+
+                _palettePath = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int NumberOfColors
+        {
+            get => _palette.NumberOfColors;
+            set
+            {
+                _palette.NumberOfColors = value;
+                OnPropertyChanged();
+
+                _colorPointVm.NumberOfColors = value;
+                CreateTicItems();
+                CreatePaletteImage();
+                CreateRectItems();
+            }
+        }
+
+        public ObservableCollection<RectItem> RectItems
+        {
+            get => _items;
+            set => SetProperty(ref _items, value);
+        }
+
+        public RectItem? SelectedRectItem
+        {
+            get => _selectedRectItem;
+            set
+            {
+                if (_selectedRectItem == value)
+                    return;
+
+                _selectedRectItem = value;
+                OnPropertyChanged();
+
+                if (_selectedRectItem != null)
+                {
+                    _colorPointVm.ColorPt = RectItem.GetColorPoint(_selectedRectItem);
+                    _colorPointVm.PinNumber = GetPinNumber(_selectedRectItem);
+                }
+            }
+        }
+
+        public BitmapImage Image
+        {
+            get => _image;
+            set => SetProperty(ref _image, value);
+        }
+
+        public double WindowWidth
+        {
+            get => _windowWidth;
+            set
+            {
+                if (Math.Abs(value - _windowWidth) < 0.1)
+                    return;
+
+                if (value < 500)
+                    value = 500;
+
+                SetProperty(ref _windowWidth, value);
+                RealWidth = _windowWidth - 64;      // margins 2*(4+4+2+20+2?) - don't know what an extra 2 is from
+            }
+        }
+
+        public double RealWidth
+        {
+            get => _realWidth;
+            set
+            {
+                if (Math.Abs(value - _realWidth) < 0.1)
+                    return;
+
+                if (value < 500)
+                    value = 500;
+
+                SetProperty(ref _realWidth, value);
+
+                CreateRectItems();
+                CreateTicItems();
+            }
+        }
+
+        public ObservableCollection<PaletteItem> PaletteItems
+        {
+            get => _paletteItems;
+            set
+            {
+                _paletteItems = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public PaletteItem? SelectedPalette
+        {
+            get => _selectedPalette;
+            set
+            {
+                _selectedPalette = value;
+                SelectedPaletteName = _selectedPalette != null ? _selectedPalette.Name : "";
+
+                OnPropertyChanged();
+            }
+        }
+
+        public string SelectedPaletteName
+        {
+            get => _selectedPaletteName;
+            set
+            {
+                _selectedPaletteName = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ColorPointVm ColorPointViewModel
         {
             get => _colorPointVm;
             set => SetProperty(ref _colorPointVm, value);
         }
 
+        public ObservableCollection<TicItem> TicItems
+        {
+            get => _ticItems;
+            set => SetProperty(ref _ticItems, value);
+        }
+
+        public ObservableCollection<TextItem> TextItems
+        {
+            get => _textItems;
+            set => SetProperty(ref _textItems, value);
+        }
+
+        public ICommand SaveCommand => _saveCommand;
+
+        public ICommand OpenCommand => _openCommand;
+
+        public ICommand LoadPaletteCommand => _loadPaletteCommand;
+
+        public RelayCommand PaletteVmLeftMouseUpCommand { get; }
+
+        public ICommand UndoPaletteCommand => _undoPaletteCommand;
+
+        public ICommand RedoPaletteCommand => _redoPaletteCommand;
+
+        public ICommand ChangePathCommand => _changePathCommand;
+
+        #endregion
+
         // IColorPointParent
-        #region 
+        #region IColorPointParent
 
         // This does not save the old palette
         public void UpdateRectItem(ColorPoint cp, int index)
@@ -415,18 +526,14 @@ namespace Fractal3d
                     _items[i].SetColorPoint(cp);
                     UpdatePins();
                     return;
-                }                   
+                }
             }
         }
 
         public bool CanAdd(double colorPosition)
         {
-            foreach (RectItem item in _items)
-            {
-                var pt = RectItem.GetColorPoint(item);
-                if (Math.Abs(pt.Position - colorPosition) < 0.001)
-                    return false;
-            }
+            if (GetBestColorPosition(colorPosition) == null)
+                return false;
 
             return true;
         }
@@ -435,6 +542,11 @@ namespace Fractal3d
         {
             var newPalette = (Palette)_palette.Clone();
             newPalette.NumberOfColors = _palette.NumberOfColors;
+            var pos = GetBestColorPosition(cp.Position);
+            if (pos == null)
+                return;
+
+            cp.Position = pos.Value;
             newPalette.AddColorPoint(cp);
             _palette = newPalette;
             AddPalette(newPalette);
@@ -462,40 +574,6 @@ namespace Fractal3d
 
         #endregion
 
-        private void CreateTicItems()
-        {
-            var ticItems = new ObservableCollection<TicItem>();
-            var textItems = new ObservableCollection<TextItem>();
-
-            var nColors = NumberOfColors;
-            var nTics = nColors > 20 ? 11 : 3;
-            var relativeDistance = 1.0/(double)(nTics-1);
-
-            for (int i = 0; i < nTics; i++)
-            {
-                var relPos = i * relativeDistance;
-                ticItems.Add(new TicItem(relPos, nColors, _realWidth));
-                textItems.Add(new TextItem(relPos, nColors, _realWidth));
-            }
-
-            TicItems = ticItems;
-            TextItems = textItems;
-        }
-
-        private ObservableCollection<TicItem> _ticItems = new();
-        public ObservableCollection<TicItem> TicItems
-        {
-            get => _ticItems;
-            set => SetProperty(ref _ticItems, value);
-        }
-
-        private ObservableCollection<TextItem> _textItems = new();
-
-        public ObservableCollection<TextItem> TextItems
-        {
-            get => _textItems;
-            set => SetProperty(ref _textItems, value);
-        }
     }
 
 

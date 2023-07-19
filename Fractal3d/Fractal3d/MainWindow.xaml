@@ -65,7 +65,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </Border>
-            <Border Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Style="{StaticResource BorderBlackNarrowStyle}" MaxWidth="150" MaxHeight="800">
+            <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" MaxWidth="150" MaxHeight="800">
                 <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
                     <ListBox ItemsSource="{Binding Path=FractalResults}" BorderThickness="0" SelectedItem="{Binding Path=SelectedFractalResult, Mode=TwoWay}">
                         <ListBox.ItemContainerStyle>

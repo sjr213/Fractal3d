@@ -4,8 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Fractal3d"
-             xmlns:converters="clr-namespace:BasicWpfLibrary.Converters;assembly=BasicWpfLibrary" 
-             xmlns:wpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance Type=local:PaletteVm}">
