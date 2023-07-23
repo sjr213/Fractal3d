@@ -37,7 +37,7 @@
                 <TextBox Style="{StaticResource TextBoxInError}">
                     <TextBox.Text>
                         <Binding Path="NumberOfColors" 
-                             UpdateSourceTrigger="PropertyChanged">
+                             UpdateSourceTrigger="LostFocus">
                             <Binding.ValidationRules>
                                 <wpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinPaletteColors}" 
                                                           Max="{x:Static local:ParameterConstants.MaxPaletteColors}"/>
