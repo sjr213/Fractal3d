@@ -1,10 +1,14 @@
-﻿namespace Fractal3d;
+﻿using System.IO;
+
+namespace Fractal3d;
 
 using BasicWpfLibrary;
 using ImageCalculator;
+using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 public class LightingVm : ViewModelBase
@@ -42,6 +46,9 @@ public class LightingVm : ViewModelBase
 
         _addLightCommand = new RelayCommand(_ => AddLight(), _ => true);
         _deleteLightCommand = new RelayCommand(_ => DeleteLight(), _ => CanDeleteLight());
+
+        _exportCommand = new RelayCommand(_ => OnExport());
+        _importCommand = new RelayCommand(_ => OnImport());
     }
 
     public RelayCommand IsVisibleChangedCommand { get; }
@@ -382,4 +389,72 @@ public class LightingVm : ViewModelBase
             _onParamsChanged(_fractalParams);
         }
     }
+
+    private readonly RelayCommand _exportCommand;
+    public ICommand ExportCommand => _exportCommand;
+
+    private readonly RelayCommand _importCommand;
+    public ICommand ImportCommand => _importCommand;
+
+    private void OnExport()
+    {
+        var saveFileDialog = new SaveFileDialog
+        {
+            Filter = "Lighting file (*.lights)|*.lights"
+        };
+
+        if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+        try
+        {
+            var extendedLights = new ExtendedLights(_fractalParams.Lights)
+            {
+                NormalDistance = _fractalParams.NormalDistance,
+                AmbientPower = _fractalParams.AmbientPower,
+                LightComboMode = _fractalParams.LightComboMode
+            };
+            
+            string jsonString = JsonConvert.SerializeObject(extendedLights);
+
+            //write string to file
+            File.WriteAllText(saveFileDialog.FileName, jsonString);
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot save result to file");
+        }
+    }
+
+    private void OnImport()
+    {
+        var openFileDialog = new OpenFileDialog
+        {
+            Filter = "Lighting file (*.lights)|*.lights|All files (*.*)|*.*"
+        };
+
+        if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+        try
+        {
+            string jsonString = File.ReadAllText(openFileDialog.FileName);
+
+            var extendedLights = JsonConvert.DeserializeObject<ExtendedLights>(jsonString);
+
+            if (extendedLights == null) return;
+
+            _fractalParams.Lights = extendedLights.Lights;
+            _fractalParams.NormalDistance = extendedLights.NormalDistance;
+            _fractalParams.AmbientPower = extendedLights.AmbientPower;
+            _fractalParams.LightComboMode = extendedLights.LightComboMode;
+
+            UpdateLightIndices();
+            NormalDistance = _fractalParams.NormalDistance;
+            AmbientPower = _fractalParams.AmbientPower;
+            SelectedLightComboMode = _fractalParams.LightComboMode;
+            _onParamsChanged(_fractalParams);
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot load result from file");
+        }
+    }
+
 }
