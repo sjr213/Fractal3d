@@ -17,8 +17,12 @@ namespace Fractal3d
             var version = assembly.GetName().Version;
             Title = "Fractal 3D - Version " + version;
 
-            var viewModel = (MainVm)DataContext;
+            var args = Environment.GetCommandLineArgs();
+            var fileName = args.Length > 1 ? args[1] : "";
+
+            var viewModel = new MainVm(fileName);
             Closing += viewModel.OnWindowClosing!;
+            DataContext = viewModel;
         }
     }
 }

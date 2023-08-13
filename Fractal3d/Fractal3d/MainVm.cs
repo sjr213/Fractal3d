@@ -18,8 +18,6 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.ComponentModel;
 
-//using System.Windows.Forms;
-
 public class MainVm : ViewModelBase, IDisposable
 {
     private const int NumberOfColors = 1000;
@@ -36,7 +34,7 @@ public class MainVm : ViewModelBase, IDisposable
     private bool _isDirty;
      
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    public MainVm()
+    public MainVm(string fileName)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
         _calculateCommand = new RelayCommand(_ => Calculate(), _ => CanCalculate());
@@ -63,6 +61,8 @@ public class MainVm : ViewModelBase, IDisposable
             _progressShaderSubject = _shaderFactory.Progress.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(progress => PercentProgress = progress);
         }
+
+        OpenFileFromStartUp(fileName);
     }
 
     public void Dispose()
@@ -417,9 +417,28 @@ public class MainVm : ViewModelBase, IDisposable
         };
 
         if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+        OpenResultFile(openFileDialog.FileName);
+    }
+
+    private void OpenFileFromStartUp(string filename)
+    {
+        if (string.IsNullOrEmpty(filename))
+            return;
+
+        var ext = Path.GetExtension(filename);
+        if(string.IsNullOrEmpty(ext))
+            return;
+
+        if (ext == "f3d")
+            OpenResultFile(filename);
+    }
+
+    protected void OpenResultFile(string filename)
+    {
         try
         {
-            string jsonString = File.ReadAllText(openFileDialog.FileName);
+            string jsonString = File.ReadAllText(filename);
 
             var results = JsonConvert.DeserializeObject<List<FractalResult>>(jsonString);
 
@@ -431,11 +450,11 @@ public class MainVm : ViewModelBase, IDisposable
             {
                 FractalResults.Add(new FractalResultVm(fractalResult, _fractalNumber++));
             }
- 
+
             _fractalResult = results.Last();
             _isDirty = false;
 
-            if(_fractalResult.Params == null)
+            if (_fractalResult.Params == null)
             {
                 System.Windows.Forms.MessageBox.Show("Can't load", "Params came back null");
                 return;

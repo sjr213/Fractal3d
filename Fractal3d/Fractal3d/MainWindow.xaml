@@ -7,11 +7,8 @@
             xmlns:local="clr-namespace:Fractal3d"
             mc:Ignorable="d"
             Title="Fractal 3D" Height="1000" Width="1300">
-    <Window.DataContext>
-        <local:MainVm/>
-    </Window.DataContext>
 
-    <Window.Resources>
+        <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="GeneralResources.xaml"/>
