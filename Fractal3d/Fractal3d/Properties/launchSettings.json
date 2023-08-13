@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Fractal3d": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "C:\\images\\Art\\Fractal3D\\Quat Squared\\qs007.f3d"
     }
   }
 }

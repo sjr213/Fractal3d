@@ -274,7 +274,7 @@ public class MainVm : ViewModelBase, IDisposable
 
         var saveFileDialog = new SaveFileDialog
         {
-            Filter = "Fractal3D file (*.f3d)|*.f3d"
+            Filter = string.Format("Fractal3D file (*{0})|*{0}", Fractal3dConstants.FileExtension)
         };
 
         if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
@@ -300,7 +300,7 @@ public class MainVm : ViewModelBase, IDisposable
 
         var saveFileDialog = new SaveFileDialog
         {
-            Filter = "Fractal3D file (*.f3d)|*.f3d"
+            Filter = string.Format("Fractal3D file (*{0})|*{0}", Fractal3dConstants.FileExtension)
         };
 
         if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
@@ -413,7 +413,7 @@ public class MainVm : ViewModelBase, IDisposable
         
         var openFileDialog = new OpenFileDialog
         {
-            Filter = "Fractal3D file (*.f3d)|*.f3d|All files (*.*)|*.*"
+            Filter = string.Format("Fractal3D file (*{0})|*{0}|All files (*.*)|*.*", Fractal3dConstants.FileExtension)
         };
 
         if (openFileDialog.ShowDialog() != DialogResult.OK) return;
@@ -430,7 +430,7 @@ public class MainVm : ViewModelBase, IDisposable
         if(string.IsNullOrEmpty(ext))
             return;
 
-        if (ext == "f3d")
+        if (ext == Fractal3dConstants.FileExtension)
             OpenResultFile(filename);
     }
 

@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Printing;
-using System.Windows.Forms.VisualStyles;
 
 namespace Fractal3d;
 
