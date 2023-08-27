@@ -46,12 +46,12 @@ public class MainVm : ViewModelBase, IDisposable
         _openCommand = new RelayCommand(_ => OnOpen(), _ => true);
         _cancelCommand = new RelayCommand(_ => OnCancel(), _ => true);  // This should only be visible when calculating because it's in the progress Stack panel
         MakePaletteViewModel();
+        ImageViewModel = new ImageVm(new BitmapImage(), _fractalParams.DisplaySize.Width,
+            _fractalParams.DisplaySize.Height);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
-        Width = _fractalParams.DisplaySize.Width;
-        Height = _fractalParams.DisplaySize.Height;
 
         if (SynchronizationContext.Current != null)
         {
@@ -164,10 +164,9 @@ public class MainVm : ViewModelBase, IDisposable
 
         var bmp = result.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
 
-        Width = result.Params.DisplaySize.Width;
-        Height = result.Params.DisplaySize.Height;
-
-        Image = ImageUtil.BitmapToImageSource(bmp);
+        var image = ImageUtil.BitmapToImageSource(bmp);
+        ImageViewModel = new ImageVm(image, _fractalParams.DisplaySize.Width,
+            _fractalParams.DisplaySize.Height);
     }
 
     protected bool CanCalculate()
@@ -175,18 +174,18 @@ public class MainVm : ViewModelBase, IDisposable
         return AreParametersValid();
     }
 
-    private BitmapImage _image = new();
-    public BitmapImage Image
-    {
-        get => _image;
-        set => SetProperty(ref _image, value);
-    }
-
     private PaletteVm _paletteVm;
     public PaletteVm PaletteViewModel
     {
         get => _paletteVm;
         set => SetProperty(ref _paletteVm, value);
+    }
+
+    private ImageVm _imageVm;
+    public ImageVm ImageViewModel
+    {
+        get => _imageVm;
+        set => SetProperty(ref _imageVm, value);
     }
 
     // We will need to update the palette when the number of colors change
@@ -219,20 +218,6 @@ public class MainVm : ViewModelBase, IDisposable
         set => SetProperty(ref _displayInfoVm, value);
     }
 
-    private int _width;
-    public int Width
-    {
-        get => _width;
-        set => SetProperty(ref _width, value);
-    }
-
-    private int _height;
-    public int Height
-    {
-        get => _height;
-        set => SetProperty(ref _height, value);
-    }
-
     private Visibility _progressVisibility = Visibility.Hidden;
     public Visibility ProgressVisibility
     {
@@ -263,8 +248,7 @@ public class MainVm : ViewModelBase, IDisposable
     protected void OnParamsChanged(FractalParams fractalParams)
     {
         _fractalParams = fractalParams;
-        Width = _fractalParams.DisplaySize.Width;
-        Height = _fractalParams.DisplaySize.Height;
+        ImageViewModel.UpdateViewSize(_fractalParams.DisplaySize.Width, _fractalParams.DisplaySize.Height);
     }
 
     protected void OnSaveAll()
@@ -463,15 +447,16 @@ public class MainVm : ViewModelBase, IDisposable
             PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
             ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
             DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
-            Width = _fractalParams.DisplaySize.Width;
-            Height = _fractalParams.DisplaySize.Height;
 
             if (_fractalResult.Image == null)
                 return;
 
             var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
 
-            Image = ImageUtil.BitmapToImageSource(bmp);
+            var image = ImageUtil.BitmapToImageSource(bmp);
+            ImageViewModel = new ImageVm(image, _fractalParams.DisplaySize.Width,
+                _fractalParams.DisplaySize.Height);
+
             SelectedFractalResult = FractalResults.FirstOrDefault();
         }
         catch (Exception ex)

@@ -6,6 +6,7 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:local="clr-namespace:Fractal3d"
             mc:Ignorable="d"
+            d:DataContext="{d:DesignInstance Type=local:MainVm}"
             Title="Fractal 3D" Height="1000" Width="1300">
 
         <Window.Resources>
@@ -54,14 +55,13 @@
                     <Button Margin="2" Padding="2" Command="{Binding CancelCommand}">Cancel</Button>
                 </StackPanel>
             </StackPanel>
-            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource BorderBlackNarrowStyle}" >
-                <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxWidth="1050" MaxHeight="820">
-                    <StackPanel  Margin="2" Orientation="Horizontal" >
-                        <Image HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" 
-                               Width="{Binding Width}" Height="{Binding Height}" Stretch="Uniform" Source="{Binding Image}"  />
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
+            <ContentPresenter Grid.Row="1" Grid.Column="1" Content="{Binding ImageViewModel}">
+                <ContentPresenter.Resources>
+                    <DataTemplate DataType="{x:Type local:ImageVm}" >
+                        <local:ImageView/>
+                    </DataTemplate>
+                </ContentPresenter.Resources>
+            </ContentPresenter>
             <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" MaxWidth="150" MaxHeight="800">
                 <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
                     <ListBox ItemsSource="{Binding Path=FractalResults}" BorderThickness="0" SelectedItem="{Binding Path=SelectedFractalResult, Mode=TwoWay}">
