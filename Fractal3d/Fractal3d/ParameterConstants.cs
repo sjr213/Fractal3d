@@ -20,7 +20,7 @@ public static class ParameterConstants
     public const float MaxMinRayDistance = 1f;
 
     public const float MinStepDivisor = 1f;
-    public const float MaxStepDivisor = 1000f;
+    public const float MaxStepDivisor = 1e11f;
 
     public const int MinIterations = 2;
     public const int MaxIterations = 1000000;

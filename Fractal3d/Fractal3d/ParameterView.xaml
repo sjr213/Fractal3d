@@ -320,7 +320,7 @@
             </StackPanel>
             <StackPanel Grid.Row="12" Margin="2, 5" Orientation="Horizontal">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Step Divisor" />
-                <TextBox Style="{StaticResource TextBoxInError}" >
+                <TextBox Style="{StaticResource TextBoxInError}" MaxWidth="80">
                     <TextBox.Text>
                         <Binding Path="StepDivisor" 
                                  UpdateSourceTrigger="LostFocus" >
