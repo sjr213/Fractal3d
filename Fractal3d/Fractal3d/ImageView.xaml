@@ -18,8 +18,11 @@
         <Border Style="{StaticResource BorderBlackNarrowStyle}" >
             <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxWidth="1050" MaxHeight="820">
                 <StackPanel  Margin="2" Orientation="Horizontal" >
-                    <Image HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2" 
-                           Width="{Binding Width}" Height="{Binding Height}" Stretch="Uniform" Source="{Binding Image}"  />
+                    <Canvas Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2">
+                          <!--  wpfLibrary:MouseBehaviour.MouseLeftButtonUpCommand="{Binding PaletteVmLeftMouseUpCommand}"> -->
+                          <Image Width="{Binding Width}" Height="{Binding Height}" 
+                                 Stretch="Uniform" Source="{Binding Image}"  />
+                    </Canvas>
                 </StackPanel>
             </ScrollViewer>
         </Border>
