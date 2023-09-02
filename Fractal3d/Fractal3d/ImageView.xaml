@@ -25,6 +25,8 @@
                             wpfLibrary:MouseBehaviour.MouseLeftButtonUpCommand="{Binding ImageVmLeftMouseUpCommand}" >
                           <Image Width="{Binding Width}" Height="{Binding Height}" 
                                  Stretch="Uniform" Source="{Binding Image}"  />
+                          <Rectangle  Width="{Binding RectWidth}" Height="{Binding RectHeight}" 
+                                      Canvas.Left="{Binding RectLeft}" Canvas.Top="{Binding RectTop}" Stroke="Black"/>
                     </Canvas>
                 </StackPanel>
             </ScrollViewer>
