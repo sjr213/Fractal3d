@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:wpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
              xmlns:local="clr-namespace:Fractal3d"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:ImageVm}"
@@ -18,8 +19,10 @@
         <Border Style="{StaticResource BorderBlackNarrowStyle}" >
             <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxWidth="1050" MaxHeight="820">
                 <StackPanel  Margin="2" Orientation="Horizontal" >
-                    <Canvas Width="{Binding Width}" Height="{Binding Height}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2">
-                          <!--  wpfLibrary:MouseBehaviour.MouseLeftButtonUpCommand="{Binding PaletteVmLeftMouseUpCommand}"> -->
+                    <Canvas Width="{Binding Width}" Height="{Binding Height}" 
+                            HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2"
+                            wpfLibrary:MouseBehaviour.MouseLeftButtonDownCommand="{Binding ImageVmLeftMouseDownCommand}"
+                            wpfLibrary:MouseBehaviour.MouseLeftButtonUpCommand="{Binding ImageVmLeftMouseUpCommand}" >
                           <Image Width="{Binding Width}" Height="{Binding Height}" 
                                  Stretch="Uniform" Source="{Binding Image}"  />
                     </Canvas>
