@@ -18,6 +18,14 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.ComponentModel;
 
+internal class FractalRange
+{
+    public double FromX { get; set; }
+    public double ToX { get; set; }
+    public double FromY { get; set; }
+    public double ToY { get; set; }
+}
+
 public class MainVm : ViewModelBase, IDisposable
 {
     private const int NumberOfColors = 1000;
@@ -33,6 +41,7 @@ public class MainVm : ViewModelBase, IDisposable
     private int _fractalNumber = 1;
     private bool _isDirty;
     private Rect _selectionRect;
+    private FractalRange? _fractalRange;
      
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public MainVm(string fileName)
@@ -129,6 +138,7 @@ public class MainVm : ViewModelBase, IDisposable
         _cancelSource = new();
         var cancelToken = _cancelSource.Token;
         ProgressVisibility = Visibility.Visible;
+        _fractalRange = null;
 
         try
         {
@@ -251,6 +261,7 @@ public class MainVm : ViewModelBase, IDisposable
     protected void OnParamsChanged(FractalParams fractalParams)
     {
         _fractalParams = fractalParams;
+        _fractalRange = null;
         ImageViewModel.SetFractalParams(_fractalParams);
     }
 
@@ -425,6 +436,7 @@ public class MainVm : ViewModelBase, IDisposable
     {
         try
         {
+            _fractalRange = null;
             string jsonString = File.ReadAllText(filename);
 
             var results = JsonConvert.DeserializeObject<List<FractalResult>>(jsonString);
@@ -549,6 +561,7 @@ public class MainVm : ViewModelBase, IDisposable
             SetProperty(ref _selectedFractalResult, value);
             if (_selectedFractalResult != null)
             {
+                _fractalRange = null;
                 _fractalResult = _selectedFractalResult.Result;
                 _fractalParams = _fractalResult.Params != null ? (FractalParams) _fractalResult.Params.Clone(): new FractalParams();
                 PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
@@ -657,6 +670,17 @@ public class MainVm : ViewModelBase, IDisposable
     private void SetSelectionRect(Rect rect)
     {
         _selectionRect = rect;
+
+        if (_fractalRange == null)
+        {
+            _fractalRange = new FractalRange()
+            {
+                FromX = _fractalParams.FromX,
+                ToX = _fractalParams.ToX,
+                FromY = _fractalParams.FromY,
+                ToY = _fractalParams.ToY
+            };
+        }
     }
 
     private void OnApplyRect()
@@ -664,25 +688,21 @@ public class MainVm : ViewModelBase, IDisposable
         if (_selectionRect.Width == 0 || _selectionRect.Height == 0)
             return;
 
-        // We need a way to prevent applying the rect more than once because the original from/to coordinates are lost
+        if (_fractalRange == null)
+            return;
 
-        var fromX = _fractalParams.FromX;
-        var fromY = _fractalParams.FromY;
-        var toX = _fractalParams.ToX;
-        var toY = _fractalParams.ToY;
+        var width = _fractalRange.ToX - _fractalRange.FromX;
+        var height = _fractalRange.ToY - _fractalRange.FromY;
 
-        var width = toX - fromX;
-        var height = toY - fromY;
-
-        _fractalParams.FromX = (float)(fromX + _selectionRect.X * width);
-        _fractalParams.ToX = (float)(fromX + (_selectionRect.X + _selectionRect.Width) * width);
-        _fractalParams.FromY = (float)(fromY + _selectionRect.Y * height);
-        _fractalParams.ToY = (float)(fromY + (_selectionRect.Y + _selectionRect.Height) * height);
+        _fractalParams.FromX = (float)(_fractalRange.FromX + _selectionRect.X * width);
+        _fractalParams.ToX = (float)(_fractalRange.FromX + (_selectionRect.X + _selectionRect.Width) * width);
+        _fractalParams.FromY = (float)(_fractalRange.FromY + _selectionRect.Y * height);
+        _fractalParams.ToY = (float)(_fractalRange.FromY + (_selectionRect.Y + _selectionRect.Height) * height);
     }
 
     private bool CanApplyRect()
     {
-        return true;
+        return _fractalRange != null;
     }
 }
 
