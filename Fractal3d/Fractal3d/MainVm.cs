@@ -138,7 +138,7 @@ public class MainVm : ViewModelBase, IDisposable
         _cancelSource = new();
         var cancelToken = _cancelSource.Token;
         ProgressVisibility = Visibility.Visible;
-        _fractalRange = null;
+        ClearFractalRange();
 
         try
         {
@@ -253,6 +253,14 @@ public class MainVm : ViewModelBase, IDisposable
         set => SetProperty(ref _time, value);
     }
 
+    private string _fractalRangeText = "";
+
+    public string FractalRange
+    {
+        get => _fractalRangeText;
+        set => SetProperty(ref _fractalRangeText, value);
+    }
+
     protected void OnPaletteChanged(Palette palette)
     {
         _fractalParams.Palette = palette;
@@ -261,7 +269,7 @@ public class MainVm : ViewModelBase, IDisposable
     protected void OnParamsChanged(FractalParams fractalParams)
     {
         _fractalParams = fractalParams;
-        _fractalRange = null;
+        ClearFractalRange();
         ImageViewModel.SetFractalParams(_fractalParams);
     }
 
@@ -436,7 +444,7 @@ public class MainVm : ViewModelBase, IDisposable
     {
         try
         {
-            _fractalRange = null;
+            ClearFractalRange();
             string jsonString = File.ReadAllText(filename);
 
             var results = JsonConvert.DeserializeObject<List<FractalResult>>(jsonString);
@@ -561,7 +569,7 @@ public class MainVm : ViewModelBase, IDisposable
             SetProperty(ref _selectedFractalResult, value);
             if (_selectedFractalResult != null)
             {
-                _fractalRange = null;
+                ClearFractalRange();
                 _fractalResult = _selectedFractalResult.Result;
                 _fractalParams = _fractalResult.Params != null ? (FractalParams) _fractalResult.Params.Clone(): new FractalParams();
                 PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
@@ -681,6 +689,27 @@ public class MainVm : ViewModelBase, IDisposable
                 ToY = _fractalParams.ToY
             };
         }
+
+        SetFractalRangeText();
+    }
+
+    private void SetFractalRangeText()
+    {
+        if (_fractalRange == null)
+        {
+            FractalRange = "";
+            return;
+        }
+
+        var width = _fractalRange.ToX - _fractalRange.FromX;
+        var height = _fractalRange.ToY - _fractalRange.FromY;
+
+        var fromX = (float)(_fractalRange.FromX + _selectionRect.X * width);
+        var toX = (float)(_fractalRange.FromX + (_selectionRect.X + _selectionRect.Width) * width);
+        var fromY = (float)(_fractalRange.FromY + _selectionRect.Y * height);
+        var toY = (float)(_fractalRange.FromY + (_selectionRect.Y + _selectionRect.Height) * height);
+
+        FractalRange = $"From X: {fromX:0.####}, To X: {toX:0.####}, From Y: {fromY:0.####}, To Y: {toY:0.####}";
     }
 
     private void OnApplyRect()
@@ -700,6 +729,12 @@ public class MainVm : ViewModelBase, IDisposable
         _fractalParams.ToY = (float)(_fractalRange.FromY + (_selectionRect.Y + _selectionRect.Height) * height);
 
         ImageViewModel.ClearRectangle();
+    }
+
+    private void ClearFractalRange()
+    {
+        _fractalRange = null;
+        FractalRange = "";
     }
 
     private bool CanApplyRect()
