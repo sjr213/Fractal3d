@@ -698,6 +698,8 @@ public class MainVm : ViewModelBase, IDisposable
         _fractalParams.ToX = (float)(_fractalRange.FromX + (_selectionRect.X + _selectionRect.Width) * width);
         _fractalParams.FromY = (float)(_fractalRange.FromY + _selectionRect.Y * height);
         _fractalParams.ToY = (float)(_fractalRange.FromY + (_selectionRect.Y + _selectionRect.Height) * height);
+
+        ImageViewModel.ClearRectangle();
     }
 
     private bool CanApplyRect()

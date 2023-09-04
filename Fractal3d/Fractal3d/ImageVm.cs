@@ -178,7 +178,7 @@ namespace Fractal3d
             _setSelectionRect(rect);
         }
 
-        private void ClearRectangle()
+        public void ClearRectangle()
         {
             RectWidth = 0;
             RectHeight = 0;
