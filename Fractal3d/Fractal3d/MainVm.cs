@@ -32,6 +32,7 @@ public class MainVm : ViewModelBase, IDisposable
     private CancellationTokenSource _cancelSource = new();
     private int _fractalNumber = 1;
     private bool _isDirty;
+    private Rect _selectionRect;
      
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public MainVm(string fileName)
@@ -45,8 +46,9 @@ public class MainVm : ViewModelBase, IDisposable
         _deleteMostCommand = new RelayCommand(_ => OnDeleteMost(), _ => CanDeleteMost());
         _openCommand = new RelayCommand(_ => OnOpen(), _ => true);
         _cancelCommand = new RelayCommand(_ => OnCancel(), _ => true);  // This should only be visible when calculating because it's in the progress Stack panel
+        _applyRectCommand = new RelayCommand(_ => OnApplyRect(), _ => CanApplyRect());
         MakePaletteViewModel();
-        ImageViewModel = new ImageVm(_fractalParams, new BitmapImage());
+        ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
@@ -111,6 +113,9 @@ public class MainVm : ViewModelBase, IDisposable
     private readonly RelayCommand _cancelCommand;
     public ICommand CancelCommand => _cancelCommand;
 
+    private readonly RelayCommand _applyRectCommand;
+    public ICommand ApplyRectCommand => _applyRectCommand;
+
     public void OnWindowClosing(object sender, CancelEventArgs e)
     {
         if (_isDirty)
@@ -164,7 +169,7 @@ public class MainVm : ViewModelBase, IDisposable
         var bmp = result.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
 
         var image = ImageUtil.BitmapToImageSource(bmp);
-        ImageViewModel = new ImageVm(_fractalParams, image);
+        ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
     }
 
     protected bool CanCalculate()
@@ -452,7 +457,7 @@ public class MainVm : ViewModelBase, IDisposable
             var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
 
             var image = ImageUtil.BitmapToImageSource(bmp);
-            ImageViewModel = new ImageVm(_fractalParams, image);
+            ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
 
             SelectedFractalResult = FractalResults.FirstOrDefault();
         }
@@ -647,6 +652,37 @@ public class MainVm : ViewModelBase, IDisposable
         {
             OnSaveAll();
         }
+    }
+
+    private void SetSelectionRect(Rect rect)
+    {
+        _selectionRect = rect;
+    }
+
+    private void OnApplyRect()
+    {
+        if (_selectionRect.Width == 0 || _selectionRect.Height == 0)
+            return;
+
+        // We need a way to prevent applying the rect more than once because the original from/to coordinates are lost
+
+        var fromX = _fractalParams.FromX;
+        var fromY = _fractalParams.FromY;
+        var toX = _fractalParams.ToX;
+        var toY = _fractalParams.ToY;
+
+        var width = toX - fromX;
+        var height = toY - fromY;
+
+        _fractalParams.FromX = (float)(fromX + _selectionRect.X * width);
+        _fractalParams.ToX = (float)(fromX + (_selectionRect.X + _selectionRect.Width) * width);
+        _fractalParams.FromY = (float)(fromY + _selectionRect.Y * height);
+        _fractalParams.ToY = (float)(fromY + (_selectionRect.Y + _selectionRect.Height) * height);
+    }
+
+    private bool CanApplyRect()
+    {
+        return true;
     }
 }
 

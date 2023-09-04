@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows;
 using BasicWpfLibrary;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using ImageCalculator;
 using Image = System.Windows.Controls.Image;
-using System.Windows.Media;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Media.Media3D;
 
 namespace Fractal3d
 {
@@ -21,11 +18,12 @@ namespace Fractal3d
         private System.Windows.Point _endPt;
         private PointF _fromPt;
         private PointF _toPt;
+        private readonly Action<Rect> _setSelectionRect;
         #endregion
 
         #region construction
 
-        public ImageVm(FractalParams fractalParams, BitmapImage image)
+        public ImageVm(FractalParams fractalParams, BitmapImage image, Action<Rect> setSelectionRect)
         {
             _fractalParams = fractalParams;
             Image = image;
@@ -35,6 +33,7 @@ namespace Fractal3d
 #pragma warning disable CS8604
             ImageVmLeftMouseUpCommand = new RelayCommand(param => ExecuteLeftMouseUp((param as MouseEventArgs)));
             ImageVmLeftMouseDownCommand = new RelayCommand(param => ExecuteLeftMouseDown((param as MouseEventArgs)));
+            _setSelectionRect = setSelectionRect;
 #pragma warning restore CS8604
         }
         #endregion
@@ -169,6 +168,14 @@ namespace Fractal3d
             RectHeight = height;
             RectLeft = _startPt.X;
             RectTop = _startPt.Y;
+
+            var relativeX = _startPt.X / Width;
+            var relativeY = _startPt.Y / Height;
+            var relativeWidth = width / Width;
+            var relativeHeight = height / Height;
+
+            var rect = new Rect(relativeX, relativeY, relativeWidth, relativeHeight);
+            _setSelectionRect(rect);
         }
 
         private void ClearRectangle()
@@ -186,6 +193,7 @@ namespace Fractal3d
             Height = fractalParams.DisplaySize.Height;
 
             // Reset rectangle
+            ClearRectangle();
 
         }
 
