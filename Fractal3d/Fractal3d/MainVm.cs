@@ -55,7 +55,7 @@ public class MainVm : ViewModelBase, IDisposable
         _deleteMostCommand = new RelayCommand(_ => OnDeleteMost(), _ => CanDeleteMost());
         _openCommand = new RelayCommand(_ => OnOpen(), _ => true);
         _cancelCommand = new RelayCommand(_ => OnCancel(), _ => true);  // This should only be visible when calculating because it's in the progress Stack panel
-        _applyRectCommand = new RelayCommand(_ => OnApplyRect(), _ => CanApplyRect());
+        _applyRectCommand = new RelayCommand(_ => OnApplyRect());
         MakePaletteViewModel();
         ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
@@ -154,7 +154,7 @@ public class MainVm : ViewModelBase, IDisposable
 
         if (cancelToken.IsCancellationRequested)
         {
-            ProgressVisibility = Visibility.Hidden;
+            ProgressVisibility = Visibility.Collapsed;
             return;
         }
 
@@ -164,7 +164,7 @@ public class MainVm : ViewModelBase, IDisposable
         DisplayImage(_fractalResult);
         Time = _fractalResult.Time;
 
-        ProgressVisibility = Visibility.Hidden;
+        ProgressVisibility = Visibility.Collapsed;
 
         FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
 
@@ -231,7 +231,7 @@ public class MainVm : ViewModelBase, IDisposable
         set => SetProperty(ref _displayInfoVm, value);
     }
 
-    private Visibility _progressVisibility = Visibility.Hidden;
+    private Visibility _progressVisibility = Visibility.Collapsed;
     public Visibility ProgressVisibility
     {
         get => _progressVisibility;
@@ -691,6 +691,7 @@ public class MainVm : ViewModelBase, IDisposable
         }
 
         SetFractalRangeText();
+        ApplyRectVisibility = Visibility.Visible;
     }
 
     private void SetFractalRangeText()
@@ -729,17 +730,21 @@ public class MainVm : ViewModelBase, IDisposable
         _fractalParams.ToY = (float)(_fractalRange.FromY + (_selectionRect.Y + _selectionRect.Height) * height);
 
         ImageViewModel.ClearRectangle();
+        ApplyRectVisibility = Visibility.Collapsed;
     }
 
     private void ClearFractalRange()
     {
         _fractalRange = null;
         FractalRange = "";
+        ApplyRectVisibility = Visibility.Collapsed;
     }
 
-    private bool CanApplyRect()
+    private Visibility _applyRectVisibility = Visibility.Collapsed;
+    public Visibility ApplyRectVisibility
     {
-        return _fractalRange != null;
+        get => _applyRectVisibility;
+        set => SetProperty(ref _applyRectVisibility, value);
     }
 }
 

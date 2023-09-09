@@ -46,7 +46,8 @@
                 <Button Margin="2" Padding="2" Command="{Binding OpenCommand}">Open</Button>
                 <Button Margin="2" Padding="2" Command="{Binding DeleteCommand}">Delete</Button>
                 <Button Margin="2" Padding="2" Command="{Binding DeleteMostCommand}">Delete Most</Button>
-                <Button Margin="2" Padding="2" Command="{Binding ApplyRectCommand}">Apply Rect</Button>
+                <Button Margin="2" Padding="2" Command="{Binding ApplyRectCommand}"
+                        Visibility="{Binding ApplyRectVisibility}">Apply Rect</Button>
                 <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ProgressVisibility}">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Percent Progress" />
                     <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PercentProgress}" />
@@ -58,7 +59,7 @@
                     <TextBlock Margin="2" Padding="2">Time (ms):</TextBlock>
                     <TextBlock Margin="2" Padding="2" Text="{Binding Time}"/>
                 </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
+                <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ApplyRectVisibility}">
                     <TextBlock Margin="2" Padding="2">Fractal Range:</TextBlock>
                     <TextBlock Margin="2" Padding="2" Text="{Binding FractalRange}"/>
                 </StackPanel>
