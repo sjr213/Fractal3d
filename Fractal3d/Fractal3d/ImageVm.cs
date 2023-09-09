@@ -19,6 +19,7 @@ namespace Fractal3d
         private PointF _fromPt;
         private PointF _toPt;
         private readonly Action<Rect> _setSelectionRect;
+        private bool _mouseCaptured;
         #endregion
 
         #region construction
@@ -33,6 +34,7 @@ namespace Fractal3d
 #pragma warning disable CS8604
             ImageVmLeftMouseUpCommand = new RelayCommand(param => ExecuteLeftMouseUp((param as MouseEventArgs)));
             ImageVmLeftMouseDownCommand = new RelayCommand(param => ExecuteLeftMouseDown((param as MouseEventArgs)));
+            ImageVmMouseMoveCommand = new RelayCommand(param => ExecuteMouseMove((param as MouseEventArgs)));
             _setSelectionRect = setSelectionRect;
 #pragma warning restore CS8604
         }
@@ -97,19 +99,22 @@ namespace Fractal3d
 
         public RelayCommand ImageVmLeftMouseDownCommand { get; }
 
+        public RelayCommand ImageVmMouseMoveCommand { get; }
+
         #endregion
 
         #region methods
 
         private Canvas? GetCanvas(object obj)
         {
-            var image = (Image)obj;
-
-            return image.FindParentOfType<Canvas>();
+            var image = obj as Image;
+            return image?.FindParentOfType<Canvas>();
         }
 
         private void ExecuteLeftMouseUp(MouseEventArgs e)
         {
+            _mouseCaptured = false;
+
             var canvas = GetCanvas(e.Source);
             if (canvas == null)
                 return;
@@ -134,6 +139,24 @@ namespace Fractal3d
             ClearRectangle();
 
             _startPt = e.GetPosition(canvas);
+            _mouseCaptured = true;
+        }
+
+        private void ExecuteMouseMove(MouseEventArgs e)
+        {
+            if (_mouseCaptured == false)
+                return;
+
+            var canvas = GetCanvas(e.Source);
+            if (canvas == null)
+                return;
+
+            _endPt = e.GetPosition(canvas);
+
+            if (CalculateImageRange(canvas.Width, canvas.Height) == false)
+                return;
+
+            DrawRectangle();
         }
 
         private bool CalculateImageRange(double width, double height)

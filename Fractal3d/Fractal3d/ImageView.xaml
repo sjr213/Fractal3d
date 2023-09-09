@@ -22,7 +22,8 @@
                     <Canvas Width="{Binding Width}" Height="{Binding Height}" 
                             HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2"
                             wpfLibrary:MouseBehaviour.MouseLeftButtonDownCommand="{Binding ImageVmLeftMouseDownCommand}"
-                            wpfLibrary:MouseBehaviour.MouseLeftButtonUpCommand="{Binding ImageVmLeftMouseUpCommand}" >
+                            wpfLibrary:MouseBehaviour.MouseLeftButtonUpCommand="{Binding ImageVmLeftMouseUpCommand}" 
+                            wpfLibrary:MouseBehaviour.MouseMoveCommand="{Binding ImageVmMouseMoveCommand}">
                           <Image Width="{Binding Width}" Height="{Binding Height}" 
                                  Stretch="Uniform" Source="{Binding Image}"  />
                           <Rectangle  Width="{Binding RectWidth}" Height="{Binding RectHeight}" 
