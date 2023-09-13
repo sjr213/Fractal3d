@@ -197,6 +197,9 @@ namespace Fractal3d
             var relativeWidth = width / Width;
             var relativeHeight = height / Height;
 
+            if (relativeWidth <= 0 || relativeHeight <= 0)
+                return;
+
             var rect = new Rect(relativeX, relativeY, relativeWidth, relativeHeight);
             _setSelectionRect(rect);
         }
