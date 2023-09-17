@@ -56,6 +56,7 @@ public class MainVm : ViewModelBase, IDisposable
         _openCommand = new RelayCommand(_ => OnOpen(), _ => true);
         _cancelCommand = new RelayCommand(_ => OnCancel(), _ => true);  // This should only be visible when calculating because it's in the progress Stack panel
         _applyRectCommand = new RelayCommand(_ => OnApplyRect());
+        _defaultParametersCommand = new RelayCommand(_ => OnDefaultParameters());
         MakePaletteViewModel();
         ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
@@ -124,6 +125,9 @@ public class MainVm : ViewModelBase, IDisposable
 
     private readonly RelayCommand _applyRectCommand;
     public ICommand ApplyRectCommand => _applyRectCommand;
+
+    private readonly RelayCommand _defaultParametersCommand;
+    public ICommand DefaultParametersCommand => _defaultParametersCommand;
 
     public void OnWindowClosing(object sender, CancelEventArgs e)
     {
@@ -749,5 +753,18 @@ public class MainVm : ViewModelBase, IDisposable
     }
 
     public double ResultListHeight => 50 + _fractalParams.DisplaySize.Height;
+
+    private void OnDefaultParameters()
+    {
+        var fractalParams = new FractalParams(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
+
+        ClearFractalRange();
+        _fractalParams = fractalParams;
+        PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
+        ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+        DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
+        LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
+        TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
+    }
 }
 

@@ -49,6 +49,7 @@
                         <Button Margin="2" Padding="2" Command="{Binding DeleteMostCommand}">Delete Most</Button>
                         <Button Margin="2" Padding="2" Command="{Binding ApplyRectCommand}"
                         Visibility="{Binding ApplyRectVisibility}">Apply Rect</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding DefaultParametersCommand}">Defaults</Button>
                         <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ProgressVisibility}">
                             <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Percent Progress" />
                             <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PercentProgress}" />
