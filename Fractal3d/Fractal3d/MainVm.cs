@@ -28,6 +28,8 @@ internal class FractalRange
 
 public class MainVm : ViewModelBase, IDisposable
 {
+    #region Members
+
     private const int NumberOfColors = 1000;
 
     private readonly ShaderFactory _shaderFactory = new();
@@ -42,7 +44,10 @@ public class MainVm : ViewModelBase, IDisposable
     private bool _isDirty;
     private Rect _selectionRect;
     private FractalRange? _fractalRange;
-     
+
+    #endregion
+
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public MainVm(string fileName)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -99,6 +104,9 @@ public class MainVm : ViewModelBase, IDisposable
         _isDisposed = true;
     }
 
+    #region Commands
+
+    
     private readonly RelayCommand _calculateCommand;   
     public ICommand CalculateCommand => _calculateCommand;
 
@@ -129,67 +137,9 @@ public class MainVm : ViewModelBase, IDisposable
     private readonly RelayCommand _defaultParametersCommand;
     public ICommand DefaultParametersCommand => _defaultParametersCommand;
 
-    public void OnWindowClosing(object sender, CancelEventArgs e)
-    {
-        if (_isDirty)
-        {
-            DoYouWantToSaveResults();
-        }
-    }
+    #endregion
 
-    protected async void Calculate()
-    {
-        _cancelSource = new();
-        var cancelToken = _cancelSource.Token;
-        ProgressVisibility = Visibility.Visible;
-        ClearFractalRange();
-
-        try
-        {
-            if (_fractalParams.PlainShader)
-                _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, cancelToken);
-            else
-                _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, cancelToken);
-        }
-        catch (Exception)
-        {
-            _fractalResult = null;
-        }
-
-        if (cancelToken.IsCancellationRequested)
-        {
-            ProgressVisibility = Visibility.Collapsed;
-            return;
-        }
-
-        if (_fractalResult == null)
-            return;
-
-        DisplayImage(_fractalResult);
-        Time = _fractalResult.Time;
-
-        ProgressVisibility = Visibility.Collapsed;
-
-        FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
-
-        _isDirty = true;
-    }
-
-    protected void DisplayImage(FractalResult result)
-    {
-        if (result.Image == null || result.Params == null)
-            return;
-
-        var bmp = result.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
-
-        var image = ImageUtil.BitmapToImageSource(bmp);
-        ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
-    }
-
-    protected bool CanCalculate()
-    {
-        return AreParametersValid();
-    }
+    #region NonCommandProperties
 
     private PaletteVm _paletteVm;
     public PaletteVm PaletteViewModel
@@ -221,7 +171,6 @@ public class MainVm : ViewModelBase, IDisposable
     }
 
     private TransformVm _transformVm;
-
     public TransformVm TransformViewModel
     {
         get => _transformVm;
@@ -250,7 +199,6 @@ public class MainVm : ViewModelBase, IDisposable
     }
 
     private long _time;
-
     public long Time
     {
         get => _time;
@@ -258,11 +206,43 @@ public class MainVm : ViewModelBase, IDisposable
     }
 
     private string _fractalRangeText = "";
-
     public string FractalRange
     {
         get => _fractalRangeText;
         set => SetProperty(ref _fractalRangeText, value);
+    }
+
+    private ObservableCollection<FractalResultVm> _fractalResults = new();
+    public ObservableCollection<FractalResultVm> FractalResults
+    {
+        get => _fractalResults;
+        set => SetProperty(ref _fractalResults, value);
+    }
+
+    private Visibility _applyRectVisibility = Visibility.Collapsed;
+    public Visibility ApplyRectVisibility
+    {
+        get => _applyRectVisibility;
+        set => SetProperty(ref _applyRectVisibility, value);
+    }
+
+    public double ResultListHeight => 50 + _fractalParams.DisplaySize.Height;
+
+    #endregion
+
+    #region Handlers
+
+    public void OnWindowClosing(object sender, CancelEventArgs e)
+    {
+        if (_isDirty)
+        {
+            DoYouWantToSaveResults();
+        }
+    }
+
+    protected bool CanCalculate()
+    {
+        return AreParametersValid();
     }
 
     protected void OnPaletteChanged(Palette palette)
@@ -346,7 +326,7 @@ public class MainVm : ViewModelBase, IDisposable
 
         if (saveFileDialog.ShowDialog() != DialogResult.OK)
             return;
-        
+
         string filename = saveFileDialog.FileName;
         string ext = Path.GetExtension(filename);
 
@@ -361,58 +341,9 @@ public class MainVm : ViewModelBase, IDisposable
             bmp.Save(filename, ImageFormat.Bmp);
         }
         else if (string.Compare(ext, ".png", StringComparison.OrdinalIgnoreCase) == 0)
-        { 
+        {
             SaveAsPng(bmp, filename);
         }
-    }
-
-    private ImageCodecInfo? GetEncoderInfo(string imageType)
-    {
-        var codec = ImageCodecInfo.GetImageEncoders();
-
-        for (var i = 0; i < codec.Length; i++)
-        {
-            if (codec[i].MimeType == imageType) 
-                return codec[i];
-        }
-
-        return null;
-    }
-
-    private void SaveAsJpg(System.Drawing.Bitmap bmp, string filename)
-    {
-        var myImageCodecInfo = GetEncoderInfo("image/jpeg");
-        if (myImageCodecInfo == null)
-        {
-            System.Windows.Forms.MessageBox.Show("Cannot get codex for jpg", "Error");
-            return;
-        }
-        ImageCodecInfo info = myImageCodecInfo;
-        Encoder myEncoder = Encoder.Quality;
-        EncoderParameters myEncoderParameters = new EncoderParameters(1);
-
-        var myEncoderParameter = new EncoderParameter(myEncoder, 90L);
-        myEncoderParameters.Param[0] = myEncoderParameter;
-
-        bmp.Save(filename, info, myEncoderParameters);
-    }
-
-    private void SaveAsPng(System.Drawing.Bitmap bmp, string filename)
-    {
-        var myImageCodecInfo = GetEncoderInfo("image/png");
-        if (myImageCodecInfo == null)
-        {
-            System.Windows.Forms.MessageBox.Show("Cannot get codex for jpg", "Error");
-            return;
-        }
-        ImageCodecInfo info = myImageCodecInfo;
-        var myEncoder = Encoder.Quality;
-        var myEncoderParameters = new EncoderParameters(1);
-
-        var myEncoderParameter = new EncoderParameter(myEncoder, 90L);
-        myEncoderParameters.Param[0] = myEncoderParameter;
-
-        bmp.Save(filename, info, myEncoderParameters);
     }
 
     protected void OnOpen()
@@ -421,7 +352,7 @@ public class MainVm : ViewModelBase, IDisposable
         {
             DoYouWantToSaveResults();
         }
-        
+
         var openFileDialog = new OpenFileDialog
         {
             Filter = string.Format("Fractal3D file (*{0})|*{0}|All files (*.*)|*.*", Fractal3dConstants.FileExtension)
@@ -432,65 +363,6 @@ public class MainVm : ViewModelBase, IDisposable
         OpenResultFile(openFileDialog.FileName);
     }
 
-    private void OpenFileFromStartUp(string filename)
-    {
-        if (string.IsNullOrEmpty(filename))
-            return;
-
-        var ext = Path.GetExtension(filename);
-        if(string.IsNullOrEmpty(ext))
-            return;
-
-        if (ext == Fractal3dConstants.FileExtension)
-            OpenResultFile(filename);
-    }
-
-    protected void OpenResultFile(string filename)
-    {
-        try
-        {
-            ClearFractalRange();
-            string jsonString = File.ReadAllText(filename);
-
-            var results = JsonConvert.DeserializeObject<List<FractalResult>>(jsonString);
-
-            if (results == null) return;
-
-            FractalResults.Clear();
-            _fractalNumber = 1;
-            foreach (var fractalResult in results)
-            {
-                FractalResults.Add(new FractalResultVm(fractalResult, _fractalNumber++));
-            }
-
-            _fractalResult = results.Last();
-            _isDirty = false;
-
-            if (_fractalResult.Params == null)
-            {
-                System.Windows.Forms.MessageBox.Show("Can't load", "Params came back null");
-                return;
-            }
-            _fractalParams = _fractalResult.Params;
-            PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
-            ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
-            DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
-
-            if (_fractalResult.Image == null)
-                return;
-
-            var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
-
-            var image = ImageUtil.BitmapToImageSource(bmp);
-            ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
-
-            SelectedFractalResult = FractalResults.FirstOrDefault();
-        }
-        catch (Exception ex)
-        {
-            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot load result from file");
-        }
-    }
 
     protected void OnDelete()
     {
@@ -548,21 +420,9 @@ public class MainVm : ViewModelBase, IDisposable
         _cancelSource.Cancel();
     }
 
-    private ObservableCollection<FractalResultVm> _fractalResults = new();
-    public ObservableCollection<FractalResultVm> FractalResults
-    {
-        get => _fractalResults;
-        set => SetProperty(ref _fractalResults, value);
-    }
-
     protected void OnDisplayInfoChanged(DisplayInfo displayInfo)
     {
         _fractalParams.ColorInfo = displayInfo;
-    }
-
-    private void MakePaletteViewModel()
-    {
-        PaletteViewModel = new PaletteVm(_fractalParams.Palette, OnPaletteChanged, _fractalParams.ColorInfo);
     }
 
     private FractalResultVm? _selectedFractalResult;
@@ -576,7 +436,7 @@ public class MainVm : ViewModelBase, IDisposable
             {
                 ClearFractalRange();
                 _fractalResult = _selectedFractalResult.Result;
-                _fractalParams = _fractalResult.Params != null ? (FractalParams) _fractalResult.Params.Clone(): new FractalParams();
+                _fractalParams = _fractalResult.Params != null ? (FractalParams)_fractalResult.Params.Clone() : new FractalParams();
                 PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
                 ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
                 DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
@@ -584,8 +444,208 @@ public class MainVm : ViewModelBase, IDisposable
                 TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
                 DisplayImage(_fractalResult);
             }
-                
+
         }
+    }
+
+    private void OnApplyRect()
+    {
+        if (_selectionRect.Width == 0 || _selectionRect.Height == 0)
+            return;
+
+        if (_fractalRange == null)
+            return;
+
+        var width = _fractalRange.ToX - _fractalRange.FromX;
+        var height = _fractalRange.ToY - _fractalRange.FromY;
+
+        _fractalParams.FromX = (float)(_fractalRange.FromX + _selectionRect.X * width);
+        _fractalParams.ToX = (float)(_fractalRange.FromX + (_selectionRect.X + _selectionRect.Width) * width);
+        _fractalParams.FromY = (float)(_fractalRange.FromY + _selectionRect.Y * height);
+        _fractalParams.ToY = (float)(_fractalRange.FromY + (_selectionRect.Y + _selectionRect.Height) * height);
+
+        ImageViewModel.ClearRectangle();
+        ApplyRectVisibility = Visibility.Collapsed;
+    }
+
+    private void OnDefaultParameters()
+    {
+        var fractalParams = new FractalParams(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
+
+        ClearFractalRange();
+        _fractalParams = fractalParams;
+        PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
+        ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+        DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
+        LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
+        TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
+    }
+
+    #endregion
+
+    #region Methods
+
+    protected async void Calculate()
+    {
+        _cancelSource = new();
+        var cancelToken = _cancelSource.Token;
+        ProgressVisibility = Visibility.Visible;
+        ClearFractalRange();
+
+        try
+        {
+            if (_fractalParams.PlainShader)
+                _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, cancelToken);
+            else
+                _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, cancelToken);
+        }
+        catch (Exception)
+        {
+            _fractalResult = null;
+        }
+
+        if (cancelToken.IsCancellationRequested)
+        {
+            ProgressVisibility = Visibility.Collapsed;
+            return;
+        }
+
+        if (_fractalResult == null)
+            return;
+
+        DisplayImage(_fractalResult);
+        Time = _fractalResult.Time;
+
+        ProgressVisibility = Visibility.Collapsed;
+
+        FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
+
+        _isDirty = true;
+    }
+
+    protected void DisplayImage(FractalResult result)
+    {
+        if (result.Image == null || result.Params == null)
+            return;
+
+        var bmp = result.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
+
+        var image = ImageUtil.BitmapToImageSource(bmp);
+        ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
+    }
+
+    private ImageCodecInfo? GetEncoderInfo(string imageType)
+    {
+        var codec = ImageCodecInfo.GetImageEncoders();
+
+        foreach (var t in codec)
+        {
+            if (t.MimeType == imageType) 
+                return t;
+        }
+
+        return null;
+    }
+
+    private void SaveAsJpg(System.Drawing.Bitmap bmp, string filename)
+    {
+        var myImageCodecInfo = GetEncoderInfo("image/jpeg");
+        if (myImageCodecInfo == null)
+        {
+            System.Windows.Forms.MessageBox.Show("Cannot get codex for jpg", "Error");
+            return;
+        }
+        ImageCodecInfo info = myImageCodecInfo;
+        Encoder myEncoder = Encoder.Quality;
+        EncoderParameters myEncoderParameters = new EncoderParameters(1);
+
+        var myEncoderParameter = new EncoderParameter(myEncoder, 90L);
+        myEncoderParameters.Param[0] = myEncoderParameter;
+
+        bmp.Save(filename, info, myEncoderParameters);
+    }
+
+    private void SaveAsPng(System.Drawing.Bitmap bmp, string filename)
+    {
+        var myImageCodecInfo = GetEncoderInfo("image/png");
+        if (myImageCodecInfo == null)
+        {
+            System.Windows.Forms.MessageBox.Show("Cannot get codex for jpg", "Error");
+            return;
+        }
+        ImageCodecInfo info = myImageCodecInfo;
+        var myEncoder = Encoder.Quality;
+        var myEncoderParameters = new EncoderParameters(1);
+
+        var myEncoderParameter = new EncoderParameter(myEncoder, 90L);
+        myEncoderParameters.Param[0] = myEncoderParameter;
+
+        bmp.Save(filename, info, myEncoderParameters);
+    }
+
+    private void OpenFileFromStartUp(string filename)
+    {
+        if (string.IsNullOrEmpty(filename))
+            return;
+
+        var ext = Path.GetExtension(filename);
+        if (string.IsNullOrEmpty(ext))
+            return;
+
+        if (ext == Fractal3dConstants.FileExtension)
+            OpenResultFile(filename);
+    }
+
+    protected void OpenResultFile(string filename)
+    {
+        try
+        {
+            ClearFractalRange();
+            string jsonString = File.ReadAllText(filename);
+
+            var results = JsonConvert.DeserializeObject<List<FractalResult>>(jsonString);
+
+            if (results == null) return;
+
+            FractalResults.Clear();
+            _fractalNumber = 1;
+            foreach (var fractalResult in results)
+            {
+                FractalResults.Add(new FractalResultVm(fractalResult, _fractalNumber++));
+            }
+
+            _fractalResult = results.Last();
+            _isDirty = false;
+
+            if (_fractalResult.Params == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Can't load", "Params came back null");
+                return;
+            }
+            _fractalParams = _fractalResult.Params;
+            PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
+            ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+            DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
+
+            if (_fractalResult.Image == null)
+                return;
+
+            var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
+
+            var image = ImageUtil.BitmapToImageSource(bmp);
+            ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
+
+            SelectedFractalResult = FractalResults.FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot load result from file");
+        }
+    }
+
+    private void MakePaletteViewModel()
+    {
+        PaletteViewModel = new PaletteVm(_fractalParams.Palette, OnPaletteChanged, _fractalParams.ColorInfo);
     }
 
     private bool AreFractalParametersValid()
@@ -650,7 +710,7 @@ public class MainVm : ViewModelBase, IDisposable
         if (_fractalParams.NormalDistance is < ParameterConstants.MinNormalDistance or > ParameterConstants.MaxNormalDistance)
             return false;
 
-        if(_fractalParams.Lights.Count == 0) 
+        if (_fractalParams.Lights.Count == 0)
             return false;
 
         return true;
@@ -718,26 +778,6 @@ public class MainVm : ViewModelBase, IDisposable
         FractalRange = $"From X: {fromX:0.####}, To X: {toX:0.####}, From Y: {fromY:0.####}, To Y: {toY:0.####}";
     }
 
-    private void OnApplyRect()
-    {
-        if (_selectionRect.Width == 0 || _selectionRect.Height == 0)
-            return;
-
-        if (_fractalRange == null)
-            return;
-
-        var width = _fractalRange.ToX - _fractalRange.FromX;
-        var height = _fractalRange.ToY - _fractalRange.FromY;
-
-        _fractalParams.FromX = (float)(_fractalRange.FromX + _selectionRect.X * width);
-        _fractalParams.ToX = (float)(_fractalRange.FromX + (_selectionRect.X + _selectionRect.Width) * width);
-        _fractalParams.FromY = (float)(_fractalRange.FromY + _selectionRect.Y * height);
-        _fractalParams.ToY = (float)(_fractalRange.FromY + (_selectionRect.Y + _selectionRect.Height) * height);
-
-        ImageViewModel.ClearRectangle();
-        ApplyRectVisibility = Visibility.Collapsed;
-    }
-
     private void ClearFractalRange()
     {
         _fractalRange = null;
@@ -745,26 +785,7 @@ public class MainVm : ViewModelBase, IDisposable
         ApplyRectVisibility = Visibility.Collapsed;
     }
 
-    private Visibility _applyRectVisibility = Visibility.Collapsed;
-    public Visibility ApplyRectVisibility
-    {
-        get => _applyRectVisibility;
-        set => SetProperty(ref _applyRectVisibility, value);
-    }
+    #endregion
 
-    public double ResultListHeight => 50 + _fractalParams.DisplaySize.Height;
-
-    private void OnDefaultParameters()
-    {
-        var fractalParams = new FractalParams(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
-
-        ClearFractalRange();
-        _fractalParams = fractalParams;
-        PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
-        ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
-        DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
-        LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
-        TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
-    }
 }
 
