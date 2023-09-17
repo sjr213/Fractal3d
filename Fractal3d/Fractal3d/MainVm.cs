@@ -270,6 +270,7 @@ public class MainVm : ViewModelBase, IDisposable
     {
         _fractalParams = fractalParams;
         ClearFractalRange();
+        OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
     }
 
@@ -746,5 +747,7 @@ public class MainVm : ViewModelBase, IDisposable
         get => _applyRectVisibility;
         set => SetProperty(ref _applyRectVisibility, value);
     }
+
+    public double ResultListHeight => 50 + _fractalParams.DisplaySize.Height;
 }
 

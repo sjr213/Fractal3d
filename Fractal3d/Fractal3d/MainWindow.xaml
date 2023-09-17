@@ -1,5 +1,4 @@
-﻿
-    <Window x:Class="Fractal3d.MainWindow"
+﻿<Window x:Class="Fractal3d.MainWindow"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,101 +6,105 @@
             xmlns:local="clr-namespace:Fractal3d"
             mc:Ignorable="d"
             d:DataContext="{d:DesignInstance Type=local:MainVm}"
-            Title="Fractal 3D" Height="1000" Width="1300">
+            Title="Fractal 3D" Width="1300">
 
-        <Window.Resources>
+    <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="GeneralResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-  
+
     <Grid>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="300" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="500"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0" Grid.Column="0" DataContext="{Binding}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" MaxHeight="30">
-                <Button Margin="2" Padding="2" Command="{Binding CalculateCommand}">Calculate</Button>
-                <Button Margin="2" Padding="2" Command="{Binding SaveOneCommand}">Save One</Button>
-                <Button Margin="2" Padding="2" Command="{Binding SaveImageCommand}">Save Image</Button>
-                <Button Margin="2" Padding="2" Command="{Binding SaveAllCommand}">Save All</Button>
-                <Button Margin="2" Padding="2" Command="{Binding OpenCommand}">Open</Button>
-                <Button Margin="2" Padding="2" Command="{Binding DeleteCommand}">Delete</Button>
-                <Button Margin="2" Padding="2" Command="{Binding DeleteMostCommand}">Delete Most</Button>
-                <Button Margin="2" Padding="2" Command="{Binding ApplyRectCommand}"
+        <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" >
+            <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
+                <Grid  DataContext="{Binding}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" MaxHeight="30">
+                        <Button Margin="2" Padding="2" Command="{Binding CalculateCommand}">Calculate</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding SaveOneCommand}">Save One</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding SaveImageCommand}">Save Image</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding SaveAllCommand}">Save All</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding OpenCommand}">Open</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding DeleteCommand}">Delete</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding DeleteMostCommand}">Delete Most</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding ApplyRectCommand}"
                         Visibility="{Binding ApplyRectVisibility}">Apply Rect</Button>
-                <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ProgressVisibility}">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Percent Progress" />
-                    <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PercentProgress}" />
-                    <Button Margin="2" Padding="2" Command="{Binding CancelCommand}">Cancel</Button>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" MaxHeight="30">
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Margin="2" Padding="2">Time (ms):</TextBlock>
-                    <TextBlock Margin="2" Padding="2" Text="{Binding Time}"/>
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ApplyRectVisibility}">
-                    <TextBlock Margin="2" Padding="2">Fractal Range:</TextBlock>
-                    <TextBlock Margin="2" Padding="2" Text="{Binding FractalRange}"/>
-                </StackPanel>
-            </StackPanel>
-            <ContentPresenter Grid.Row="2" Grid.Column="1" Content="{Binding ImageViewModel}">
-                <ContentPresenter.Resources>
-                    <DataTemplate DataType="{x:Type local:ImageVm}" >
-                        <local:ImageView/>
-                    </DataTemplate>
-                </ContentPresenter.Resources>
-            </ContentPresenter>
-            <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" MaxWidth="150" MaxHeight="800">
-                <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
-                    <ListBox ItemsSource="{Binding Path=FractalResults}" BorderThickness="0" SelectedItem="{Binding Path=SelectedFractalResult, Mode=TwoWay}">
-                        <ListBox.ItemContainerStyle>
-                            <Style>
-                                <Style.Triggers>
-                                    <EventTrigger RoutedEvent="Control.PreviewMouseLeftButtonDown">
-                                        <BeginStoryboard>
-                                            <Storyboard Storyboard.TargetProperty="(Selector.IsSelected)">
-                                                <BooleanAnimationUsingKeyFrames Duration="0:0:0">
-                                                    <DiscreteBooleanKeyFrame Value="True" />
-                                                </BooleanAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate >
-                                <ContentPresenter ContentTemplate="{StaticResource FractalResultView}" />
+                        <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ProgressVisibility}">
+                            <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Percent Progress" />
+                            <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PercentProgress}" />
+                            <Button Margin="2" Padding="2" Command="{Binding CancelCommand}">Cancel</Button>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" MaxHeight="30">
+                        <StackPanel Margin="2" Orientation="Horizontal">
+                            <TextBlock Margin="2" Padding="2">Time (ms):</TextBlock>
+                            <TextBlock Margin="2" Padding="2" Text="{Binding Time}"/>
+                        </StackPanel>
+                        <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ApplyRectVisibility}">
+                            <TextBlock Margin="2" Padding="2">Fractal Range:</TextBlock>
+                            <TextBlock Margin="2" Padding="2" Text="{Binding FractalRange}"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <ContentPresenter Grid.Row="2" Grid.Column="1" Content="{Binding ImageViewModel}">
+                        <ContentPresenter.Resources>
+                            <DataTemplate DataType="{x:Type local:ImageVm}" >
+                                <local:ImageView/>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </ScrollViewer>
-            </Border>
-        </Grid>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
+                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" MaxWidth="150" Height="{Binding ResultListHeight}">
+                        <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
+                            <ListBox ItemsSource="{Binding Path=FractalResults}" BorderThickness="0" SelectedItem="{Binding Path=SelectedFractalResult, Mode=TwoWay}">
+                                <ListBox.ItemContainerStyle>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <EventTrigger RoutedEvent="Control.PreviewMouseLeftButtonDown">
+                                                <BeginStoryboard>
+                                                    <Storyboard Storyboard.TargetProperty="(Selector.IsSelected)">
+                                                        <BooleanAnimationUsingKeyFrames Duration="0:0:0">
+                                                            <DiscreteBooleanKeyFrame Value="True" />
+                                                        </BooleanAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate >
+                                        <ContentPresenter ContentTemplate="{StaticResource FractalResultView}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
+        </Border>
 
 
         <TabControl Grid.Row="0" Grid.Column="1">
-            
+
             <TabItem Header="Palettes" DataContext="{Binding }">
                 <ContentPresenter Content="{Binding PaletteViewModel}">
                     <ContentPresenter.Resources>
@@ -111,7 +114,7 @@
                     </ContentPresenter.Resources>
                 </ContentPresenter>
             </TabItem>
-            
+
             <TabItem Header="Parameters" DataContext="{Binding }">
                 <ContentPresenter Content="{Binding ParameterViewModel}">
                     <ContentPresenter.Resources>
@@ -139,18 +142,19 @@
                     </ContentPresenter.Resources>
                 </ContentPresenter>
             </TabItem>
-        
+
             <TabItem Header="Display" DataContext="{Binding }">
                 <ContentPresenter Content="{Binding DisplayInfoViewModel}" ContentTemplate="{StaticResource DisplayInfoView}">
                     <ContentPresenter.Resources>
                         <DataTemplate DataType="{x:Type local:DisplayInfoVm}"  />
                     </ContentPresenter.Resources>
-                </ContentPresenter> 
+                </ContentPresenter>
             </TabItem>
-         
+
         </TabControl>
 
-        <ContentPresenter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding PaletteViewModel}">
+        <ContentPresenter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding PaletteViewModel}"
+                          Height="300">
             <ContentPresenter.Resources>
                 <DataTemplate DataType="{x:Type local:PaletteVm}" >
                     <local:PaletteView/>
