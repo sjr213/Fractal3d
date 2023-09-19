@@ -13,6 +13,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="GeneralResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -48,8 +49,10 @@
                         <Button Margin="2" Padding="2" Command="{Binding DeleteCommand}">Delete</Button>
                         <Button Margin="2" Padding="2" Command="{Binding DeleteMostCommand}">Delete Most</Button>
                         <Button Margin="2" Padding="2" Command="{Binding ApplyRectCommand}"
-                        Visibility="{Binding ApplyRectVisibility}">Apply Rect</Button>
+                            Visibility="{Binding ApplyRectVisibility}">Apply Rect</Button>
                         <Button Margin="2" Padding="2" Command="{Binding DefaultParametersCommand}">Defaults</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding AddToQueueCommand}" 
+                                Visibility="{Binding TempMode, Converter={StaticResource BooleanToVisibilityConverter}}"  >+ 2 Q</Button>
                         <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ProgressVisibility}">
                             <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Percent Progress" />
                             <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PercentProgress}" />
@@ -57,13 +60,15 @@
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" MaxHeight="30">
+                        <CheckBox Margin="5,2" Padding="2" VerticalContentAlignment="Center"
+                                  IsChecked="{Binding TempMode}">Temp Mode</CheckBox>
                         <StackPanel Margin="2" Orientation="Horizontal">
-                            <TextBlock Margin="2" Padding="2">Time (ms):</TextBlock>
-                            <TextBlock Margin="2" Padding="2" Text="{Binding Time}"/>
+                            <TextBlock Margin="2" >Time (ms):</TextBlock>
+                            <TextBlock Margin="2" Text="{Binding Time}"/>
                         </StackPanel>
-                        <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ApplyRectVisibility}">
-                            <TextBlock Margin="2" Padding="2">Fractal Range:</TextBlock>
-                            <TextBlock Margin="2" Padding="2" Text="{Binding FractalRange}"/>
+                        <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ApplyRectVisibility}" >
+                            <TextBlock Margin="2">Fractal Range:</TextBlock>
+                            <TextBlock Margin="2" Text="{Binding FractalRange}"/>
                         </StackPanel>
                     </StackPanel>
                     <ContentPresenter Grid.Row="2" Grid.Column="1" Content="{Binding ImageViewModel}">

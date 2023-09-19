@@ -62,6 +62,7 @@ public class MainVm : ViewModelBase, IDisposable
         _cancelCommand = new RelayCommand(_ => OnCancel(), _ => true);  // This should only be visible when calculating because it's in the progress Stack panel
         _applyRectCommand = new RelayCommand(_ => OnApplyRect());
         _defaultParametersCommand = new RelayCommand(_ => OnDefaultParameters());
+        _addToQueueCommand = new RelayCommand(_ => OnAddToQueue());
         MakePaletteViewModel();
         ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
@@ -136,6 +137,9 @@ public class MainVm : ViewModelBase, IDisposable
 
     private readonly RelayCommand _defaultParametersCommand;
     public ICommand DefaultParametersCommand => _defaultParametersCommand;
+
+    private readonly RelayCommand _addToQueueCommand;
+    public RelayCommand AddToQueueCommand => _addToQueueCommand;
 
     #endregion
 
@@ -227,6 +231,17 @@ public class MainVm : ViewModelBase, IDisposable
     }
 
     public double ResultListHeight => 50 + _fractalParams.DisplaySize.Height;
+
+    private bool _tempMode;
+    public bool TempMode
+    {
+        get => _tempMode;
+        set
+        {
+            _tempMode = value;
+            OnPropertyChanged();
+        }
+    }
 
     #endregion
 
@@ -481,6 +496,12 @@ public class MainVm : ViewModelBase, IDisposable
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
     }
 
+    private void OnAddToQueue()
+    {
+        if (TempMode == true && _fractalResult != null)
+            FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
+    }
+
     #endregion
 
     #region Methods
@@ -518,7 +539,8 @@ public class MainVm : ViewModelBase, IDisposable
 
         ProgressVisibility = Visibility.Collapsed;
 
-        FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
+        if(TempMode == false)
+            FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
 
         _isDirty = true;
     }
