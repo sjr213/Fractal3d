@@ -271,6 +271,9 @@ public class MainVm : ViewModelBase, IDisposable
         ClearFractalRange();
         OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
+
+        if(TempMode)
+            Calculate();
     }
 
     protected void OnSaveAll()
