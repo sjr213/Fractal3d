@@ -154,12 +154,14 @@ public class LightingVm : ViewModelBase
     {
         _fractalParams.Lights.Add(new Light());
         UpdateLightIndices();
+        _onParamsChanged(_fractalParams);
     }
 
     protected void DeleteLight()
     {
         _fractalParams.Lights.RemoveAt(SelectedLightIndex-1);
         UpdateLightIndices();
+        _onParamsChanged(_fractalParams);
     }
 
     protected bool CanDeleteLight()
