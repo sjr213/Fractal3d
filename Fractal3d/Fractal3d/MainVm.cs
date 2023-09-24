@@ -263,6 +263,9 @@ public class MainVm : ViewModelBase, IDisposable
     protected void OnPaletteChanged(Palette palette)
     {
         _fractalParams.Palette = palette;
+
+        if (TempMode)
+            Calculate();
     }
 
     protected void OnParamsChanged(FractalParams fractalParams)
