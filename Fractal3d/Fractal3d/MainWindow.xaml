@@ -108,56 +108,59 @@
             </ScrollViewer>
         </Border>
 
+        <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource BorderBlackNarrowStyle}" >
+            <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
+                <TabControl >
 
-        <TabControl Grid.Row="0" Grid.Column="1">
+                    <TabItem Header="Palettes" DataContext="{Binding }">
+                        <ContentPresenter Content="{Binding PaletteViewModel}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:PaletteVm}" >
+                                    <local:PalettesView/>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </TabItem>
 
-            <TabItem Header="Palettes" DataContext="{Binding }">
-                <ContentPresenter Content="{Binding PaletteViewModel}">
-                    <ContentPresenter.Resources>
-                        <DataTemplate DataType="{x:Type local:PaletteVm}" >
-                            <local:PalettesView/>
-                        </DataTemplate>
-                    </ContentPresenter.Resources>
-                </ContentPresenter>
-            </TabItem>
+                    <TabItem Header="Parameters" DataContext="{Binding }">
+                        <ContentPresenter Content="{Binding ParameterViewModel}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:ParameterVm}" >
+                                    <local:ParameterView/>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </TabItem>
+                    <TabItem Header="Lighting" DataContext="{Binding }">
+                        <ContentPresenter Content="{Binding LightingViewModel}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:LightingVm}" >
+                                    <local:LightingView/>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </TabItem>
+                    <TabItem Header="Transform" DataContext="{Binding}">
+                        <ContentPresenter Content="{Binding TransformViewModel}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:TransformVm}">
+                                    <local:TransformView/>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </TabItem>
 
-            <TabItem Header="Parameters" DataContext="{Binding }">
-                <ContentPresenter Content="{Binding ParameterViewModel}">
-                    <ContentPresenter.Resources>
-                        <DataTemplate DataType="{x:Type local:ParameterVm}" >
-                            <local:ParameterView/>
-                        </DataTemplate>
-                    </ContentPresenter.Resources>
-                </ContentPresenter>
-            </TabItem>
-            <TabItem Header="Lighting" DataContext="{Binding }">
-                <ContentPresenter Content="{Binding LightingViewModel}">
-                    <ContentPresenter.Resources>
-                        <DataTemplate DataType="{x:Type local:LightingVm}" >
-                            <local:LightingView/>
-                        </DataTemplate>
-                    </ContentPresenter.Resources>
-                </ContentPresenter>
-            </TabItem>
-            <TabItem Header="Transform" DataContext="{Binding}">
-                <ContentPresenter Content="{Binding TransformViewModel}">
-                    <ContentPresenter.Resources>
-                        <DataTemplate DataType="{x:Type local:TransformVm}">
-                            <local:TransformView/>
-                        </DataTemplate>
-                    </ContentPresenter.Resources>
-                </ContentPresenter>
-            </TabItem>
+                    <TabItem Header="Display" DataContext="{Binding }">
+                        <ContentPresenter Content="{Binding DisplayInfoViewModel}" ContentTemplate="{StaticResource DisplayInfoView}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:DisplayInfoVm}"  />
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </TabItem>
 
-            <TabItem Header="Display" DataContext="{Binding }">
-                <ContentPresenter Content="{Binding DisplayInfoViewModel}" ContentTemplate="{StaticResource DisplayInfoView}">
-                    <ContentPresenter.Resources>
-                        <DataTemplate DataType="{x:Type local:DisplayInfoVm}"  />
-                    </ContentPresenter.Resources>
-                </ContentPresenter>
-            </TabItem>
-
-        </TabControl>
+                </TabControl>
+            </ScrollViewer>
+        </Border>
 
         <ContentPresenter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding PaletteViewModel}"
                           Height="300">
