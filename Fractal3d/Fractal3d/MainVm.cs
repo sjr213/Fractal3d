@@ -441,6 +441,9 @@ public class MainVm : ViewModelBase, IDisposable
     protected void OnDisplayInfoChanged(DisplayInfo displayInfo)
     {
         _fractalParams.ColorInfo = displayInfo;
+
+        if (TempMode)
+            Calculate();
     }
 
     private FractalResultVm? _selectedFractalResult;
