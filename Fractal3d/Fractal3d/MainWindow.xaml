@@ -60,8 +60,15 @@
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" MaxHeight="30">
-                        <CheckBox Margin="5,2" Padding="2" VerticalContentAlignment="Center"
-                                  IsChecked="{Binding TempMode}">Temp Mode</CheckBox>
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="View Mode:" />
+                        <ComboBox Margin="5,2" Padding="2" 
+                                  ItemsSource="{Binding AllowedViewModes}" SelectedItem="{Binding SelectedViewMode}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                         <StackPanel Margin="2" Orientation="Horizontal">
                             <TextBlock Margin="2" >Time (ms):</TextBlock>
                             <TextBlock Margin="2" Text="{Binding Time}"/>

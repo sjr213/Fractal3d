@@ -70,6 +70,12 @@ public class MainVm : ViewModelBase, IDisposable
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
 
+        AllowedViewModes = new ObservableCollection<ViewModes>
+        {
+            ViewModes.Queue, ViewModes.Temp, ViewModes.Movie
+        };
+        SelectedViewMode = ViewModes.Queue;
+
         if (SynchronizationContext.Current != null)
         {
             _progressSubject = _fractalParallelFactory.Progress.ObserveOn(SynchronizationContext.Current)
@@ -232,13 +238,20 @@ public class MainVm : ViewModelBase, IDisposable
 
     public double ResultListHeight => 50 + _fractalParams.DisplaySize.Height;
 
-    private bool _tempMode;
-    public bool TempMode
+    private ObservableCollection<ViewModes> _allowedViewModes;
+    public ObservableCollection<ViewModes> AllowedViewModes
     {
-        get => _tempMode;
+        get => _allowedViewModes;
+        set => SetProperty(ref _allowedViewModes, value);
+    }
+
+    private ViewModes _selectedViewMode;
+    public ViewModes SelectedViewMode
+    {
+        get => _selectedViewMode;
         set
         {
-            _tempMode = value;
+            _selectedViewMode = value;
             OnPropertyChanged();
         }
     }
@@ -264,7 +277,7 @@ public class MainVm : ViewModelBase, IDisposable
     {
         _fractalParams.Palette = palette;
 
-        if (TempMode)
+        if (SelectedViewMode == ViewModes.Temp)
             Calculate();
     }
 
@@ -275,7 +288,7 @@ public class MainVm : ViewModelBase, IDisposable
         OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
 
-        if(TempMode)
+        if (SelectedViewMode == ViewModes.Temp)
             Calculate();
     }
 
@@ -445,7 +458,7 @@ public class MainVm : ViewModelBase, IDisposable
     {
         _fractalParams.ColorInfo = displayInfo;
 
-        if (TempMode)
+        if (SelectedViewMode == ViewModes.Temp)
             Calculate();
     }
 
@@ -507,7 +520,7 @@ public class MainVm : ViewModelBase, IDisposable
 
     private void OnAddToQueue()
     {
-        if (TempMode == true && _fractalResult != null)
+        if (SelectedViewMode == ViewModes.Temp && _fractalResult != null)
             FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
     }
 
@@ -548,7 +561,7 @@ public class MainVm : ViewModelBase, IDisposable
 
         ProgressVisibility = Visibility.Collapsed;
 
-        if(TempMode == false)
+        if(SelectedViewMode == ViewModes.Queue)
             FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
 
         _isDirty = true;
