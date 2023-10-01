@@ -1,12 +1,11 @@
-﻿using System.IO;
-
-namespace Fractal3d;
+﻿namespace Fractal3d;
 
 using BasicWpfLibrary;
 using ImageCalculator;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;

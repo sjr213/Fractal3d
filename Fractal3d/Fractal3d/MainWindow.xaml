@@ -4,6 +4,7 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:local="clr-namespace:Fractal3d"
+            xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
             mc:Ignorable="d"
             d:DataContext="{d:DesignInstance Type=local:MainVm}"
             Title="Fractal 3D" Width="1300">
@@ -51,8 +52,18 @@
                         <Button Margin="2" Padding="2" Command="{Binding ApplyRectCommand}"
                             Visibility="{Binding ApplyRectVisibility}">Apply Rect</Button>
                         <Button Margin="2" Padding="2" Command="{Binding DefaultParametersCommand}">Defaults</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding AddToQueueCommand}" 
-                                Visibility="{Binding TempMode, Converter={StaticResource BooleanToVisibilityConverter}}"  >+ 2 Q</Button>
+                        <Button Margin="2" Padding="2" Command="{Binding AddToQueueCommand}" Content="+ 2 Q">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedViewMode}" Value="Temp">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                         <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ProgressVisibility}">
                             <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Percent Progress" />
                             <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding PercentProgress}" />
@@ -138,6 +149,7 @@
                             </ContentPresenter.Resources>
                         </ContentPresenter>
                     </TabItem>
+
                     <TabItem Header="Lighting" DataContext="{Binding }">
                         <ContentPresenter Content="{Binding LightingViewModel}">
                             <ContentPresenter.Resources>
@@ -147,6 +159,7 @@
                             </ContentPresenter.Resources>
                         </ContentPresenter>
                     </TabItem>
+
                     <TabItem Header="Transform" DataContext="{Binding}">
                         <ContentPresenter Content="{Binding TransformViewModel}">
                             <ContentPresenter.Resources>
@@ -161,6 +174,26 @@
                         <ContentPresenter Content="{Binding DisplayInfoViewModel}" ContentTemplate="{StaticResource DisplayInfoView}">
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type local:DisplayInfoVm}"  />
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </TabItem>
+
+                    <TabItem Header="Movie" DataContext="{Binding }" >
+                        <TabItem.Style>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedViewMode}" Value="Movie">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
+                        <ContentPresenter Content="{Binding MovieViewModel}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:MovieVm}">
+                                    <local:MovieView/>
+                                </DataTemplate>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
                     </TabItem>

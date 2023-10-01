@@ -69,6 +69,7 @@ public class MainVm : ViewModelBase, IDisposable
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
+        MovieViewModel = new MovieVm(_fractalParams);
 
         AllowedViewModes = new ObservableCollection<ViewModes>
         {
@@ -192,6 +193,13 @@ public class MainVm : ViewModelBase, IDisposable
     {
         get => _displayInfoVm;
         set => SetProperty(ref _displayInfoVm, value);
+    }
+
+    private MovieVm _movieVm;
+    public MovieVm MovieViewModel
+    {
+        get => _movieVm;
+        set => SetProperty(ref _movieVm, value);
     }
 
     private Visibility _progressVisibility = Visibility.Collapsed;
@@ -479,6 +487,7 @@ public class MainVm : ViewModelBase, IDisposable
                 DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
                 LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
                 TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
+                MovieViewModel = new MovieVm(_fractalParams);
                 DisplayImage(_fractalResult);
             }
 
@@ -516,6 +525,7 @@ public class MainVm : ViewModelBase, IDisposable
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
+        MovieViewModel = new MovieVm(_fractalParams);
     }
 
     private void OnAddToQueue()
