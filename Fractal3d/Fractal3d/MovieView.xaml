@@ -6,9 +6,45 @@
              xmlns:local="clr-namespace:Fractal3d"
              xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance Type=basicWpfLibrary:MovieVm}"
+             d:DataContext="{d:DesignInstance Type=local:MovieVm}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="{Binding Name}"></TextBlock>
-    </Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="GeneralResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Style="{StaticResource BorderStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0"  Margin="5" Orientation="Horizontal" MaxHeight="30">
+                <Button Margin="2" Padding="2" Command="{Binding PlayCommand}">Play</Button>
+                <Button Margin="2" Padding="2" Command="{Binding StopCommand}">Stop</Button>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Margin="5" Orientation="Vertical">
+                <ComboBox Margin="2" Padding="2" Width="100" HorizontalAlignment="Left"
+                          ItemsSource="{Binding AllowedMovieTypes}" SelectedItem="{Binding SelectedMovieType}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Current Image" />
+                        <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding CurrentImage}" />
+                    </StackPanel>
+                    <StackPanel Margin="5,2,2,2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Number of Images" />
+                        <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding NumberOfImages}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+     </Border>
 </UserControl>

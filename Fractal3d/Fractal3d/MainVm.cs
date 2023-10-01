@@ -1,4 +1,6 @@
-﻿namespace Fractal3d;
+﻿using ImageCalculator.Movie;
+
+namespace Fractal3d;
 
 using BasicWpfLibrary;
 using FractureCommonLib;
@@ -45,6 +47,8 @@ public class MainVm : ViewModelBase, IDisposable
     private Rect _selectionRect;
     private FractalRange? _fractalRange;
 
+    private MovieParams _movieParams = new MovieParams();
+
     #endregion
 
 
@@ -66,11 +70,11 @@ public class MainVm : ViewModelBase, IDisposable
         MakePaletteViewModel();
         ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+        MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
-        MovieViewModel = new MovieVm(_fractalParams);
-
+        
         AllowedViewModes = new ObservableCollection<ViewModes>
         {
             ViewModes.Queue, ViewModes.Temp, ViewModes.Movie
@@ -295,9 +299,15 @@ public class MainVm : ViewModelBase, IDisposable
         ClearFractalRange();
         OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
+        MovieViewModel.SetFractalParams(_fractalParams);
 
         if (SelectedViewMode == ViewModes.Temp)
             Calculate();
+    }
+
+    protected void OnMovieParamsChanged(MovieParams movieParams)
+    {
+        _movieParams = movieParams;
     }
 
     protected void OnSaveAll()
@@ -487,7 +497,7 @@ public class MainVm : ViewModelBase, IDisposable
                 DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
                 LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
                 TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
-                MovieViewModel = new MovieVm(_fractalParams);
+                MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
                 DisplayImage(_fractalResult);
             }
 
@@ -520,12 +530,13 @@ public class MainVm : ViewModelBase, IDisposable
 
         ClearFractalRange();
         _fractalParams = fractalParams;
+        _movieParams = new MovieParams();
         PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
-        MovieViewModel = new MovieVm(_fractalParams);
+        MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
     }
 
     private void OnAddToQueue()
