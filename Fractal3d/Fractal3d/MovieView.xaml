@@ -37,11 +37,38 @@
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <StackPanel Margin="2" Orientation="Horizontal">
                         <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Current Image" />
-                        <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding CurrentImage}" />
+                        <TextBox Style="{StaticResource TextBoxInError}">
+                            <TextBox.Resources>
+                                <basicWpfLibrary:BindingProxy x:Key="Proxy" Data="{Binding}"/>
+                            </TextBox.Resources>
+                            <TextBox.Text>
+                                <Binding Path="CurrentImage" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:IntRangeRuleUsingMaxWrapper Min="{x:Static local:MovieConstants.FirstImage}">
+                                            <basicWpfLibrary:IntRangeRuleUsingMaxWrapper.Wrapper>
+                                                <basicWpfLibrary:Wrapper 
+                                                    
+                                                    Max="{Binding Data.NumberOfImages, Source={StaticResource Proxy}}"/>
+                                            </basicWpfLibrary:IntRangeRuleUsingMaxWrapper.Wrapper>
+                                        </basicWpfLibrary:IntRangeRuleUsingMaxWrapper>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
                     </StackPanel>
                     <StackPanel Margin="5,2,2,2" Orientation="Horizontal">
                         <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Number of Images" />
-                        <TextBox Style="{StaticResource PlainTextBoxStyle}" Text="{Binding NumberOfImages}" />
+                        <TextBox Style="{StaticResource TextBoxInError}" >
+                            <TextBox.Text>
+                                <Binding Path="NumberOfImages" 
+                                         UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:MovieConstants.MinImages}" 
+                                                                      Max="{x:Static local:MovieConstants.MaxImages}"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
