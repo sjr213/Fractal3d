@@ -20,11 +20,13 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0"  Margin="5" Orientation="Horizontal" MaxHeight="30">
                 <Button Margin="2" Padding="2" Command="{Binding PlayCommand}">Play</Button>
                 <Button Margin="2" Padding="2" Command="{Binding StopCommand}">Stop</Button>
             </StackPanel>
+
             <StackPanel Grid.Row="1" Margin="5" Orientation="Vertical">
                 <ComboBox Margin="2" Padding="2" Width="100" HorizontalAlignment="Left"
                           ItemsSource="{Binding AllowedMovieTypes}" SelectedItem="{Binding SelectedMovieType}">
@@ -71,6 +73,92 @@
                         </TextBox>
                     </StackPanel>
                 </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Margin="5" Orientation="Vertical">
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Rotation Angles" />
+
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Around X Axis -  From:"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="FromAngleX" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinRotation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxRotation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="To:"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="ToAngleX" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinRotation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxRotation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Around Y Axis -  From:"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="FromAngleY" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinRotation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxRotation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="To:"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="ToAngleY" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinRotation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxRotation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+
+                <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Around Z Axis -  From:"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="FromAngleZ" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinRotation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxRotation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="To:"/>
+                    <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBox.Text>
+                            <Binding Path="ToAngleZ" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinRotation}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxRotation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+
             </StackPanel>
         </Grid>
      </Border>

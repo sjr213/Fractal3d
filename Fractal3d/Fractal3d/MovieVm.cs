@@ -102,6 +102,66 @@ public class MovieVm : ViewModelBase
         }
     }
 
+    public float FromAngleX
+    {
+        get => _movieParams.FromAngleX;
+        set
+        {
+            _movieParams.FromAngleX = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public float ToAngleX
+    {
+        get => _movieParams.ToAngleX;
+        set
+        {
+            _movieParams.ToAngleX = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public float FromAngleY
+    {
+        get => _movieParams.FromAngleY;
+        set
+        {
+            _movieParams.FromAngleY = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public float ToAngleY
+    {
+        get => _movieParams.ToAngleY;
+        set
+        {
+            _movieParams.ToAngleY = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public float FromAngleZ
+    {
+        get => _movieParams.FromAngleZ;
+        set
+        {
+            _movieParams.FromAngleZ = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public float ToAngleZ
+    {
+        get => _movieParams.ToAngleZ;
+        set
+        {
+            _movieParams.ToAngleZ = value;
+            OnPropertyChanged();
+        }
+    }
+
     #endregion
 }
 
