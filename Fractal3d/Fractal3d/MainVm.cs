@@ -70,6 +70,7 @@ public class MainVm : ViewModelBase, IDisposable
         MakePaletteViewModel();
         ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+        UpdateMovieParams();
         MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
@@ -299,7 +300,8 @@ public class MainVm : ViewModelBase, IDisposable
         ClearFractalRange();
         OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
-        MovieViewModel.SetFractalParams(_fractalParams);
+        UpdateMovieParams();
+        MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
 
         if (SelectedViewMode == ViewModes.Temp)
             Calculate();
@@ -497,6 +499,7 @@ public class MainVm : ViewModelBase, IDisposable
                 DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
                 LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
                 TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
+                UpdateMovieParams();
                 MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
                 DisplayImage(_fractalResult);
             }
@@ -536,6 +539,7 @@ public class MainVm : ViewModelBase, IDisposable
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
+        UpdateMovieParams();
         MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
     }
 
@@ -848,6 +852,13 @@ public class MainVm : ViewModelBase, IDisposable
         _fractalRange = null;
         FractalRange = "";
         ApplyRectVisibility = Visibility.Collapsed;
+    }
+
+    private void UpdateMovieParams()
+    {
+        _movieParams.FromAngleX = _movieParams.ToAngleX = _fractalParams.TransformParams.RotateX;
+        _movieParams.FromAngleY = _movieParams.ToAngleY = _fractalParams.TransformParams.RotateY;
+        _movieParams.FromAngleZ = _movieParams.ToAngleZ = _fractalParams.TransformParams.RotateZ;
     }
 
     #endregion
