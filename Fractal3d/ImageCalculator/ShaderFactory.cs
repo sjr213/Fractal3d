@@ -7,8 +7,8 @@ using System.Reactive.Subjects;
 public class ShaderFactory : IDisposable
 {
     private FractalParams _fractalParams = new(FractalParams.MakeLights());
-    private readonly Subject<int> _progressSubject = new();
-    public IObservable<int> Progress => _progressSubject;
+    private readonly Subject<double> _progressSubject = new();
+    public IObservable<double> Progress => _progressSubject;
     private Func<Vector3, float> _distanceEstimator = EstimateDistanceSphere;
 
     private bool _isDisposed;
@@ -97,9 +97,9 @@ public class ShaderFactory : IDisposable
     }
 
 
-    private void CalculateImageNew(RawLightedImage raw, FractalParams fractalParams, CancellationToken cancelToken)
+    private void CalculateImageNew(RawLightedImage raw, FractalParams fractalParams, double startProgress, double sumProgress, CancellationToken cancelToken)
     {
-        _progressSubject.OnNext(0);
+        _progressSubject.OnNext(startProgress);
 
         var size = fractalParams.ImageSize;
         var palette = fractalParams.Palette;
@@ -163,11 +163,11 @@ public class ShaderFactory : IDisposable
             if (cancelToken.IsCancellationRequested)
                 return;
 
-            var percentDone = (int)100.0 * x / size.Width;
+            var percentDone = startProgress + sumProgress * x / size.Width;
             _progressSubject.OnNext(percentDone);
         }
 
-        _progressSubject.OnNext(100);
+        _progressSubject.OnNext(startProgress + sumProgress);
     }
 
     private static Func<Vector3, float> GetSceneDel(ShaderSceneType sceneType)
@@ -185,7 +185,7 @@ public class ShaderFactory : IDisposable
         }
     }
 
-    public async Task<FractalResult> CreateShaderAsync(FractalParams fractalParams, CancellationToken cancelToken)
+    public async Task<FractalResult> CreateShaderAsync(FractalParams fractalParams, double startProgress, double sumProgress, CancellationToken cancelToken)
     {
         _fractalParams = fractalParams;
         var size = fractalParams.ImageSize;
@@ -196,7 +196,7 @@ public class ShaderFactory : IDisposable
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
 
-        await Task.Run(() => CalculateImageNew(raw, fractalParams, cancelToken), cancelToken);
+        await Task.Run(() => CalculateImageNew(raw, fractalParams, startProgress, sumProgress, cancelToken), cancelToken);
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();

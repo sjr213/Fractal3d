@@ -214,8 +214,8 @@ public class MainVm : ViewModelBase, IDisposable
         set => SetProperty(ref _progressVisibility, value);
     }
 
-    private int _percentProgress;
-    public int PercentProgress
+    private double _percentProgress;
+    public double PercentProgress
     {
         get => _percentProgress;
         set => SetProperty(ref _percentProgress, value);
@@ -563,9 +563,9 @@ public class MainVm : ViewModelBase, IDisposable
         try
         {
             if (_fractalParams.PlainShader)
-                _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, cancelToken);
+                _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, 0, 100, cancelToken);
             else
-                _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, cancelToken);
+                _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
         }
         catch (Exception)
         {
