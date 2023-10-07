@@ -19,6 +19,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 internal class FractalRange
 {
@@ -46,6 +47,7 @@ public class MainVm : ViewModelBase, IDisposable
     private bool _isDirty;
     private Rect _selectionRect;
     private FractalRange? _fractalRange;
+    private MovieResult? _movieResult;
 
     private MovieParams _movieParams = new MovieParams();
 
@@ -555,41 +557,97 @@ public class MainVm : ViewModelBase, IDisposable
 
     protected async void Calculate()
     {
-        _cancelSource = new();
-        var cancelToken = _cancelSource.Token;
-        ProgressVisibility = Visibility.Visible;
-        ClearFractalRange();
+        if (SelectedViewMode == ViewModes.Movie)
+        {
+            _cancelSource = new();
+            var cancelToken = _cancelSource.Token;
+            ProgressVisibility = Visibility.Visible;
+            ClearFractalRange();
 
-        try
-        {
-            if (_fractalParams.PlainShader)
-                _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, 0, 100, cancelToken);
-            else
-                _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
-        }
-        catch (Exception)
-        {
-            _fractalResult = null;
-        }
+            try
+            {
+                int nImages = _movieParams.NumberOfImages;
+                double sumProgress = 100.0 / nImages;
+                double startProgress = 0;
 
-        if (cancelToken.IsCancellationRequested)
-        {
+                _movieResult = new MovieResult
+                {
+                    Params = _movieParams
+                };
+
+                for (int i = 1; i < nImages; ++i)
+                {
+                    var fractalParams = FractalParamCalculator.CalculateFractalParams(_fractalParams, _movieParams, i);
+
+                    FractalResult? fractalResult;
+                    if (_fractalParams.PlainShader)
+                        fractalResult = await _shaderFactory.CreateShaderAsync(fractalParams, startProgress, sumProgress, cancelToken);
+                    else
+                        fractalResult = await _fractalParallelFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
+
+                    startProgress += sumProgress;
+
+                    _movieResult.Results.Add(fractalResult);
+                    _fractalResult = fractalResult;
+
+                    DisplayImage(fractalResult);
+                    Time = fractalResult.Time;
+                }
+
+                _isDirty = true;
+
+            }
+            catch (Exception)
+            {
+                _fractalResult = null;
+            }
+
+            if (cancelToken.IsCancellationRequested)
+            {
+                ProgressVisibility = Visibility.Collapsed;
+                return;
+            }
+
             ProgressVisibility = Visibility.Collapsed;
-            return;
         }
+        else
+        {
+            _cancelSource = new();
+            var cancelToken = _cancelSource.Token;
+            ProgressVisibility = Visibility.Visible;
+            ClearFractalRange();
 
-        if (_fractalResult == null)
-            return;
+            try
+            {
+                if (_fractalParams.PlainShader)
+                    _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, 0, 100, cancelToken);
+                else
+                    _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
+            }
+            catch (Exception)
+            {
+                _fractalResult = null;
+            }
 
-        DisplayImage(_fractalResult);
-        Time = _fractalResult.Time;
+            if (cancelToken.IsCancellationRequested)
+            {
+                ProgressVisibility = Visibility.Collapsed;
+                return;
+            }
 
-        ProgressVisibility = Visibility.Collapsed;
+            if (_fractalResult == null)
+                return;
 
-        if(SelectedViewMode == ViewModes.Queue)
-            FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
+            DisplayImage(_fractalResult);
+            Time = _fractalResult.Time;
 
-        _isDirty = true;
+            ProgressVisibility = Visibility.Collapsed;
+
+            if (SelectedViewMode == ViewModes.Queue)
+                FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
+
+            _isDirty = true;
+        }
     }
 
     protected void DisplayImage(FractalResult result)
