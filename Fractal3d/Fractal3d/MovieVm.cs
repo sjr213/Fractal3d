@@ -19,8 +19,10 @@ public class MovieVm : ViewModelBase
         _movieParams = movieParams;
         _onMovieParamsChanged = onMovieParamsChanged;
 
-        _playCommand = new RelayCommand(_ => OnPlay());
-        _stopCommand = new RelayCommand(_ => OnStop());
+        _playCommand = new RelayCommand(_ => OnPlay(), _ => CanPlay());
+        _stopCommand = new RelayCommand(_ => OnStop(), _ => CanStop());
+        _forwardCommand = new RelayCommand(_ => OnForward(), _ => CanForward());
+        _reverseCommand = new RelayCommand(_ => OnReverse(), _ => CanReverse());
 
         AllowedMovieTypes = new ObservableCollection<MovieTypes>
         {
@@ -36,6 +38,12 @@ public class MovieVm : ViewModelBase
 
     private readonly RelayCommand _stopCommand;
     public ICommand StopCommand => _stopCommand;
+
+    private readonly RelayCommand _forwardCommand;
+    public ICommand ForwardCommand => _forwardCommand;
+
+    private readonly RelayCommand _reverseCommand;
+    public ICommand ReverseCommand => _reverseCommand;
 
     #endregion
 
@@ -56,7 +64,35 @@ public class MovieVm : ViewModelBase
     private void OnPlay()
     {}
 
+    private bool CanPlay()
+    {
+        return true;
+    }
+
     private void OnStop() { }
+
+    private bool CanStop()
+    {
+        return true;
+    }
+
+    private void OnForward()
+    {}
+
+    private bool CanForward()
+    {
+        return true;
+    }
+
+    private void OnReverse()
+    {
+
+    }
+
+    private bool CanReverse()
+    {
+        return true;
+    }
 
     #endregion
 

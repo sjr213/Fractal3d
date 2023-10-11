@@ -15,6 +15,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\forward.png" />
+    <None Remove="Images\play.png" />
+    <None Remove="Images\reverse.png" />
+    <None Remove="Images\stop.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="bu0030.ico" />
   </ItemGroup>
 
@@ -41,6 +48,13 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\forward.png" />
+    <Resource Include="Images\play.png" />
+    <Resource Include="Images\reverse.png" />
+    <Resource Include="Images\stop.png" />
   </ItemGroup>
 
 </Project>

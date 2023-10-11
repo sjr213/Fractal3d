@@ -23,8 +23,18 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0"  Margin="5" Orientation="Horizontal" MaxHeight="30">
-                <Button Margin="2" Padding="2" Command="{Binding PlayCommand}">Play</Button>
-                <Button Margin="2" Padding="2" Command="{Binding StopCommand}">Stop</Button>
+                <Button Margin="2" Padding="2" Command="{Binding PlayCommand}">
+                    <Image Source="Images\play.png" />
+                </Button>
+                <Button Margin="2" Padding="2" Command="{Binding StopCommand}">
+                    <Image Source="Images\stop.png" />
+                </Button>
+                <Button Margin="2" Padding="2" Command="{Binding ReverseCommand}">
+                    <Image Source="Images\reverse.png" />
+                </Button>
+                <Button Margin="2" Padding="2" Command="{Binding ForwardCommand}">
+                    <Image Source="Images\forward.png" />
+                </Button>
             </StackPanel>
 
             <StackPanel Grid.Row="1" Margin="5" Orientation="Vertical">
