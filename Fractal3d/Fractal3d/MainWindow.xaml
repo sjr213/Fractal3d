@@ -189,10 +189,10 @@
                                 </Style.Triggers>
                             </Style>
                         </TabItem.Style>
-                        <ContentPresenter Content="{Binding MovieViewModel}">
+                        <ContentPresenter Content="{Binding MovieParamViewModel}">
                             <ContentPresenter.Resources>
-                                <DataTemplate DataType="{x:Type local:MovieVm}">
-                                    <local:MovieView/>
+                                <DataTemplate DataType="{x:Type local:MovieParamVm}">
+                                    <local:MovieParamView/>
                                 </DataTemplate>
                             </ContentPresenter.Resources>
                         </ContentPresenter>

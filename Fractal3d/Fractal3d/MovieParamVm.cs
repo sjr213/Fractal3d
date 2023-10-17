@@ -7,13 +7,13 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-public class MovieVm : ViewModelBase
+public class MovieParamVm : ViewModelBase
 {
     private FractalParams _fractalParams;
     private readonly MovieParams _movieParams;
     private readonly Action<MovieParams> _onMovieParamsChanged;
 
-    public MovieVm(FractalParams fractalParams, MovieParams movieParams, Action<MovieParams> onMovieParamsChanged)
+    public MovieParamVm(FractalParams fractalParams, MovieParams movieParams, Action<MovieParams> onMovieParamsChanged)
     {
         _fractalParams = fractalParams;
         _movieParams = movieParams;

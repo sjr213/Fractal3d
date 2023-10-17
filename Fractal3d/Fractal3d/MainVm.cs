@@ -19,7 +19,6 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.ComponentModel;
-using System.Threading.Tasks;
 
 internal class FractalRange
 {
@@ -68,12 +67,12 @@ public class MainVm : ViewModelBase, IDisposable
         _cancelCommand = new RelayCommand(_ => OnCancel(), _ => true);  // This should only be visible when calculating because it's in the progress Stack panel
         _applyRectCommand = new RelayCommand(_ => OnApplyRect());
         _defaultParametersCommand = new RelayCommand(_ => OnDefaultParameters());
-        _addToQueueCommand = new RelayCommand(_ => OnAddToQueue());
+        AddToQueueCommand = new RelayCommand(_ => OnAddToQueue());
         MakePaletteViewModel();
         ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         UpdateMovieParams();
-        MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
+        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, OnMovieParamsChanged);
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
@@ -152,8 +151,7 @@ public class MainVm : ViewModelBase, IDisposable
     private readonly RelayCommand _defaultParametersCommand;
     public ICommand DefaultParametersCommand => _defaultParametersCommand;
 
-    private readonly RelayCommand _addToQueueCommand;
-    public RelayCommand AddToQueueCommand => _addToQueueCommand;
+    public RelayCommand AddToQueueCommand { get; }
 
     #endregion
 
@@ -202,11 +200,11 @@ public class MainVm : ViewModelBase, IDisposable
         set => SetProperty(ref _displayInfoVm, value);
     }
 
-    private MovieVm _movieVm;
-    public MovieVm MovieViewModel
+    private MovieParamVm _movieParamVm;
+    public MovieParamVm MovieParamViewModel
     {
-        get => _movieVm;
-        set => SetProperty(ref _movieVm, value);
+        get => _movieParamVm;
+        set => SetProperty(ref _movieParamVm, value);
     }
 
     private Visibility _progressVisibility = Visibility.Collapsed;
@@ -303,7 +301,7 @@ public class MainVm : ViewModelBase, IDisposable
         OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
         UpdateMovieParams();
-        MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
+        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, OnMovieParamsChanged);
 
         if (SelectedViewMode == ViewModes.Temp)
             Calculate();
@@ -502,7 +500,7 @@ public class MainVm : ViewModelBase, IDisposable
                 LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
                 TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
                 UpdateMovieParams();
-                MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
+                MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, OnMovieParamsChanged);
                 DisplayImage(_fractalResult);
             }
 
@@ -542,7 +540,7 @@ public class MainVm : ViewModelBase, IDisposable
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         UpdateMovieParams();
-        MovieViewModel = new MovieVm(_fractalParams, _movieParams, OnMovieParamsChanged);
+        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, OnMovieParamsChanged);
     }
 
     private void OnAddToQueue()
