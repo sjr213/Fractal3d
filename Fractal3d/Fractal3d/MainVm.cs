@@ -47,6 +47,7 @@ public class MainVm : ViewModelBase, IDisposable
     private Rect _selectionRect;
     private FractalRange? _fractalRange;
     private MovieResult? _movieResult;
+    private List<BitmapImage> _movieImages = new();
 
     private MovieParams _movieParams = new MovieParams();
 
@@ -561,6 +562,7 @@ public class MainVm : ViewModelBase, IDisposable
             var cancelToken = _cancelSource.Token;
             ProgressVisibility = Visibility.Visible;
             ClearFractalRange();
+            _movieImages = new List<BitmapImage>();
 
             try
             {
@@ -656,6 +658,10 @@ public class MainVm : ViewModelBase, IDisposable
         var bmp = result.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
 
         var image = ImageUtil.BitmapToImageSource(bmp);
+        if (SelectedViewMode == ViewModes.Movie)
+        {
+            _movieImages.Add(image);
+        }
         ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
     }
 
