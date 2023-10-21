@@ -3,12 +3,14 @@ using BasicWpfLibrary;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System;
+using ImageCalculator;
 
 namespace Fractal3d
 {
     public class MovieVm : ViewModelBase
     {
         private List<BitmapImage> _movieImages = new List<BitmapImage>();
+        private FractalParams _fractalParams = new FractalParams();
         private DispatcherTimer? _timer;
         private int _currentImage = 0;
 
@@ -25,13 +27,28 @@ namespace Fractal3d
             set => SetProperty(ref _image, value);
         }
 
+        private int _width;
+        public int Width
+        {
+            get => _width;
+            set => SetProperty(ref _width, value);
+        }
+
+        private int _height;
+        public int Height
+        {
+            get => _height;
+            set => SetProperty(ref _height, value);
+        }
+
         #endregion
 
         #region methods
 
-        void SetImages(List<BitmapImage> images)
+        public void SetImages(List<BitmapImage> images, FractalParams fractalParams)
         {
             _movieImages = images;
+            _fractalParams = fractalParams;
 
             if (images.Count > 0)
             {
@@ -66,6 +83,8 @@ namespace Fractal3d
                 _currentImage = 0;
 
             Image = _movieImages[_currentImage];
+            Width = _fractalParams.DisplaySize.Width;
+            Height= _fractalParams.DisplaySize.Height;
         }
 
         #endregion

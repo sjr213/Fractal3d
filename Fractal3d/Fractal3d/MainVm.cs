@@ -28,7 +28,7 @@ internal class FractalRange
     public double ToY { get; set; }
 }
 
-public class MainVm : ViewModelBase, IDisposable
+public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
 {
     #region Members
 
@@ -73,7 +73,8 @@ public class MainVm : ViewModelBase, IDisposable
         ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         UpdateMovieParams();
-        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, OnMovieParamsChanged);
+        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
+        MovieViewModel = new MovieVm();
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
@@ -208,6 +209,14 @@ public class MainVm : ViewModelBase, IDisposable
         set => SetProperty(ref _movieParamVm, value);
     }
 
+    private MovieVm _movieVm;
+
+    public MovieVm MovieViewModel
+    {
+        get => _movieVm;
+        set => SetProperty(ref _movieVm, value);
+    }
+
     private Visibility _progressVisibility = Visibility.Collapsed;
     public Visibility ProgressVisibility
     {
@@ -266,6 +275,20 @@ public class MainVm : ViewModelBase, IDisposable
         set
         {
             _selectedViewMode = value;
+            ShowMovie = false;
+            StopMovie();
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _showMovie;
+
+    public bool ShowMovie
+    {
+        get => _showMovie;
+        set
+        {
+            _showMovie = value;
             OnPropertyChanged();
         }
     }
@@ -302,15 +325,10 @@ public class MainVm : ViewModelBase, IDisposable
         OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
         UpdateMovieParams();
-        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, OnMovieParamsChanged);
+        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
 
         if (SelectedViewMode == ViewModes.Temp)
             Calculate();
-    }
-
-    protected void OnMovieParamsChanged(MovieParams movieParams)
-    {
-        _movieParams = movieParams;
     }
 
     protected void OnSaveAll()
@@ -501,7 +519,7 @@ public class MainVm : ViewModelBase, IDisposable
                 LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
                 TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
                 UpdateMovieParams();
-                MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, OnMovieParamsChanged);
+                MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
                 DisplayImage(_fractalResult);
             }
 
@@ -541,7 +559,7 @@ public class MainVm : ViewModelBase, IDisposable
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         UpdateMovieParams();
-        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, OnMovieParamsChanged);
+        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
     }
 
     private void OnAddToQueue()
@@ -563,6 +581,7 @@ public class MainVm : ViewModelBase, IDisposable
             ProgressVisibility = Visibility.Visible;
             ClearFractalRange();
             _movieImages = new List<BitmapImage>();
+            MovieViewModel.SetImages(_movieImages, _fractalParams);
 
             try
             {
@@ -575,7 +594,7 @@ public class MainVm : ViewModelBase, IDisposable
                     Params = _movieParams
                 };
 
-                for (int i = 1; i < nImages; ++i)
+                for (int i = 1; i <= nImages; ++i)
                 {
                     var fractalParams = FractalParamCalculator.CalculateFractalParams(_fractalParams, _movieParams, i);
 
@@ -921,6 +940,43 @@ public class MainVm : ViewModelBase, IDisposable
         _movieParams.FromAngleX = _movieParams.ToAngleX = _fractalParams.TransformParams.RotateX;
         _movieParams.FromAngleY = _movieParams.ToAngleY = _fractalParams.TransformParams.RotateY;
         _movieParams.FromAngleZ = _movieParams.ToAngleZ = _fractalParams.TransformParams.RotateZ;
+    }
+
+    #endregion
+
+    #region IMoviePlayer
+
+    private bool _isPlaying;
+
+    public void PlayMovie()
+    {
+        if(!CanPlayMovie()) 
+            return;
+
+        ShowMovie = true;
+        MovieViewModel.Start();
+        _isPlaying = true;
+    }
+
+    public bool CanPlayMovie()
+    {
+        return SelectedViewMode == ViewModes.Movie && !_isPlaying && _movieImages.Count == _movieParams.NumberOfImages;
+    }
+
+    public void StopMovie()
+    {
+        MovieViewModel.Stop();
+        _isPlaying = false;
+    }
+
+    public bool CanStopMovie()
+    {
+        return _isPlaying;
+    }
+
+    public void OnMovieParamsChanged(MovieParams movieParams)
+    {
+        _movieParams = movieParams;
     }
 
     #endregion

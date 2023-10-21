@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Fractal3d"
              xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance Type=local:MovieVm}"
+             d:DataContext="{d:DesignInstance Type=local:MovieParamVm}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>

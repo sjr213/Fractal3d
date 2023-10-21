@@ -89,13 +89,48 @@
                             <TextBlock Margin="2" Text="{Binding FractalRange}"/>
                         </StackPanel>
                     </StackPanel>
-                    <ContentPresenter Grid.Row="2" Grid.Column="1" Content="{Binding ImageViewModel}">
-                        <ContentPresenter.Resources>
-                            <DataTemplate DataType="{x:Type local:ImageVm}" >
-                                <local:ImageView/>
-                            </DataTemplate>
-                        </ContentPresenter.Resources>
-                    </ContentPresenter>
+
+                    <StackPanel Grid.Row="2" Grid.Column="1" >
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=ShowMovie}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <ContentPresenter Content="{Binding ImageViewModel}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:ImageVm}" >
+                                    <local:ImageView/>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="1" >
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=ShowMovie}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock>Movie</TextBlock>
+                        <ContentPresenter Content="{Binding MovieViewModel}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:MovieVm}" >
+                                    <local:MovieView/>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </StackPanel>
+
                     <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" MaxWidth="150" Height="{Binding ResultListHeight}">
                         <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
                             <ListBox ItemsSource="{Binding Path=FractalResults}" BorderThickness="0" SelectedItem="{Binding Path=SelectedFractalResult, Mode=TwoWay}">

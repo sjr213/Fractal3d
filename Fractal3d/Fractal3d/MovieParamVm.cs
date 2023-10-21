@@ -11,13 +11,13 @@ public class MovieParamVm : ViewModelBase
 {
     private FractalParams _fractalParams;
     private readonly MovieParams _movieParams;
-    private readonly Action<MovieParams> _onMovieParamsChanged;
+    private readonly IMoviePlayer _moviePlayer;
 
-    public MovieParamVm(FractalParams fractalParams, MovieParams movieParams, Action<MovieParams> onMovieParamsChanged)
+    public MovieParamVm(FractalParams fractalParams, MovieParams movieParams, IMoviePlayer moviePlayer)
     {
         _fractalParams = fractalParams;
         _movieParams = movieParams;
-        _onMovieParamsChanged = onMovieParamsChanged;
+        _moviePlayer = moviePlayer;
 
         _playCommand = new RelayCommand(_ => OnPlay(), _ => CanPlay());
         _stopCommand = new RelayCommand(_ => OnStop(), _ => CanStop());
@@ -62,18 +62,23 @@ public class MovieParamVm : ViewModelBase
     #region handlers
 
     private void OnPlay()
-    {}
+    {
+        _moviePlayer.PlayMovie();
+    }
 
     private bool CanPlay()
     {
-        return true;
+        return _moviePlayer.CanPlayMovie();
     }
 
-    private void OnStop() { }
+    private void OnStop()
+    {
+        _moviePlayer.StopMovie();
+    }
 
     private bool CanStop()
     {
-        return true;
+        return _moviePlayer.CanStopMovie();
     }
 
     private void OnForward()
@@ -92,6 +97,11 @@ public class MovieParamVm : ViewModelBase
     private bool CanReverse()
     {
         return true;
+    }
+
+    private void OnMovieParamsChanged()
+    {
+        _moviePlayer.OnMovieParamsChanged(_movieParams);
     }
 
     #endregion
@@ -115,6 +125,7 @@ public class MovieParamVm : ViewModelBase
         {
             _selectedMovieType = value;
             OnPropertyChanged();
+            OnMovieParamsChanged();
         }
     }
 
@@ -125,6 +136,7 @@ public class MovieParamVm : ViewModelBase
         {
             _movieParams.CurrentImage = value;
             OnPropertyChanged();
+            OnMovieParamsChanged();
         }
     }
 
@@ -135,6 +147,7 @@ public class MovieParamVm : ViewModelBase
         {
             _movieParams.NumberOfImages = value;
             OnPropertyChanged();
+            OnMovieParamsChanged();
         }
     }
 
@@ -145,6 +158,7 @@ public class MovieParamVm : ViewModelBase
         {
             _movieParams.FromAngleX = value;
             OnPropertyChanged();
+            OnMovieParamsChanged();
         }
     }
 
@@ -155,6 +169,7 @@ public class MovieParamVm : ViewModelBase
         {
             _movieParams.ToAngleX = value;
             OnPropertyChanged();
+            OnMovieParamsChanged();
         }
     }
 
@@ -165,6 +180,7 @@ public class MovieParamVm : ViewModelBase
         {
             _movieParams.FromAngleY = value;
             OnPropertyChanged();
+            OnMovieParamsChanged();
         }
     }
 
@@ -175,6 +191,7 @@ public class MovieParamVm : ViewModelBase
         {
             _movieParams.ToAngleY = value;
             OnPropertyChanged();
+            OnMovieParamsChanged();
         }
     }
 
@@ -185,6 +202,7 @@ public class MovieParamVm : ViewModelBase
         {
             _movieParams.FromAngleZ = value;
             OnPropertyChanged();
+            OnMovieParamsChanged();
         }
     }
 
@@ -195,6 +213,7 @@ public class MovieParamVm : ViewModelBase
         {
             _movieParams.ToAngleZ = value;
             OnPropertyChanged();
+            OnMovieParamsChanged();
         }
     }
 
