@@ -4,6 +4,7 @@
     {
         public int CurrentImage { get; set; } = 1;
         public int NumberOfImages { get; set; } = 20;
+        public int FramesPerSecond { get; set; } = 5;
 
         public MovieTypes MovieType { get; set; } = MovieTypes.Angles;
 

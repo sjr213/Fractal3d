@@ -82,6 +82,20 @@
                             </TextBox.Text>
                         </TextBox>
                     </StackPanel>
+                    <StackPanel Margin="5,2,2,2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Frames Per Second" />
+                        <TextBox Style="{StaticResource TextBoxInError}" >
+                            <TextBox.Text>
+                                <Binding Path="FramesPerSecond" 
+                                         UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:MovieConstants.MinFramesPerSecond}" 
+                                                                      Max="{x:Static local:MovieConstants.MaxFramesPerSecond}"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
 

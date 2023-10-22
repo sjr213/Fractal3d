@@ -4,7 +4,7 @@ namespace Fractal3d
 {
     public interface IMoviePlayer
     {
-        void PlayMovie();
+        void PlayMovie(int framesPerSecond);
         bool CanPlayMovie();
 
         void StopMovie();

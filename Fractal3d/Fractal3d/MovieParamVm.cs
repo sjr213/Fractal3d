@@ -63,7 +63,7 @@ public class MovieParamVm : ViewModelBase
 
     private void OnPlay()
     {
-        _moviePlayer.PlayMovie();
+        _moviePlayer.PlayMovie(_movieParams.FramesPerSecond);
     }
 
     private bool CanPlay()
@@ -146,6 +146,17 @@ public class MovieParamVm : ViewModelBase
         set
         {
             _movieParams.NumberOfImages = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public int FramesPerSecond
+    {
+        get => _movieParams.FramesPerSecond;
+        set
+        {
+            _movieParams.FramesPerSecond = value; 
             OnPropertyChanged();
             OnMovieParamsChanged();
         }

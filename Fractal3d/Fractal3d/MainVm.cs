@@ -948,13 +948,13 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
 
     private bool _isPlaying;
 
-    public void PlayMovie()
+    public void PlayMovie(int framesPerSecond)
     {
         if(!CanPlayMovie()) 
             return;
 
         ShowMovie = true;
-        MovieViewModel.Start();
+        MovieViewModel.Start(framesPerSecond);
         _isPlaying = true;
     }
 

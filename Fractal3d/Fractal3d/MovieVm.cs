@@ -56,12 +56,16 @@ namespace Fractal3d
             }
         }
 
-        public void Start()
+        public void Start(int framesPerSecond)
         {
             if (_movieImages.Count < 2)
                 return;
 
-            _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            var timeMs = 1000 / 5;
+            if (framesPerSecond is >= MovieConstants.MinFramesPerSecond and <= MovieConstants.MaxFramesPerSecond)
+                timeMs = 1000 / framesPerSecond;
+
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(timeMs) };
             _timer.Tick += TimerTick;
             _timer.Start();
         }
