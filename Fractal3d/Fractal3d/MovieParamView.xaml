@@ -13,6 +13,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="GeneralResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Border Style="{StaticResource BorderStyle}">
@@ -22,7 +23,8 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0"  Margin="5" Orientation="Horizontal" MaxHeight="30">
+            <StackPanel Grid.Row="0"  Margin="5" Orientation="Horizontal" MaxHeight="30"
+                        Visibility="{Binding IsMovie, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" >
                 <Button Margin="2" Padding="2" Command="{Binding PlayCommand}">
                     <Image Source="Images\play.png" />
                 </Button>

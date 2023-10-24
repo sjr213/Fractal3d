@@ -278,6 +278,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
             ShowMovie = false;
             StopMovie();
             OnPropertyChanged();
+            OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });
         }
     }
 
@@ -612,6 +613,8 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
                     DisplayImage(fractalResult);
                     Time = fractalResult.Time;
                 }
+
+                OnMovieChanged(new MovieChangedEventArgs(){ ChangeType = MovieChangeType.ImageCountChange });
 
                 _isDirty = true;
 
@@ -977,6 +980,18 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
     public void OnMovieParamsChanged(MovieParams movieParams)
     {
         _movieParams = movieParams;
+    }
+
+    public event EventHandler<MovieChangedEventArgs>? MovieChanged;
+
+    public bool IsMovie()
+    {
+        return _movieImages.Count == _movieParams.NumberOfImages && SelectedViewMode == ViewModes.Movie;
+    }
+
+    protected void OnMovieChanged(MovieChangedEventArgs e)
+    {
+        MovieChanged?.Invoke(this, e);
     }
 
     #endregion

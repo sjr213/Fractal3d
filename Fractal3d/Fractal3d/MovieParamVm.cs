@@ -3,13 +3,12 @@
 using BasicWpfLibrary;
 using ImageCalculator;
 using ImageCalculator.Movie;
-using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 public class MovieParamVm : ViewModelBase
 {
-    private FractalParams _fractalParams;
+    private FractalParams _fractalParams;       // remove this later
     private readonly MovieParams _movieParams;
     private readonly IMoviePlayer _moviePlayer;
 
@@ -29,6 +28,8 @@ public class MovieParamVm : ViewModelBase
             MovieTypes.Angles
         };
         SelectedMovieType = MovieTypes.Angles;
+
+        moviePlayer.MovieChanged += OnMovieChanged;
     }
 
     #region Commands
@@ -104,11 +105,15 @@ public class MovieParamVm : ViewModelBase
         _moviePlayer.OnMovieParamsChanged(_movieParams);
     }
 
+    private void OnMovieChanged(object? sender, MovieChangedEventArgs args)
+    {
+        if(args.ChangeType == MovieChangeType.ImageCountChange)
+            OnPropertyChanged(nameof(IsMovie));
+    }
+
     #endregion
 
     #region properties
-
-    public string Name => "Movie View Model";
 
     private ObservableCollection<MovieTypes> _allowedMovieTypes = null!;
     public ObservableCollection<MovieTypes> AllowedMovieTypes
@@ -116,6 +121,8 @@ public class MovieParamVm : ViewModelBase
         get => _allowedMovieTypes;
         set => SetProperty(ref _allowedMovieTypes, value);
     }
+
+    public bool IsMovie => _moviePlayer.IsMovie();
 
     private MovieTypes _selectedMovieType;
     public MovieTypes SelectedMovieType
@@ -227,6 +234,7 @@ public class MovieParamVm : ViewModelBase
             OnMovieParamsChanged();
         }
     }
+
 
     #endregion
 }
