@@ -59,7 +59,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
         _calculateCommand = new RelayCommand(_ => Calculate(), _ => CanCalculate());
-        _saveAllCommand = new RelayCommand(_ => OnSaveAll(), _ => _fractalResult != null);
+        _saveAllCommand = new RelayCommand(_ => OnSaveAll(), _ => CanSaveAll());
         _saveOneCommand = new RelayCommand(_ => OnSaveOne(), _ => _fractalResult != null);
         _saveImageCommand = new RelayCommand(_ => OnSaveImage(), _ => _fractalResult != null);
         _deleteCommand = new RelayCommand(_ => OnDelete(), _ => _fractalResult != null);
@@ -332,7 +332,29 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
             Calculate();
     }
 
+    private bool CanSaveAll()
+    {
+        if (SelectedViewMode == ViewModes.Movie)
+        {
+            return _movieImages.Count == _movieParams.NumberOfImages;
+        }
+
+        return _fractalResult != null;
+    }
+
     protected void OnSaveAll()
+    {
+        if (SelectedViewMode == ViewModes.Movie)
+        {
+            SaveMovie();
+        }
+        else
+        {
+            SaveAll();
+        }
+    }
+
+    private void SaveAll()
     {
         if (_fractalResult == null)
             return;
@@ -355,6 +377,32 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         catch (Exception ex)
         {
             System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot save result to file");
+        }
+    }
+
+    private void SaveMovie()
+    {
+        if (SelectedViewMode != ViewModes.Movie || _movieResult == null)
+            return;
+
+        var saveFileDialog = new SaveFileDialog
+        {
+            Filter = string.Format("Fractal3D movie file (*{0})|*{0}", Fractal3dConstants.MovieFileExtension)
+        };
+
+        if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+        try
+        {
+            var results = _movieResult;
+            string jsonString = JsonConvert.SerializeObject(results);
+
+            //write string to file
+            File.WriteAllText(saveFileDialog.FileName, jsonString);
+            _isDirty = false;
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot save movie to file");
         }
     }
 
