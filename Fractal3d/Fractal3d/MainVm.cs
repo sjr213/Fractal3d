@@ -19,6 +19,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.ComponentModel;
+//using Microsoft.Win32;
 
 internal class FractalRange
 {
@@ -477,12 +478,19 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
 
         var openFileDialog = new OpenFileDialog
         {
-            Filter = string.Format("Fractal3D file (*{0})|*{0}|All files (*.*)|*.*", Fractal3dConstants.FileExtension)
+            Filter = string.Format("Fractal3D file (*{0})|*{0}|Fractal3D movie file (*{1})|*{1}|All files (*.*)|*.*", 
+                Fractal3dConstants.FileExtension, Fractal3dConstants.MovieFileExtension)
         };
 
         if (openFileDialog.ShowDialog() != DialogResult.OK) return;
 
-        OpenResultFile(openFileDialog.FileName);
+        string filename = openFileDialog.FileName;
+        string ext = Path.GetExtension(filename);
+
+        if(ext == Fractal3dConstants.MovieFileExtension)
+            OpenMovieFile(filename);
+        else
+            OpenResultFile(openFileDialog.FileName);
     }
 
 
@@ -795,6 +803,8 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
 
         if (ext == Fractal3dConstants.FileExtension)
             OpenResultFile(filename);
+        else if (ext == Fractal3dConstants.MovieFileExtension)
+            OpenMovieFile(filename);
     }
 
     protected void OpenResultFile(string filename)
@@ -842,6 +852,82 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         {
             System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot load result from file");
         }
+    }
+
+    protected void OpenMovieFile(string filename)
+    {
+        try
+        {
+            ClearFractalRange();
+            string jsonString = File.ReadAllText(filename);
+
+            var movieResult = JsonConvert.DeserializeObject<MovieResult>(jsonString);
+
+            if (movieResult == null) return;
+            if(movieResult.Results.Count == 0) return;
+
+            SelectedViewMode = ViewModes.Movie;
+
+            _movieResult = movieResult;
+
+            FractalResults.Clear();
+            _fractalNumber = 1;
+
+            // just add the first result
+            var result = movieResult.Results[0];
+            FractalResults.Add(new FractalResultVm(result, _fractalNumber++));
+            _fractalResult = result;
+            _isDirty = false;
+
+            if (_fractalResult.Params == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Can't load", "Params came back null");
+                return;
+            }
+            _fractalParams = _fractalResult.Params;
+            PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
+            ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+            DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
+
+            SelectedFractalResult = FractalResults.FirstOrDefault();
+
+            LoadMovieImages();
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot load result from file");
+        }
+    }
+
+    private void LoadMovieImages()
+    {
+        _movieImages = new List<BitmapImage>();
+        MovieViewModel.SetImages(_movieImages, _fractalParams);
+
+        if (_movieResult == null)
+            return;
+
+        try
+        {
+            int nImages = _movieResult.Results.Count;
+
+            for (int i = 1; i <= nImages; ++i)
+            {
+                var fractalResult = _movieResult.Results[i-1];
+
+                DisplayImage(fractalResult);
+            }
+
+            OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });
+
+            _isDirty = true;
+
+        }
+        catch (Exception)
+        {
+            _fractalResult = null;
+        }
+
     }
 
     private void MakePaletteViewModel()
