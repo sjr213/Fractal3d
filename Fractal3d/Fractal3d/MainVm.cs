@@ -807,127 +807,162 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
             OpenMovieFile(filename);
     }
 
-    protected void OpenResultFile(string filename)
+    private static List<FractalResult>? ReadFractalResultsFromFile(string filename)
     {
         try
         {
-            ClearFractalRange();
             string jsonString = File.ReadAllText(filename);
 
             var results = JsonConvert.DeserializeObject<List<FractalResult>>(jsonString);
 
-            if (results == null) return;
-
-            FractalResults.Clear();
-            _fractalNumber = 1;
-            foreach (var fractalResult in results)
-            {
-                FractalResults.Add(new FractalResultVm(fractalResult, _fractalNumber++));
-            }
-
-            _fractalResult = results.Last();
-            _isDirty = false;
-
-            if (_fractalResult.Params == null)
-            {
-                System.Windows.Forms.MessageBox.Show("Can't load", "Params came back null");
-                return;
-            }
-            _fractalParams = _fractalResult.Params;
-            PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
-            ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
-            DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
-
-            if (_fractalResult.Image == null)
-                return;
-
-            var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
-
-            var image = ImageUtil.BitmapToImageSource(bmp);
-            ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
-
-            SelectedFractalResult = FractalResults.FirstOrDefault();
+            return results;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot load result from file");
+            return null;
         }
+    }
+
+    private void UpdateUiWithFractalResults(List<FractalResult>? results)
+    {
+        if (results == null)
+        {
+            System.Windows.Forms.MessageBox.Show("Cannot load result from file");
+            return;
+        }
+
+        ClearFractalRange();
+
+        FractalResults.Clear();
+        _fractalNumber = 1;
+        foreach (var fractalResult in results)
+        {
+            FractalResults.Add(new FractalResultVm(fractalResult, _fractalNumber++));
+        }
+
+        _fractalResult = results.Last();
+        _isDirty = false;
+
+        if (_fractalResult.Params == null)
+        {
+            System.Windows.Forms.MessageBox.Show("Can't load", "Params came back null");
+            return;
+        }
+        _fractalParams = _fractalResult.Params;
+        PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
+        ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+        DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
+
+        if (_fractalResult.Image == null)
+            return;
+
+        var bmp = _fractalResult.Image.GetBitmap(_fractalParams.Palette, _fractalParams.ColorInfo, _fractalParams.AmbientPower);
+
+        var image = ImageUtil.BitmapToImageSource(bmp);
+        ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
+
+        SelectedFractalResult = FractalResults.FirstOrDefault();
+    }
+
+    protected void OpenResultFile(string filename)
+    {
+        var results = ReadFractalResultsFromFile(filename);
+
+        UpdateUiWithFractalResults(results);
+    }
+
+    private static MovieResult? ReadMovieResultFromFile(string filename)
+    {
+        string jsonString = File.ReadAllText(filename);
+
+        var movieResult = JsonConvert.DeserializeObject<MovieResult>(jsonString);
+
+        if (movieResult == null || movieResult.Results.Count == 0) 
+            return null;
+
+        return movieResult;
+    }
+
+    private static List<BitmapImage>? LoadMovieImages(MovieResult movieResult)
+    {
+        var movieImages = new List<BitmapImage>();
+
+        try
+        {
+            var nImages = movieResult.Results.Count;
+
+            for (var i = 1; i <= nImages; ++i)
+            {
+                var fractalResult = movieResult.Results[i - 1];
+
+                if (fractalResult.Image == null || fractalResult.Params == null)
+                    return null;
+
+                var bmp = fractalResult.Image.GetBitmap(fractalResult.Params.Palette, fractalResult.Params.ColorInfo, fractalResult.Params.AmbientPower);
+
+                var image = ImageUtil.BitmapToImageSource(bmp);
+                movieImages.Add(image);
+            }
+
+            return movieImages;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    private void UpdateUiWithMovieResults(MovieResult? movieResult, List<BitmapImage>? images)
+    {
+        if (movieResult == null || images == null)
+        {
+            System.Windows.Forms.MessageBox.Show("Cannot load movie from file");
+            return;
+        }
+
+        ClearFractalRange();
+
+        SelectedViewMode = ViewModes.Movie;
+
+        _movieResult = movieResult;
+
+        FractalResults.Clear();
+        _fractalNumber = 1;
+
+        // just add the first result
+        var result = movieResult.Results[0];
+        FractalResults.Add(new FractalResultVm(result, _fractalNumber++));
+        _fractalResult = result;
+        _isDirty = false;
+
+        if (_fractalResult.Params == null)
+        {
+            System.Windows.Forms.MessageBox.Show("Can't load images", "Params came back null");
+            return;
+        }
+        _fractalParams = _fractalResult.Params;
+        PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
+        ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+        DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
+
+        SelectedFractalResult = FractalResults.FirstOrDefault();
+
+        _movieImages = images;
+        ImageViewModel = new ImageVm(_fractalParams, images.First(), SetSelectionRect);
+        MovieViewModel.SetImages(_movieImages, _fractalParams);
+
+        OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });
     }
 
     protected void OpenMovieFile(string filename)
     {
-        try
-        {
-            ClearFractalRange();
-            string jsonString = File.ReadAllText(filename);
+        var movieResult = ReadMovieResultFromFile(filename);
 
-            var movieResult = JsonConvert.DeserializeObject<MovieResult>(jsonString);
+        List<BitmapImage>? movieImages = (movieResult != null)
+            ? LoadMovieImages(movieResult)
+            : null;
 
-            if (movieResult == null) return;
-            if(movieResult.Results.Count == 0) return;
-
-            SelectedViewMode = ViewModes.Movie;
-
-            _movieResult = movieResult;
-
-            FractalResults.Clear();
-            _fractalNumber = 1;
-
-            // just add the first result
-            var result = movieResult.Results[0];
-            FractalResults.Add(new FractalResultVm(result, _fractalNumber++));
-            _fractalResult = result;
-            _isDirty = false;
-
-            if (_fractalResult.Params == null)
-            {
-                System.Windows.Forms.MessageBox.Show("Can't load", "Params came back null");
-                return;
-            }
-            _fractalParams = _fractalResult.Params;
-            PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
-            ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
-            DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
-
-            SelectedFractalResult = FractalResults.FirstOrDefault();
-
-            LoadMovieImages();
-        }
-        catch (Exception ex)
-        {
-            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot load result from file");
-        }
-    }
-
-    private void LoadMovieImages()
-    {
-        _movieImages = new List<BitmapImage>();
-        MovieViewModel.SetImages(_movieImages, _fractalParams);
-
-        if (_movieResult == null)
-            return;
-
-        try
-        {
-            int nImages = _movieResult.Results.Count;
-
-            for (int i = 1; i <= nImages; ++i)
-            {
-                var fractalResult = _movieResult.Results[i-1];
-
-                DisplayImage(fractalResult);
-            }
-
-            OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });
-
-            _isDirty = true;
-
-        }
-        catch (Exception)
-        {
-            _fractalResult = null;
-        }
-
+        UpdateUiWithMovieResults(movieResult, movieImages);
     }
 
     private void MakePaletteViewModel()
