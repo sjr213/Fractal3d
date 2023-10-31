@@ -1,4 +1,5 @@
-﻿using ImageCalculator.Movie;
+﻿using System.Threading.Tasks;
+using ImageCalculator.Movie;
 
 namespace Fractal3d;
 
@@ -19,6 +20,8 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.ComponentModel;
+using System.Windows.Threading;
+
 //using Microsoft.Win32;
 
 internal class FractalRange
@@ -469,7 +472,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         }
     }
 
-    protected void OnOpen()
+    protected async void OnOpen()
     {
         if (_fractalResult != null)
         {
@@ -488,9 +491,9 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         string ext = Path.GetExtension(filename);
 
         if(ext == Fractal3dConstants.MovieFileExtension)
-            OpenMovieFile(filename);
+            await OpenMovieFile(filename);
         else
-            OpenResultFile(openFileDialog.FileName);
+            await OpenResultFile(openFileDialog.FileName);
     }
 
 
@@ -792,7 +795,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         bmp.Save(filename, info, myEncoderParameters);
     }
 
-    private void OpenFileFromStartUp(string filename)
+    private async void OpenFileFromStartUp(string filename)
     {
         if (string.IsNullOrEmpty(filename))
             return;
@@ -802,9 +805,9 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
             return;
 
         if (ext == Fractal3dConstants.FileExtension)
-            OpenResultFile(filename);
+            await OpenResultFile(filename);
         else if (ext == Fractal3dConstants.MovieFileExtension)
-            OpenMovieFile(filename);
+            await OpenMovieFile(filename);
     }
 
     private static List<FractalResult>? ReadFractalResultsFromFile(string filename)
@@ -864,9 +867,9 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         SelectedFractalResult = FractalResults.FirstOrDefault();
     }
 
-    protected void OpenResultFile(string filename)
+    protected async Task OpenResultFile(string filename)
     {
-        var results = ReadFractalResultsFromFile(filename);
+        var results = await Task.Run(() => ReadFractalResultsFromFile(filename));
 
         UpdateUiWithFractalResults(results);
     }
@@ -901,6 +904,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
                 var bmp = fractalResult.Image.GetBitmap(fractalResult.Params.Palette, fractalResult.Params.ColorInfo, fractalResult.Params.AmbientPower);
 
                 var image = ImageUtil.BitmapToImageSource(bmp);
+                image.Freeze();     // to avoid exception later: Must create DependencySource on same Thread as the DependencyObject.
                 movieImages.Add(image);
             }
 
@@ -954,12 +958,12 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });
     }
 
-    protected void OpenMovieFile(string filename)
+    protected async Task OpenMovieFile(string filename)
     {
-        var movieResult = ReadMovieResultFromFile(filename);
+        var movieResult = await Task.Run(() => ReadMovieResultFromFile(filename));
 
         List<BitmapImage>? movieImages = (movieResult != null)
-            ? LoadMovieImages(movieResult)
+            ? await Task.Run(() => LoadMovieImages(movieResult))
             : null;
 
         UpdateUiWithMovieResults(movieResult, movieImages);
