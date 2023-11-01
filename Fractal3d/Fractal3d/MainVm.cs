@@ -325,8 +325,6 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         ClearFractalRange();
         OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
-        UpdateMovieParams();
-        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
 
         if (SelectedViewMode == ViewModes.Temp)
             Calculate();
@@ -578,8 +576,6 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
                 DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
                 LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
                 TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
-                UpdateMovieParams();
-                MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
                 DisplayImage(_fractalResult);
             }
 
