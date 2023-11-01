@@ -94,7 +94,10 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
                 .Subscribe(progress => PercentProgress = progress);
         }
 
-        OpenFileFromStartUp(fileName);
+        var fileCmd = new AsyncCommand(() => OpenFileFromStartUp(fileName), () => true, OnOpenFileError);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+        fileCmd.ExecuteAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
     }
 
     public void Dispose()
@@ -791,7 +794,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         bmp.Save(filename, info, myEncoderParameters);
     }
 
-    private async void OpenFileFromStartUp(string filename)
+    private async Task OpenFileFromStartUp(string filename)
     {
         if (string.IsNullOrEmpty(filename))
             return;
