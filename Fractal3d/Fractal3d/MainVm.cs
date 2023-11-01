@@ -1,28 +1,24 @@
-﻿using System.Threading.Tasks;
-using ImageCalculator.Movie;
-
-namespace Fractal3d;
+﻿namespace Fractal3d;
 
 using BasicWpfLibrary;
 using FractureCommonLib;
 using ImageCalculator;
+using ImageCalculator.Movie;
 using Newtonsoft.Json;
 using System.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using System.Reactive.Linq;
 using System.Threading;
-using System.IO;
-using System.Drawing.Imaging;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.ComponentModel;
-using System.Windows.Threading;
-
-//using Microsoft.Win32;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 internal class FractalRange
 {
@@ -68,7 +64,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         _saveImageCommand = new RelayCommand(_ => OnSaveImage(), _ => _fractalResult != null);
         _deleteCommand = new RelayCommand(_ => OnDelete(), _ => _fractalResult != null);
         _deleteMostCommand = new RelayCommand(_ => OnDeleteMost(), _ => CanDeleteMost());
-        _openCommand = new RelayCommand(_ => OnOpen(), _ => true);
+        _openCommand = new AsyncCommand(OnOpen, () => true, OnOpenFileError);
         _cancelCommand = new RelayCommand(_ => OnCancel(), _ => true);  // This should only be visible when calculating because it's in the progress Stack panel
         _applyRectCommand = new RelayCommand(_ => OnApplyRect());
         _defaultParametersCommand = new RelayCommand(_ => OnDefaultParameters());
@@ -145,7 +141,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
     private readonly RelayCommand _deleteMostCommand;
     public ICommand DeleteMostCommand => _deleteMostCommand;
 
-    private readonly RelayCommand _openCommand;
+    private readonly AsyncCommand _openCommand;
     public ICommand OpenCommand => _openCommand;
 
     private readonly RelayCommand _cancelCommand;
@@ -472,7 +468,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         }
     }
 
-    protected async void OnOpen()
+    protected async Task OnOpen()
     {
         if (_fractalResult != null)
         {
@@ -496,6 +492,10 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
             await OpenResultFile(openFileDialog.FileName);
     }
 
+    private void OnOpenFileError(Exception e)
+    {
+        System.Windows.Forms.MessageBox.Show("Cannot load file: {0}", e.Message);
+    }
 
     protected void OnDelete()
     {
@@ -812,27 +812,17 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
 
     private static List<FractalResult>? ReadFractalResultsFromFile(string filename)
     {
-        try
-        {
-            string jsonString = File.ReadAllText(filename);
+        string jsonString = File.ReadAllText(filename);
 
-            var results = JsonConvert.DeserializeObject<List<FractalResult>>(jsonString);
+        var results = JsonConvert.DeserializeObject<List<FractalResult>>(jsonString);
 
-            return results;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+        return results;
     }
 
     private void UpdateUiWithFractalResults(List<FractalResult>? results)
     {
         if (results == null)
-        {
-            System.Windows.Forms.MessageBox.Show("Cannot load result from file");
-            return;
-        }
+            throw new InvalidOperationException("Cannot load fractal result from file");
 
         ClearFractalRange();
 
@@ -846,12 +836,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         _fractalResult = results.Last();
         _isDirty = false;
 
-        if (_fractalResult.Params == null)
-        {
-            System.Windows.Forms.MessageBox.Show("Can't load", "Params came back null");
-            return;
-        }
-        _fractalParams = _fractalResult.Params;
+        _fractalParams = _fractalResult.Params ?? throw new InvalidOperationException("Fractal parameters was null");
         PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
@@ -874,55 +859,46 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         UpdateUiWithFractalResults(results);
     }
 
-    private static MovieResult? ReadMovieResultFromFile(string filename)
+    private static MovieResult ReadMovieResultFromFile(string filename)
     {
         string jsonString = File.ReadAllText(filename);
 
         var movieResult = JsonConvert.DeserializeObject<MovieResult>(jsonString);
 
-        if (movieResult == null || movieResult.Results.Count == 0) 
-            return null;
+        if (movieResult == null || movieResult.Results.Count == 0)
+            throw new InvalidOperationException("Movie result was empty");
 
         return movieResult;
     }
 
-    private static List<BitmapImage>? LoadMovieImages(MovieResult movieResult)
+    private static List<BitmapImage> LoadMovieImages(MovieResult movieResult)
     {
         var movieImages = new List<BitmapImage>();
 
-        try
+        var nImages = movieResult.Results.Count;
+
+        for (var i = 1; i <= nImages; ++i)
         {
-            var nImages = movieResult.Results.Count;
+            var fractalResult = movieResult.Results[i - 1];
 
-            for (var i = 1; i <= nImages; ++i)
-            {
-                var fractalResult = movieResult.Results[i - 1];
+            if (fractalResult.Image == null || fractalResult.Params == null)
+                throw new InvalidOperationException("Movie fractal result was empty");
 
-                if (fractalResult.Image == null || fractalResult.Params == null)
-                    return null;
+            var bmp = fractalResult.Image.GetBitmap(fractalResult.Params.Palette, fractalResult.Params.ColorInfo, fractalResult.Params.AmbientPower);
 
-                var bmp = fractalResult.Image.GetBitmap(fractalResult.Params.Palette, fractalResult.Params.ColorInfo, fractalResult.Params.AmbientPower);
-
-                var image = ImageUtil.BitmapToImageSource(bmp);
-                image.Freeze();     // to avoid exception later: Must create DependencySource on same Thread as the DependencyObject.
-                movieImages.Add(image);
-            }
-
-            return movieImages;
+            var image = ImageUtil.BitmapToImageSource(bmp);
+            image.Freeze();     // to avoid exception later: Must create DependencySource on same Thread as the DependencyObject.
+            movieImages.Add(image);
         }
-        catch (Exception)
-        {
-            return null;
-        }
+
+        return movieImages;
+
     }
 
     private void UpdateUiWithMovieResults(MovieResult? movieResult, List<BitmapImage>? images)
     {
         if (movieResult == null || images == null)
-        {
-            System.Windows.Forms.MessageBox.Show("Cannot load movie from file");
-            return;
-        }
+            throw new InvalidOperationException("Movie result was empty");
 
         ClearFractalRange();
 
@@ -939,12 +915,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         _fractalResult = result;
         _isDirty = false;
 
-        if (_fractalResult.Params == null)
-        {
-            System.Windows.Forms.MessageBox.Show("Can't load images", "Params came back null");
-            return;
-        }
-        _fractalParams = _fractalResult.Params;
+        _fractalParams = _fractalResult.Params ?? throw new InvalidOperationException("Movie fractal parameters were null");
         PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
@@ -962,9 +933,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
     {
         var movieResult = await Task.Run(() => ReadMovieResultFromFile(filename));
 
-        List<BitmapImage>? movieImages = (movieResult != null)
-            ? await Task.Run(() => LoadMovieImages(movieResult))
-            : null;
+        var movieImages = await Task.Run(() => LoadMovieImages(movieResult));
 
         UpdateUiWithMovieResults(movieResult, movieImages);
     }
