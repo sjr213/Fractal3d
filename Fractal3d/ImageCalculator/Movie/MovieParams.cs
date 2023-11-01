@@ -1,5 +1,6 @@
 ﻿namespace ImageCalculator.Movie
 {
+    [Serializable]
     public record MovieParams
     {
         public int CurrentImage { get; set; } = 1;

@@ -897,14 +897,14 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
 
     private void UpdateUiWithMovieResults(MovieResult? movieResult, List<BitmapImage>? images)
     {
-        if (movieResult == null || images == null)
+        if (movieResult == null || images == null || movieResult.Params == null)
             throw new InvalidOperationException("Movie result was empty");
 
         ClearFractalRange();
 
-        SelectedViewMode = ViewModes.Movie;
-
         _movieResult = movieResult;
+        _movieParams = movieResult.Params;
+        _movieImages = images;
 
         FractalResults.Clear();
         _fractalNumber = 1;
@@ -920,10 +920,12 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
 
+        SelectedViewMode = ViewModes.Queue;
         SelectedFractalResult = FractalResults.FirstOrDefault();
+        SelectedViewMode = ViewModes.Movie;
 
-        _movieImages = images;
         ImageViewModel = new ImageVm(_fractalParams, images.First(), SetSelectionRect);
+        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
         MovieViewModel.SetImages(_movieImages, _fractalParams);
 
         OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });
