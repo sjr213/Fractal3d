@@ -28,7 +28,7 @@ internal class FractalRange
     public double ToY { get; set; }
 }
 
-public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
+public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 {
     #region Members
 
@@ -49,7 +49,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
     private MovieResult? _movieResult;
     private List<BitmapImage> _movieImages = new();
 
-    private MovieParams _movieParams = new MovieParams();
+    private MovieParams _movieParams = new();
 
     #endregion
 
@@ -74,7 +74,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         UpdateMovieParams();
         MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
-        MovieViewModel = new MovieVm();
+        AddMovieVm();
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         DisplayInfoViewModel = new DisplayInfoVm(_fractalParams.ColorInfo, OnDisplayInfoChanged);
@@ -107,6 +107,12 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
         GC.SuppressFinalize(this);
     }
 
+    private void AddMovieVm()
+    {
+        MovieViewModel = new MovieVm();
+        _movieVmObserver = MovieViewModel.Subscribe(this);
+    }
+
     protected virtual void Dispose(bool disposing)
     {
         if (_isDisposed)
@@ -118,6 +124,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
             _progressShaderSubject?.Dispose();
             _shaderFactory.Dispose();
             _fractalParallelFactory.Dispose();
+            _movieVmObserver.Dispose();
         }
 
         _isDisposed = true;
@@ -1135,6 +1142,27 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer
     protected void OnMovieChanged(MovieChangedEventArgs e)
     {
         MovieChanged?.Invoke(this, e);
+    }
+
+    #endregion
+
+    #region IObserver<int> current image index
+
+    private IDisposable _movieVmObserver;
+
+    public void OnCompleted()
+    {
+        // do nothing
+    }
+
+    public void OnError(Exception error)
+    {
+        // do nothing
+    }
+
+    public virtual void OnNext(int value)
+    {
+        OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.CurrentImageChanged, CurrentImageIndex = value});
     }
 
     #endregion

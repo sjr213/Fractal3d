@@ -3,16 +3,17 @@ using BasicWpfLibrary;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System;
+using System.Reactive.Subjects;
 using ImageCalculator;
 
 namespace Fractal3d
 {
-    public class MovieVm : ViewModelBase
+    public class MovieVm : ViewModelBase, IObservable<int>
     {
         private List<BitmapImage> _movieImages = new List<BitmapImage>();
         private FractalParams _fractalParams = new FractalParams();
         private DispatcherTimer? _timer;
-        private int _currentImage = 0;
+        private int _currentImage;
 
         public MovieVm()
         {
@@ -89,6 +90,19 @@ namespace Fractal3d
             Image = _movieImages[_currentImage];
             Width = _fractalParams.DisplaySize.Width;
             Height= _fractalParams.DisplaySize.Height;
+
+            _currentImageObserver.OnNext(_currentImage);
+        }
+
+        #endregion
+
+        #region IObserver<int>
+
+        private readonly Subject<int> _currentImageObserver = new Subject<int>();
+
+        public virtual IDisposable Subscribe(IObserver<int> observer)
+        {
+            return _currentImageObserver.Subscribe(observer);
         }
 
         #endregion

@@ -109,6 +109,10 @@ public class MovieParamVm : ViewModelBase
     {
         if(args.ChangeType == MovieChangeType.ImageCountChange)
             OnPropertyChanged(nameof(IsMovie));
+
+        if (args.ChangeType == MovieChangeType.CurrentImageChanged)
+            CurrentImage = args.CurrentImageIndex + 1;
+
     }
 
     #endregion
