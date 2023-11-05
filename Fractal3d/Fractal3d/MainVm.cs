@@ -318,6 +318,9 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
     protected bool CanCalculate()
     {
+        if (SelectedViewMode == ViewModes.Movie)
+            return AreParametersValid() && AreMovieParamsValid();
+
         return AreParametersValid();
     }
 
@@ -1032,6 +1035,25 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
             return false;
 
         return true;
+    }
+
+    private bool AreMovieParamsValid()
+    {
+        const double minAngleDifference = 0.01;
+
+        if (_movieParams.MovieType == MovieTypes.Angles)
+        {
+            if (Math.Abs(_movieParams.FromAngleX - _movieParams.ToAngleX) > minAngleDifference)
+                return true;
+
+            if (Math.Abs(_movieParams.FromAngleY - _movieParams.ToAngleY) > minAngleDifference)
+                return true;
+
+            if (Math.Abs(_movieParams.FromAngleZ - _movieParams.ToAngleZ) > minAngleDifference)
+                return true;
+        }
+
+        return false;
     }
 
     private void DoYouWantToSaveResults()
