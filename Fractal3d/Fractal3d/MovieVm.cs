@@ -14,6 +14,7 @@ namespace Fractal3d
         private FractalParams _fractalParams = new FractalParams();
         private DispatcherTimer? _timer;
         private int _currentImage;
+        private bool _isRunning;
 
         public MovieVm()
         {
@@ -59,8 +60,10 @@ namespace Fractal3d
 
         public void Start(int framesPerSecond)
         {
-            if (_movieImages.Count < 2)
+            if (_movieImages.Count < 2 || _isRunning)
                 return;
+
+            _isRunning = true;
 
             var timeMs = 1000 / 5;
             if (framesPerSecond is >= MovieConstants.MinFramesPerSecond and <= MovieConstants.MaxFramesPerSecond)
@@ -75,6 +78,28 @@ namespace Fractal3d
         {
             if(_timer != null)
                 _timer.Stop();
+
+            _isRunning = false;
+        }
+
+        public void UpdateCurrentImage(int currentImageIndex)
+        {
+            if (_isRunning)
+                return;
+
+            if (currentImageIndex >= _movieImages.Count || currentImageIndex < 0)
+                return;
+
+            if (currentImageIndex == _currentImage)
+                return;
+
+            _currentImage = currentImageIndex;
+
+            Image = _movieImages[_currentImage];
+            Width = _fractalParams.DisplaySize.Width;
+            Height = _fractalParams.DisplaySize.Height;
+
+            _currentImageObserver.OnNext(_currentImage);
         }
 
         private void TimerTick(object? sender, EventArgs e)

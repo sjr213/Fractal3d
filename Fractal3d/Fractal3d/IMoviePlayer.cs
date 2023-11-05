@@ -11,6 +11,9 @@ public interface IMoviePlayer
     void StopMovie();
     bool CanStopMovie();
 
+    void UpdateCurrentImage(int currentImageIndex);
+    bool CanUpdateCurrentImage();
+
     bool IsMovie();
 
     void OnMovieParamsChanged(MovieParams movieParams);

@@ -1144,6 +1144,16 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         MovieChanged?.Invoke(this, e);
     }
 
+    public void UpdateCurrentImage(int currentImageIndex)
+    {
+        MovieViewModel.UpdateCurrentImage(currentImageIndex);
+    }
+
+    public bool CanUpdateCurrentImage()
+    {
+        return SelectedViewMode == ViewModes.Movie && !_isPlaying && _movieImages.Count == _movieParams.NumberOfImages;
+    }
+
     #endregion
 
     #region IObserver<int> current image index

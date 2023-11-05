@@ -58,6 +58,14 @@ public class MovieParamVm : ViewModelBase
         OnPropertyChanged(nameof(NumberOfImages));
     }
 
+    private void SetMovieIndex(int movieIndex)
+    {
+        if (_moviePlayer.CanUpdateCurrentImage() == false)
+            return;
+
+        _moviePlayer.UpdateCurrentImage(movieIndex);
+    }
+
     #endregion
 
     #region handlers
@@ -83,21 +91,31 @@ public class MovieParamVm : ViewModelBase
     }
 
     private void OnForward()
-    {}
+    {
+        var index = CurrentImage; // This is index +1
+        if (index >= _movieParams.NumberOfImages)
+            index = 0;
+
+        SetMovieIndex(index);
+    }
 
     private bool CanForward()
     {
-        return true;
+        return _moviePlayer.CanUpdateCurrentImage();
     }
 
     private void OnReverse()
     {
+        var index = CurrentImage - 2; 
+        if (index < 0)
+            index = _movieParams.NumberOfImages - 1;
 
+        SetMovieIndex(index);
     }
 
     private bool CanReverse()
     {
-        return true;
+        return _moviePlayer.CanUpdateCurrentImage();
     }
 
     private void OnMovieParamsChanged()
@@ -112,7 +130,6 @@ public class MovieParamVm : ViewModelBase
 
         if (args.ChangeType == MovieChangeType.CurrentImageChanged)
             CurrentImage = args.CurrentImageIndex + 1;
-
     }
 
     #endregion
@@ -148,6 +165,7 @@ public class MovieParamVm : ViewModelBase
             _movieParams.CurrentImage = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
+            SetMovieIndex(_movieParams.CurrentImage - 1);
         }
     }
 
@@ -238,7 +256,6 @@ public class MovieParamVm : ViewModelBase
             OnMovieParamsChanged();
         }
     }
-
 
     #endregion
 }
