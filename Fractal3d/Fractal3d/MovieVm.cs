@@ -5,6 +5,7 @@ using System.Windows.Threading;
 using System;
 using System.Reactive.Subjects;
 using ImageCalculator;
+using ImageCalculator.Movie;
 
 namespace Fractal3d
 {

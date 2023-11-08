@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Fractal3d"
              xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
+             xmlns:movie="clr-namespace:ImageCalculator.Movie;assembly=ImageCalculator"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:MovieParamVm}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -58,7 +59,7 @@
                             <TextBox.Text>
                                 <Binding Path="CurrentImage" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRuleUsingMaxWrapper Min="{x:Static local:MovieConstants.FirstImage}">
+                                        <basicWpfLibrary:IntRangeRuleUsingMaxWrapper Min="{x:Static movie:MovieConstants.FirstImage}">
                                             <basicWpfLibrary:IntRangeRuleUsingMaxWrapper.Wrapper>
                                                 <basicWpfLibrary:Wrapper 
                                                     
@@ -77,8 +78,8 @@
                                 <Binding Path="NumberOfImages" 
                                          UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:MovieConstants.MinImages}" 
-                                                                      Max="{x:Static local:MovieConstants.MaxImages}"/>
+                                        <basicWpfLibrary:IntRangeRule Min="{x:Static movie:MovieConstants.MinImages}" 
+                                                                      Max="{x:Static movie:MovieConstants.MaxImages}"/>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -91,8 +92,8 @@
                                 <Binding Path="FramesPerSecond" 
                                          UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:MovieConstants.MinFramesPerSecond}" 
-                                                                      Max="{x:Static local:MovieConstants.MaxFramesPerSecond}"/>
+                                        <basicWpfLibrary:IntRangeRule Min="{x:Static movie:MovieConstants.MinFramesPerSecond}" 
+                                                                      Max="{x:Static movie:MovieConstants.MaxFramesPerSecond}"/>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>

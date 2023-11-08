@@ -8,6 +8,9 @@ public static class FractalParamCalculator
 
         if (movieParams.MovieType == MovieTypes.Angles)
             return CalculateFractalAngleParams(fractalParams, movieParams, imageNumber);
+        if (movieParams.MovieType == MovieTypes.Bailout)
+
+            return CalculateBailoutParams(fractalParams, movieParams, imageNumber);
 
         return newFractalParams;
     }
@@ -48,6 +51,55 @@ public static class FractalParamCalculator
 
         var difZ = (toZ - fromZ) / (movieParams.NumberOfImages - 1);
         newFractalParams.TransformParams.RotateZ = fromZ + (imageNumber - 1) * difZ;
+
+        return newFractalParams;
+    }
+
+    private static FractalParams CalculateBailoutParams(FractalParams fractalParams, MovieParams movieParams,
+        int imageNumber)
+    {
+        var newFractalParams = (FractalParams)fractalParams.Clone();
+        if (movieParams.NumberOfImages < 2)
+            return newFractalParams;
+
+        var absoluteDif = movieParams.EndBailout - movieParams.StartBailout;
+        if (absoluteDif < MovieConstants.MinBailoutDifference)
+            return newFractalParams;
+
+        if (movieParams.DistributionType == DistributionTypes.Exponential)
+        {
+            if (movieParams.EndBailout > movieParams.StartBailout)
+            {
+                var minLog = Math.Log10(movieParams.StartBailout);
+                var maxLog = Math.Log10(movieParams.EndBailout);
+                var totalLog = maxLog - minLog;
+                var logStep = totalLog / (movieParams.NumberOfImages - 1);
+                var exp = minLog + imageNumber * logStep;
+                newFractalParams.Bailout = (float)Math.Pow(10.0, exp);
+            }
+            else
+            {
+                var minLog = Math.Log10(movieParams.EndBailout);
+                var maxLog = Math.Log10(movieParams.StartBailout);
+                var totalLog = maxLog - minLog;
+                var logStep = totalLog / (movieParams.NumberOfImages - 1);
+                var exp = maxLog - imageNumber * logStep;
+                newFractalParams.Bailout = (float)Math.Pow(10.0, exp);
+            }
+        }
+        else if(movieParams.DistributionType == DistributionTypes.Linear)
+        {
+            if (movieParams.EndBailout > movieParams.StartBailout)
+            {
+                var dif = movieParams.EndBailout - movieParams.StartBailout;
+                newFractalParams.Bailout = movieParams.StartBailout + imageNumber * dif;
+            }
+            else
+            {
+                var dif = movieParams.StartBailout - movieParams.EndBailout;
+                newFractalParams.Bailout = movieParams.StartBailout - imageNumber * dif;
+            }
+        }
 
         return newFractalParams;
     }

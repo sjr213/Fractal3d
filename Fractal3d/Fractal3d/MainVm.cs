@@ -1039,17 +1039,20 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
     private bool AreMovieParamsValid()
     {
-        const double minAngleDifference = 0.01;
-
         if (_movieParams.MovieType == MovieTypes.Angles)
         {
-            if (Math.Abs(_movieParams.FromAngleX - _movieParams.ToAngleX) > minAngleDifference)
+            if (Math.Abs(_movieParams.FromAngleX - _movieParams.ToAngleX) > MovieConstants.MinAngleDifference)
                 return true;
 
-            if (Math.Abs(_movieParams.FromAngleY - _movieParams.ToAngleY) > minAngleDifference)
+            if (Math.Abs(_movieParams.FromAngleY - _movieParams.ToAngleY) > MovieConstants.MinAngleDifference)
                 return true;
 
-            if (Math.Abs(_movieParams.FromAngleZ - _movieParams.ToAngleZ) > minAngleDifference)
+            if (Math.Abs(_movieParams.FromAngleZ - _movieParams.ToAngleZ) > MovieConstants.MinAngleDifference)
+                return true;
+        }
+        else if (_movieParams.MovieType == MovieTypes.Bailout)
+        {
+            if (Math.Abs(_movieParams.EndBailout - _movieParams.StartBailout) > MovieConstants.MinBailoutDifference)
                 return true;
         }
 

@@ -25,7 +25,7 @@ public class MovieParamVm : ViewModelBase
 
         AllowedMovieTypes = new ObservableCollection<MovieTypes>
         {
-            MovieTypes.Angles
+            MovieTypes.Angles, MovieTypes.Bailout
         };
         SelectedMovieType = MovieTypes.Angles;
 
