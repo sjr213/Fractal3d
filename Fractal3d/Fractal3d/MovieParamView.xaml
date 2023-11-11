@@ -54,7 +54,7 @@
                 </ComboBox>
                 </StackPanel>
                 <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="2" Orientation="Horizontal">
                         <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Current Image" />
                         <TextBox Style="{StaticResource TextBoxInError}">
                             <TextBox.Resources>

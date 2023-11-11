@@ -17,7 +17,7 @@
         public float FromAngleZ { get; set;}
         public float ToAngleZ { get; set;}
 
-        public float StartBailout { get; set; }
-        public float EndBailout { get; set; }
+        public float StartBailout { get; set; } = 10;
+        public float EndBailout { get; set; } = 10;
     }
 }

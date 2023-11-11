@@ -151,13 +151,12 @@ public class MovieParamVm : ViewModelBase
 
     public bool IsMovie => _moviePlayer.IsMovie();
 
-    private MovieTypes _selectedMovieType;
     public MovieTypes SelectedMovieType
     {
-        get => _selectedMovieType;
+        get => _movieParams.MovieType;
         set
         {
-            _selectedMovieType = value;
+            _movieParams.MovieType = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
@@ -270,13 +269,12 @@ public class MovieParamVm : ViewModelBase
         set => SetProperty(ref _allowedDistributionTypes, value);
     }
 
-    private DistributionTypes _selectedDistributionType;
     public DistributionTypes SelectedDistributionType
     {
-        get => _selectedDistributionType;
+        get => _movieParams.DistributionType;
         set
         {
-            _selectedDistributionType = value;
+            _movieParams.DistributionType = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
