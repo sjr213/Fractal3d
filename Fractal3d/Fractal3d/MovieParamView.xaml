@@ -46,12 +46,12 @@
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Movie Type: " />
                     <ComboBox Margin="2" Padding="2" Width="100" HorizontalAlignment="Left"
                               ItemsSource="{Binding AllowedMovieTypes}" SelectedItem="{Binding SelectedMovieType}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
                 <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <StackPanel Margin="2" Orientation="Horizontal">
@@ -108,6 +108,16 @@
 
             <StackPanel Grid.Row="2" Margin="5" Orientation="Vertical">
                 <StackPanel Orientation="Vertical">
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedMovieType}" Value="Angles">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
                     <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Rotation Angles" />
 
                     <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
@@ -193,6 +203,16 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical">
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedMovieType}" Value="Bailout">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
                     <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Bailout Range" />
 
                     <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
