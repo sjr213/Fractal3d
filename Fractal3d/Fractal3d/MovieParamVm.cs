@@ -29,6 +29,12 @@ public class MovieParamVm : ViewModelBase
         };
         SelectedMovieType = MovieTypes.Angles;
 
+        AllowedDistributionTypes = new ObservableCollection<DistributionTypes>
+        {
+            DistributionTypes.Linear, DistributionTypes.Exponential
+        };
+        SelectedDistributionType = DistributionTypes.Linear;
+
         moviePlayer.MovieChanged += OnMovieChanged;
     }
 
@@ -252,6 +258,47 @@ public class MovieParamVm : ViewModelBase
         set
         {
             _movieParams.ToAngleZ = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    private ObservableCollection<DistributionTypes> _allowedDistributionTypes = null!;
+    public ObservableCollection<DistributionTypes> AllowedDistributionTypes
+    {
+        get => _allowedDistributionTypes;
+        set => SetProperty(ref _allowedDistributionTypes, value);
+    }
+
+    private DistributionTypes _selectedDistributionType;
+    public DistributionTypes SelectedDistributionType
+    {
+        get => _selectedDistributionType;
+        set
+        {
+            _selectedDistributionType = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float StartBailout
+    {
+        get => _movieParams.StartBailout;
+        set
+        {
+            _movieParams.StartBailout = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float EndBailout
+    {
+        get => _movieParams.EndBailout;
+        set
+        {
+            _movieParams.EndBailout = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
