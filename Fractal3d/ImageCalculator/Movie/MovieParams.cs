@@ -19,5 +19,15 @@
 
         public float StartBailout { get; set; } = 10;
         public float EndBailout { get; set; } = 10;
+
+        public float ConstantCStartW { get; set; } = 0f;
+        public float ConstantCEndW { get; set; } = 0f;
+        public float ConstantCStartX { get; set; } = 0f;
+        public float ConstantCEndX { get; set; } = 0f;
+        public float ConstantCStartY { get; set; } = 0f;
+        public float ConstantCEndY { get; set; } = 0f;
+        public float ConstantCStartZ { get; set; } = 0f;
+        public float ConstantCEndZ { get; set; } = 0f;
+
     }
 }

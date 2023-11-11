@@ -1,4 +1,6 @@
-﻿namespace Fractal3d;
+﻿using System;
+
+namespace Fractal3d;
 
 using BasicWpfLibrary;
 using ImageCalculator;
@@ -11,6 +13,8 @@ public class MovieParamVm : ViewModelBase
     private FractalParams _fractalParams;       // remove this later
     private readonly MovieParams _movieParams;
     private readonly IMoviePlayer _moviePlayer;
+
+    private const float MinFloatDifference = 0.001f;
 
     public MovieParamVm(FractalParams fractalParams, MovieParams movieParams, IMoviePlayer moviePlayer)
     {
@@ -201,6 +205,7 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.FromAngleX;
         set
         {
+            if (Math.Abs(_movieParams.FromAngleX - value) < MinFloatDifference) return;
             _movieParams.FromAngleX = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -212,6 +217,7 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.ToAngleX;
         set
         {
+            if (Math.Abs(_movieParams.ToAngleX - value) < MinFloatDifference) return;
             _movieParams.ToAngleX = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -223,6 +229,7 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.FromAngleY;
         set
         {
+            if (Math.Abs(_movieParams.FromAngleY - value) < MinFloatDifference) return;
             _movieParams.FromAngleY = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -234,6 +241,7 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.ToAngleY;
         set
         {
+            if (Math.Abs(_movieParams.ToAngleY - value) < MinFloatDifference) return;
             _movieParams.ToAngleY = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -245,6 +253,7 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.FromAngleZ;
         set
         {
+            if (Math.Abs(_movieParams.FromAngleZ - value) < MinFloatDifference) return;
             _movieParams.FromAngleZ = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -256,6 +265,7 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.ToAngleZ;
         set
         {
+            if (Math.Abs(_movieParams.ToAngleZ- value) < MinFloatDifference) return;
             _movieParams.ToAngleZ = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -285,6 +295,7 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.StartBailout;
         set
         {
+            if (Math.Abs(_movieParams.StartBailout - value) < MinFloatDifference) return;
             _movieParams.StartBailout = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -296,7 +307,104 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.EndBailout;
         set
         {
+            if (Math.Abs(_movieParams.EndBailout - value) < MinFloatDifference) return;
             _movieParams.EndBailout = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float StartCW
+    {
+        get => _movieParams.ConstantCStartW;
+        set
+        {
+            if (Math.Abs(_movieParams.ConstantCStartW - value) < MinFloatDifference) return;
+            _movieParams.ConstantCStartW = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float EndCW
+    {
+        get => _movieParams.ConstantCEndW;
+        set
+        {
+            if (Math.Abs(_movieParams.ConstantCEndW - value) < MinFloatDifference) return;
+            _movieParams.ConstantCEndW = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float StartCX
+    {
+        get => _movieParams.ConstantCStartX;
+        set
+        {
+            if (Math.Abs(_movieParams.ConstantCStartX - value) < MinFloatDifference) return;
+            _movieParams.ConstantCStartX = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float EndCX
+    {
+        get => _movieParams.ConstantCEndX;
+        set
+        {
+            if (Math.Abs(_movieParams.ConstantCEndX - value) < MinFloatDifference) return;
+            _movieParams.ConstantCEndX = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float StartCY
+    {
+        get => _movieParams.ConstantCStartY;
+        set
+        {
+            if (Math.Abs(_movieParams.ConstantCStartY - value) < MinFloatDifference) return;
+            _movieParams.ConstantCStartY = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float EndCY
+    {
+        get => _movieParams.ConstantCEndY;
+        set
+        {
+            if (Math.Abs(_movieParams.ConstantCEndY - value) < MinFloatDifference) return;
+            _movieParams.ConstantCEndY = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float StartCZ
+    {
+        get => _movieParams.ConstantCStartZ;
+        set
+        {
+            if (Math.Abs(_movieParams.ConstantCStartZ - value) < MinFloatDifference) return;
+            _movieParams.ConstantCStartZ = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public float EndCZ
+    {
+        get => _movieParams.ConstantCEndZ;
+        set
+        {
+            if (Math.Abs(_movieParams.ConstantCEndZ - value) < MinFloatDifference) return;
+            _movieParams.ConstantCEndZ = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
         }

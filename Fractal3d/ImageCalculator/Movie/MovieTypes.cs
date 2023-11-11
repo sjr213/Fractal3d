@@ -3,6 +3,7 @@
     public enum MovieTypes
     {
         Angles,
-        Bailout
+        Bailout,
+        ConstantC
     }
 }

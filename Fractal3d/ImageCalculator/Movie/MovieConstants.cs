@@ -10,5 +10,6 @@ public static class MovieConstants
 
     public const double MinAngleDifference = 0.01;
     public const double MinBailoutDifference = 0.1;
+    public const double MinConstantCDifference = 0.01;
 }
 
