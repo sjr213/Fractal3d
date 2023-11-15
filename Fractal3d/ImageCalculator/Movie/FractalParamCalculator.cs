@@ -105,7 +105,7 @@ public static class FractalParamCalculator
         return newFractalParams;
     }
 
-    private static float? GetLinearConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
+    private static float? GetExponentialConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
     {
         if (Math.Abs(end - start) < MovieConstants.MinConstantCDifference)
             return null;
@@ -130,7 +130,7 @@ public static class FractalParamCalculator
         }
     }
 
-    private static float? GetExponentialConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
+    private static float? GetLinearConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
     {
         if (Math.Abs(end - start) < MovieConstants.MinConstantCDifference)
             return null;

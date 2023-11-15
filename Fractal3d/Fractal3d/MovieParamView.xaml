@@ -254,6 +254,134 @@
                         </TextBox>
                     </StackPanel>
                 </StackPanel>
+
+                <StackPanel Orientation="Vertical">
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedMovieType}" Value="ConstantC">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Complex Constant C" />
+
+                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Distribution Type: " />
+                        <ComboBox Margin="2" Padding="2" Width="100" HorizontalAlignment="Left"
+                                  ItemsSource="{Binding AllowedDistributionTypes}" SelectedItem="{Binding SelectedDistributionType}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Starting W"/>
+                        <TextBox Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="StartCW" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ending W"/>
+                        <TextBox Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="EndCW" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Starting X"/>
+                        <TextBox Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="StartCX" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ending X"/>
+                        <TextBox Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="EndCX" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Starting Y"/>
+                        <TextBox Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="StartCY" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ending Y"/>
+                        <TextBox Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="EndCY" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Starting Z"/>
+                        <TextBox Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="StartCZ" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ending Z"/>
+                        <TextBox Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="EndCZ" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+
+                </StackPanel>
+
             </StackPanel>
         </Grid>
     </Border>

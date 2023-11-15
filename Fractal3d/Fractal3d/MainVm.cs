@@ -1055,6 +1055,24 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
             if (Math.Abs(_movieParams.EndBailout - _movieParams.StartBailout) > MovieConstants.MinBailoutDifference)
                 return true;
         }
+        else if (_movieParams.MovieType == MovieTypes.ConstantC)
+        {
+            if (Math.Abs(_movieParams.ConstantCStartW - _movieParams.ConstantCEndW) >
+                MovieConstants.MinConstantCDifference)
+                return true;
+
+            if (Math.Abs(_movieParams.ConstantCStartX - _movieParams.ConstantCEndX) >
+                MovieConstants.MinConstantCDifference)
+                return true;
+
+            if (Math.Abs(_movieParams.ConstantCStartY - _movieParams.ConstantCEndY) >
+                MovieConstants.MinConstantCDifference)
+                return true;
+
+            if (Math.Abs(_movieParams.ConstantCStartZ - _movieParams.ConstantCEndZ) >
+                MovieConstants.MinConstantCDifference)
+                return true;
+        }
 
         return false;
     }
