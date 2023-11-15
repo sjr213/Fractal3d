@@ -228,7 +228,7 @@
                     </StackPanel>
 
                     <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
-                        <TextBlock Margin="2" Style="{StaticResource PlainTextBlockStyle}" Text="Starting Bailout"/>
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Starting Bailout"/>
                         <TextBox Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
                                 <Binding Path="StartBailout" 
@@ -280,20 +280,35 @@
                         </ComboBox>
                     </StackPanel>
 
-                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Starting W"/>
-                        <TextBox Style="{StaticResource TextBoxInError}">
+                    <Grid Margin="12,2,2,2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource PlainTextBlockStyle}" Text="Starting W"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
                                 <Binding Path="StartCW" 
-                                         UpdateSourceTrigger="LostFocus" >
+                                     UpdateSourceTrigger="LostFocus" >
                                     <Binding.ValidationRules>
                                         <basicWpfLibrary:FloatRule />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ending W"/>
-                        <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="0" Grid.Column="3" Style="{StaticResource PlainTextBlockStyle}" Text="Ending W"/>
+                        <TextBox  Grid.Row="0" Grid.Column="4" Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
                                 <Binding Path="EndCW" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -303,11 +318,9 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>
 
-                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Starting X"/>
-                        <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource PlainTextBlockStyle}" Text="Starting X"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
                                 <Binding Path="StartCX" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -317,8 +330,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ending X"/>
-                        <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="1" Grid.Column="3" Style="{StaticResource PlainTextBlockStyle}" Text="Ending X"/>
+                        <TextBox Grid.Row="1" Grid.Column="4" Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
                                 <Binding Path="EndCX" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -328,11 +341,9 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>
 
-                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Starting Y"/>
-                        <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource PlainTextBlockStyle}" Text="Starting Y"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
                                 <Binding Path="StartCY" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -342,8 +353,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ending Y"/>
-                        <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="2" Grid.Column="3" Style="{StaticResource PlainTextBlockStyle}" Text="Ending Y"/>
+                        <TextBox Grid.Row="2" Grid.Column="4" Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
                                 <Binding Path="EndCY" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -353,11 +364,9 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>
 
-                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Starting Z"/>
-                        <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource PlainTextBlockStyle}" Text="Starting Z"/>
+                        <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
                                 <Binding Path="StartCZ" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -367,8 +376,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ending Z"/>
-                        <TextBox Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="3" Grid.Column="3" Style="{StaticResource PlainTextBlockStyle}" Text="Ending Z"/>
+                        <TextBox Grid.Row="3" Grid.Column="4" Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
                                 <Binding Path="EndCZ" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -378,8 +387,7 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>
-
+                    </Grid>
                 </StackPanel>
 
             </StackPanel>
