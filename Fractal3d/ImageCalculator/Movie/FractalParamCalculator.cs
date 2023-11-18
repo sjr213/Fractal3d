@@ -105,29 +105,158 @@ public static class FractalParamCalculator
         return newFractalParams;
     }
 
-    private static float? GetExponentialConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
+    private static float GetExponentialConstantCValueWithBothEndsPositive(float start, float end, int imageNumber, int numberOfImages)
     {
-        if (Math.Abs(end - start) < MovieConstants.MinConstantCDifference)
-            return null;
-
         if (end > start)
         {
+            if (start < MovieConstants.MinConstantCExponent)
+                start = (float)MovieConstants.MinConstantCExponent;
             var minLog = Math.Log10(start);
             var maxLog = Math.Log10(end);
             var totalLog = maxLog - minLog;
-            var logStep = totalLog / (numberOfImages - 1);
+            var logStep = totalLog / (numberOfImages-1);
             var exp = minLog + (imageNumber - 1) * logStep;
             return (float)Math.Pow(10.0, exp);
         }
         else
         {
+            if (end < MovieConstants.MinConstantCExponent)
+                end = (float)MovieConstants.MinConstantCExponent;
             var minLog = Math.Log10(end);
             var maxLog = Math.Log10(start);
             var totalLog = maxLog - minLog;
-            var logStep = totalLog / (numberOfImages - 1);
+            var logStep = totalLog / (numberOfImages-1);
             var exp = maxLog - (imageNumber - 1) * logStep;
             return (float)Math.Pow(10.0, exp);
         }
+    }
+
+    private static float GetExponentialConstantCValueWithBothEndsNegative(float start, float end, int imageNumber, int numberOfImages)
+    {
+        if (end > start)
+        {
+            if (end > -1.0f * MovieConstants.MinConstantCExponent)
+                end = (float) (-1.0f * MovieConstants.MinConstantCExponent);
+            var minLog = Math.Log10(-end);
+            var maxLog = Math.Log10(-start);
+            var totalLog = maxLog - minLog;
+            var logStep = totalLog / (numberOfImages-1);
+            var exp = minLog + (numberOfImages - imageNumber) * logStep;
+            return -1.0f * (float)Math.Pow(10.0, exp);
+        }
+        else
+        {
+            if (start > -1.0f * MovieConstants.MinConstantCExponent)
+                start = (float)(-1.0f * MovieConstants.MinConstantCExponent);
+            var minLog = Math.Log10(-start);
+            var maxLog = Math.Log10(-end);
+            var totalLog = maxLog - minLog;
+            var logStep = totalLog / (numberOfImages-1);
+            var exp = maxLog - (numberOfImages - imageNumber) * logStep;
+            return -1.0f * (float)Math.Pow(10.0, exp);
+        }
+    }
+
+    private static float GetExponentialConstantCValueOverPositiveNegativeRange(float start, float end, int imageNumber, int numberOfImages)
+    {
+        var absStart = Math.Abs(start);
+        var absEnd = Math.Abs(end);
+
+        // negative to positive
+        if (end > start)
+        {
+            if (absStart < absEnd / 100.0f || absStart < MovieConstants.MinConstantCExpoDifference)
+            {
+                // ignore start on negative side
+                return GetExponentialConstantCValueWithBothEndsPositive((float)MovieConstants.MinConstantCExponent, end, imageNumber, numberOfImages);
+            }
+
+            if (absEnd < absStart/ 100f || absEnd < MovieConstants.MinConstantCExpoDifference)
+            {
+                // ignore end on positive side
+                return GetExponentialConstantCValueWithBothEndsNegative(start, (float)-MovieConstants.MinConstantCExponent, imageNumber, numberOfImages);
+            }
+
+            var oddNumberOfImages = (numberOfImages % 2) == 1;
+            if (oddNumberOfImages)
+            {
+                // negative exponent
+                if(imageNumber < numberOfImages/2 + 1)
+                    return GetExponentialConstantCValueWithBothEndsNegative(start, (float)-MovieConstants.MinConstantCExponent, imageNumber, numberOfImages/2 + 1);
+
+                if (imageNumber == numberOfImages / 2 + 1)
+                    return 0f;
+
+                var rightImageNumber = imageNumber - numberOfImages / 2;
+                return GetExponentialConstantCValueWithBothEndsPositive((float)MovieConstants.MinConstantCExponent, end, rightImageNumber, numberOfImages/2 + 1);
+            }
+            else
+            {
+                // negative exponent
+                if (imageNumber <= numberOfImages / 2)  // this will include the zero
+                    return GetExponentialConstantCValueWithBothEndsNegative(start, (float)-MovieConstants.MinConstantCExponent, imageNumber, numberOfImages / 2);
+
+                if (imageNumber == numberOfImages / 2 + 1)
+                    return 0f;
+
+                var rightImageNumber = imageNumber - numberOfImages / 2 + 1; // skips zero
+                return GetExponentialConstantCValueWithBothEndsPositive((float)MovieConstants.MinConstantCExponent, end, rightImageNumber, numberOfImages / 2 + 1);
+            }
+        }
+        else // positive to negative
+        {
+            if (absStart < absEnd/100f || absStart < MovieConstants.MinConstantCExpoDifference)
+            {
+                // ignore start on positive side
+                return GetExponentialConstantCValueWithBothEndsNegative((float)-MovieConstants.MinConstantCExponent, end, imageNumber, numberOfImages);
+            }
+
+            if (absEnd < absStart/100f || absEnd < MovieConstants.MinConstantCExpoDifference)
+            {
+                // ignore end on negative side
+                return GetExponentialConstantCValueWithBothEndsPositive(start, (float)MovieConstants.MinConstantCExponent, imageNumber, numberOfImages);
+            }
+
+            var oddNumberOfImages = (numberOfImages % 2) == 1;
+            if (oddNumberOfImages)
+            {
+                // positive exponent
+                if (imageNumber < numberOfImages / 2 + 1)
+                    return GetExponentialConstantCValueWithBothEndsPositive(start, (float)MovieConstants.MinConstantCExponent, imageNumber, numberOfImages/2 + 1);
+
+                if (imageNumber == numberOfImages / 2 + 1)
+                    return 0f;
+
+                var rightImageNumber = imageNumber - numberOfImages / 2;
+                return GetExponentialConstantCValueWithBothEndsNegative((float)-MovieConstants.MinConstantCExponent, end, rightImageNumber, numberOfImages/2 + 1);
+            }
+            else
+            {
+                // positive exponent
+                if (imageNumber <= numberOfImages / 2)  // this will include the zero
+                    return GetExponentialConstantCValueWithBothEndsPositive(start, (float)MovieConstants.MinConstantCExponent, imageNumber, numberOfImages / 2);
+
+                if (imageNumber == numberOfImages / 2 + 1)
+                    return 0f;
+
+                var rightImageNumber = imageNumber - numberOfImages / 2 + 1; // skips zero
+                return GetExponentialConstantCValueWithBothEndsNegative((float)-MovieConstants.MinConstantCExponent, end, rightImageNumber, numberOfImages / 2 + 1);
+            }
+        }
+    }
+
+    private static float? GetExponentialConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
+    {
+        if (Math.Abs(end - start) < MovieConstants.MinConstantCExpoDifference)
+            return null;
+
+        if (start >= 0 && end >= 0)
+            return GetExponentialConstantCValueWithBothEndsPositive(start, end,imageNumber, numberOfImages);
+
+        if (start <= 0 && end <= 0)
+            return GetExponentialConstantCValueWithBothEndsNegative(start, end, imageNumber, numberOfImages);
+
+        return GetExponentialConstantCValueOverPositiveNegativeRange(start, end, imageNumber, numberOfImages);
     }
 
     private static float? GetLinearConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
@@ -137,12 +266,12 @@ public static class FractalParamCalculator
 
         if (end > start)
         {
-            var dif = (end - start) / (numberOfImages - 1);
+            var dif = (end - start) / (numberOfImages-1);
             return start + (imageNumber - 1) * dif;
         }
         else
         {
-            var dif = (start - end) / (numberOfImages - 1);
+            var dif = (start - end) / (numberOfImages-1);
             return start - (imageNumber - 1) * dif;
         }
     }
@@ -154,10 +283,14 @@ public static class FractalParamCalculator
         if (movieParams.NumberOfImages < 2)
             return newFractalParams;
 
-        if(Math.Abs(movieParams.ConstantCEndW - movieParams.ConstantCStartW) < MovieConstants.MinConstantCDifference &&
-           Math.Abs(movieParams.ConstantCEndX - movieParams.ConstantCStartX) < MovieConstants.MinConstantCDifference &&
-           Math.Abs(movieParams.ConstantCEndY - movieParams.ConstantCStartY) < MovieConstants.MinConstantCDifference &&
-           Math.Abs(movieParams.ConstantCEndZ - movieParams.ConstantCStartZ) < MovieConstants.MinConstantCDifference)
+        var minDif = movieParams.DistributionType == DistributionTypes.Exponential
+            ? MovieConstants.MinConstantCExpoDifference
+            : MovieConstants.MinConstantCDifference;
+
+        if (Math.Abs(movieParams.ConstantCEndW - movieParams.ConstantCStartW) < minDif &&
+           Math.Abs(movieParams.ConstantCEndX - movieParams.ConstantCStartX) < minDif &&
+           Math.Abs(movieParams.ConstantCEndY - movieParams.ConstantCStartY) < minDif &&
+           Math.Abs(movieParams.ConstantCEndZ - movieParams.ConstantCStartZ) < minDif)
             return newFractalParams;
 
         var c = newFractalParams.C4;

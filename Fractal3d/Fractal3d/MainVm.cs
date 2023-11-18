@@ -1057,20 +1057,20 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         }
         else if (_movieParams.MovieType == MovieTypes.ConstantC)
         {
-            if (Math.Abs(_movieParams.ConstantCStartW - _movieParams.ConstantCEndW) >
-                MovieConstants.MinConstantCDifference)
+            var minDif = _movieParams.DistributionType == DistributionTypes.Exponential
+                ? MovieConstants.MinConstantCExpoDifference
+                : MovieConstants.MinConstantCDifference;
+
+            if (Math.Abs(_movieParams.ConstantCStartW - _movieParams.ConstantCEndW) > minDif)
                 return true;
 
-            if (Math.Abs(_movieParams.ConstantCStartX - _movieParams.ConstantCEndX) >
-                MovieConstants.MinConstantCDifference)
+            if (Math.Abs(_movieParams.ConstantCStartX - _movieParams.ConstantCEndX) > minDif)
                 return true;
 
-            if (Math.Abs(_movieParams.ConstantCStartY - _movieParams.ConstantCEndY) >
-                MovieConstants.MinConstantCDifference)
+            if (Math.Abs(_movieParams.ConstantCStartY - _movieParams.ConstantCEndY) > minDif)
                 return true;
 
-            if (Math.Abs(_movieParams.ConstantCStartZ - _movieParams.ConstantCEndZ) >
-                MovieConstants.MinConstantCDifference)
+            if (Math.Abs(_movieParams.ConstantCStartZ - _movieParams.ConstantCEndZ) > minDif)
                 return true;
         }
 
