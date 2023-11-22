@@ -14,6 +14,9 @@ public interface IMoviePlayer
     void UpdateCurrentImage(int currentImageIndex);
     bool CanUpdateCurrentImage();
 
+    void MoveImageToQueue(int imageIndex);
+    bool CanMoveImageToQueue();
+
     bool IsMovie();
 
     void OnMovieParamsChanged(MovieParams movieParams);

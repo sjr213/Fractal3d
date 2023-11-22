@@ -26,6 +26,7 @@ public class MovieParamVm : ViewModelBase
         _stopCommand = new RelayCommand(_ => OnStop(), _ => CanStop());
         _forwardCommand = new RelayCommand(_ => OnForward(), _ => CanForward());
         _reverseCommand = new RelayCommand(_ => OnReverse(), _ => CanReverse());
+        _moveImageToQueueCommand = new RelayCommand(_ => OnMoveImageToQueue(), _ => CanMoveImageToQueue());
 
         AllowedMovieTypes = new ObservableCollection<MovieTypes>
         {
@@ -55,6 +56,9 @@ public class MovieParamVm : ViewModelBase
 
     private readonly RelayCommand _reverseCommand;
     public ICommand ReverseCommand => _reverseCommand;
+
+    private readonly RelayCommand _moveImageToQueueCommand;
+    public ICommand MoveImageToQueueCommand => _moveImageToQueueCommand;
 
     #endregion
 
@@ -140,6 +144,16 @@ public class MovieParamVm : ViewModelBase
 
         if (args.ChangeType == MovieChangeType.CurrentImageChanged)
             CurrentImage = args.CurrentImageIndex + 1;
+    }
+
+    private void OnMoveImageToQueue()
+    {
+        _moviePlayer.MoveImageToQueue(CurrentImage-1);
+    }
+
+    private bool CanMoveImageToQueue()
+    {
+        return _moviePlayer.CanMoveImageToQueue();
     }
 
     #endregion

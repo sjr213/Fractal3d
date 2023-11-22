@@ -38,6 +38,9 @@
                 <Button Margin="2" Padding="2" Command="{Binding ForwardCommand}">
                     <Image Source="Images\forward.png" />
                 </Button>
+                <Button Margin="2" Padding="2" Command="{Binding MoveImageToQueueCommand}">
+                    Move
+                </Button>
             </StackPanel>
 
             <StackPanel Grid.Row="1" Margin="5" Orientation="Vertical">

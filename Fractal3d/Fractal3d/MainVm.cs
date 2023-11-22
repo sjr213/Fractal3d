@@ -1197,6 +1197,29 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         return SelectedViewMode == ViewModes.Movie && !_isPlaying && _movieImages.Count == _movieParams.NumberOfImages;
     }
 
+    public void MoveImageToQueue(int imageIndex)
+    {
+        if (CanMoveImageToQueue() == false)
+            return;
+
+        if (_movieResult== null ||  imageIndex < 0 || imageIndex >= _movieParams.NumberOfImages)
+            return;
+
+        SelectedViewMode = ViewModes.Queue;
+
+        _fractalResult = (FractalResult) _movieResult.Results[imageIndex].Clone();
+        DisplayImage(_fractalResult);
+
+        FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
+
+        _isDirty = true;
+    }
+
+    public bool CanMoveImageToQueue()
+    {
+        return SelectedViewMode == ViewModes.Movie && !_isPlaying && _movieImages.Count == _movieParams.NumberOfImages;
+    }
+
     #endregion
 
     #region IObserver<int> current image index
