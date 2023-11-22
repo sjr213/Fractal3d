@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <None Remove="Images\forward.png" />
+    <None Remove="Images\moveToQueue.png" />
     <None Remove="Images\play.png" />
     <None Remove="Images\reverse.png" />
     <None Remove="Images\stop.png" />
@@ -52,6 +53,7 @@
 
   <ItemGroup>
     <Resource Include="Images\forward.png" />
+    <Resource Include="Images\moveToQueue.png" />
     <Resource Include="Images\play.png" />
     <Resource Include="Images\reverse.png" />
     <Resource Include="Images\stop.png" />

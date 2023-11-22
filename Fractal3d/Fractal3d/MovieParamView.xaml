@@ -39,7 +39,7 @@
                     <Image Source="Images\forward.png" />
                 </Button>
                 <Button Margin="2" Padding="2" Command="{Binding MoveImageToQueueCommand}">
-                    Move
+                    <Image Source="Images\moveToQueue.png" />
                 </Button>
             </StackPanel>
 
