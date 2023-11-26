@@ -697,7 +697,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
                 for (int i = 1; i <= nImages; ++i)
                 {
-                    var fractalParams = FractalParamCalculator.CalculateFractalParams(_fractalParams, _movieParams, i);
+                    var fractalParams = MovieParamCalculator.CalculateMovieParams(_fractalParams, _movieParams, i);
 
                     FractalResult? fractalResult;
                     if (_fractalParams.PlainShader)

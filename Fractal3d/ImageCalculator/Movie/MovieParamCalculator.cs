@@ -1,19 +1,18 @@
 ﻿namespace ImageCalculator.Movie;
 
-public static class FractalParamCalculator
+public static class MovieParamCalculator
 {
-    public static FractalParams CalculateFractalParams(FractalParams fractalParams, MovieParams movieParams, int imageNumber)
+    public static FractalParams CalculateMovieParams(FractalParams fractalParams, MovieParams movieParams, int imageNumber)
     {
         var newFractalParams = (FractalParams)fractalParams.Clone();
 
-        if (movieParams.MovieType == MovieTypes.Angles)
-            return CalculateFractalAngleParams(fractalParams, movieParams, imageNumber);
-        if (movieParams.MovieType == MovieTypes.Bailout)
-            return CalculateBailoutParams(fractalParams, movieParams, imageNumber);
-        if (movieParams.MovieType == MovieTypes.ConstantC)
-            return CalculateConstantCParams(fractalParams, movieParams, imageNumber);
-
-        return newFractalParams;
+        return movieParams.MovieType switch
+        {
+            MovieTypes.Angles => CalculateFractalAngleParams(fractalParams, movieParams, imageNumber),
+            MovieTypes.Bailout => CalculateBailoutParams(fractalParams, movieParams, imageNumber),
+            MovieTypes.ConstantC => CalculateConstantCParams(fractalParams, movieParams, imageNumber),
+            _ => newFractalParams
+        };
     }
 
     private static FractalParams CalculateFractalAngleParams(FractalParams fractalParams, MovieParams movieParams,
