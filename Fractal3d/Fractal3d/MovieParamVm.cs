@@ -1,24 +1,20 @@
-﻿using System;
-
-namespace Fractal3d;
+﻿namespace Fractal3d;
 
 using BasicWpfLibrary;
-using ImageCalculator;
 using ImageCalculator.Movie;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 public class MovieParamVm : ViewModelBase
 {
-    private FractalParams _fractalParams;       // remove this later
     private readonly MovieParams _movieParams;
     private readonly IMoviePlayer _moviePlayer;
 
     private const float MinFloatDifference = 0.001f;
 
-    public MovieParamVm(FractalParams fractalParams, MovieParams movieParams, IMoviePlayer moviePlayer)
+    public MovieParamVm(MovieParams movieParams, IMoviePlayer moviePlayer)
     {
-        _fractalParams = fractalParams;
         _movieParams = movieParams;
         _moviePlayer = moviePlayer;
 
@@ -63,14 +59,6 @@ public class MovieParamVm : ViewModelBase
     #endregion
 
     #region public methods
-
-    public void SetFractalParams(FractalParams fractalParams)
-    {
-        _fractalParams = fractalParams;
-        OnPropertyChanged(nameof(SelectedMovieType));
-        OnPropertyChanged(nameof(CurrentImage));
-        OnPropertyChanged(nameof(NumberOfImages));
-    }
 
     private void SetMovieIndex(int movieIndex)
     {

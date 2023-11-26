@@ -17,10 +17,6 @@ namespace Fractal3d
         private int _currentImage;
         private bool _isRunning;
 
-        public MovieVm()
-        {
-        }
-
         #region Properties
 
         private BitmapImage _image = new();
@@ -88,7 +84,7 @@ namespace Fractal3d
             if (_isRunning)
                 return;
 
-            if (currentImageIndex >= _movieImages.Count || currentImageIndex < 0)
+            if (currentImageIndex > _movieImages.Count || currentImageIndex < 0)
                 return;
 
             if (currentImageIndex == _currentImage)
@@ -96,11 +92,7 @@ namespace Fractal3d
 
             _currentImage = currentImageIndex;
 
-            Image = _movieImages[_currentImage];
-            Width = _fractalParams.DisplaySize.Width;
-            Height = _fractalParams.DisplaySize.Height;
-
-            _currentImageObserver.OnNext(_currentImage);
+            ChangeImage();
         }
 
         private void TimerTick(object? sender, EventArgs e)
@@ -110,12 +102,17 @@ namespace Fractal3d
 
             ++_currentImage;
 
+            ChangeImage();
+        }
+
+        private void ChangeImage()
+        {
             if (_currentImage >= _movieImages.Count)
                 _currentImage = 0;
 
             Image = _movieImages[_currentImage];
             Width = _fractalParams.DisplaySize.Width;
-            Height= _fractalParams.DisplaySize.Height;
+            Height = _fractalParams.DisplaySize.Height;
 
             _currentImageObserver.OnNext(_currentImage);
         }

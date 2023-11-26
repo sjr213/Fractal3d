@@ -73,7 +73,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         UpdateMovieParams();
-        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
+        MovieParamViewModel = new MovieParamVm(_movieParams, this);
         AddMovieVm();
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
@@ -285,10 +285,42 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         set
         {
             _selectedViewMode = value;
-            ShowMovie = false;
-            StopMovie();
+            if (_selectedViewMode == ViewModes.Movie)
+            {
+                ImageViewVisibility = Visibility.Collapsed;
+                MovieViewVisibility = Visibility.Visible;
+            }
+            else
+            {
+                ShowMovie = false;
+                StopMovie();
+                ImageViewVisibility = Visibility.Visible;
+                MovieViewVisibility = Visibility.Collapsed;
+            }
             OnPropertyChanged();
             OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });
+        }
+    }
+
+    private Visibility _imageViewVisibility = Visibility.Visible;
+    public Visibility ImageViewVisibility
+    {
+        get => _imageViewVisibility;
+        set
+        {
+            _imageViewVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Visibility _movieViewVisibility = Visibility.Collapsed;
+    public Visibility MovieViewVisibility
+    {
+        get => _movieViewVisibility;
+        set
+        {
+            _movieViewVisibility = value;
+            OnPropertyChanged();
         }
     }
 
@@ -628,7 +660,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         UpdateMovieParams();
-        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
+        MovieParamViewModel = new MovieParamVm(_movieParams, this);
     }
 
     private void OnAddToQueue()
@@ -683,6 +715,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
                 }
 
                 OnMovieChanged(new MovieChangedEventArgs(){ ChangeType = MovieChangeType.ImageCountChange });
+                MovieViewModel.UpdateCurrentImage(nImages-1);
 
                 _isDirty = true;
 
@@ -934,7 +967,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         SelectedViewMode = ViewModes.Movie;
 
         ImageViewModel = new ImageVm(_fractalParams, images.First(), SetSelectionRect);
-        MovieParamViewModel = new MovieParamVm(_fractalParams, _movieParams, this);
+        MovieParamViewModel = new MovieParamVm(_movieParams, this);
         MovieViewModel.SetImages(_movieImages, _fractalParams);
 
         OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });

@@ -4,7 +4,6 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:local="clr-namespace:Fractal3d"
-            xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
             mc:Ignorable="d"
             d:DataContext="{d:DesignInstance Type=local:MainVm}"
             Title="Fractal 3D" Width="1300">
@@ -14,7 +13,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="GeneralResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -90,18 +88,8 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="2" Grid.Column="1" >
-                        <StackPanel.Style>
-                            <Style TargetType="{x:Type StackPanel}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=ShowMovie}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </StackPanel.Style>
-                        <ContentPresenter Content="{Binding ImageViewModel}">
+                    <StackPanel Grid.Row="2" Grid.Column="1" Visibility="{Binding ImageViewVisibility}">
+                        <ContentPresenter Content="{Binding ImageViewModel}" >
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type local:ImageVm}" >
                                     <local:ImageView/>
@@ -110,19 +98,8 @@
                         </ContentPresenter>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="2" Grid.Column="1" >
-                        <StackPanel.Style>
-                            <Style TargetType="{x:Type StackPanel}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=ShowMovie}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </StackPanel.Style>
-                        <TextBlock>Movie</TextBlock>
-                        <ContentPresenter Content="{Binding MovieViewModel}">
+                    <StackPanel Grid.Row="2" Grid.Column="1" Visibility="{Binding MovieViewVisibility}">
+                        <ContentPresenter Content="{Binding MovieViewModel}" >
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type local:MovieVm}" >
                                     <local:MovieView/>
