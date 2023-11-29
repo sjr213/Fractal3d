@@ -7,6 +7,7 @@ using ImageCalculator.Movie;
 public class MovieParamCalculatorTests
 {
     private const float AngleError = 0.001f;
+    private const float BailoutError = 0.01f;
 
     [TestMethod]
     public void TestCalculateAngleParamsGeneral()
@@ -201,6 +202,108 @@ public class MovieParamCalculatorTests
         var result3 = MovieParamCalculator.CalculateFractalAngleParams(fractalParams, movieParams, 5);
         Assert.IsNotNull(result1);
         Assert.AreEqual(288, result3.TransformParams.RotateY, AngleError);
+    }
+
+    [TestMethod]
+    public void TestCalculateLinearBailout()
+    {
+        FractalParams fractalParams = new();
+        MovieParams movieParams = new MovieParams()
+        {
+            StartBailout = 1,
+            EndBailout = 10,
+            NumberOfImages = 10
+        };
+
+        var result1 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 1);
+        Assert.IsNotNull(result1);
+        Assert.AreEqual(1, result1.Bailout, BailoutError);
+
+        var result2 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 5);
+        Assert.IsNotNull(result2);
+        Assert.AreEqual(5, result2.Bailout, BailoutError);
+
+        var result3 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 10);
+        Assert.IsNotNull(result3);
+        Assert.AreEqual(10, result3.Bailout, BailoutError);
+    }
+
+    [TestMethod]
+    public void TestCalculateReverseLinearBailout()
+    {
+        FractalParams fractalParams = new();
+        MovieParams movieParams = new MovieParams()
+        {
+            StartBailout = 10,
+            EndBailout = 1,
+            NumberOfImages = 10
+        };
+
+        var result1 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 1);
+        Assert.IsNotNull(result1);
+        Assert.AreEqual(10, result1.Bailout, BailoutError);
+
+        var result2 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 6);
+        Assert.IsNotNull(result2);
+        Assert.AreEqual(5, result2.Bailout, BailoutError);
+
+        var result3 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 10);
+        Assert.IsNotNull(result3);
+        Assert.AreEqual(1, result3.Bailout, BailoutError);
+    }
+
+    [TestMethod]
+    public void TestCalculateExpoBailout()
+    {
+        FractalParams fractalParams = new();
+        MovieParams movieParams = new MovieParams()
+        {
+            StartBailout = 1,
+            EndBailout = 100,
+            NumberOfImages = 5,
+            DistributionType = DistributionTypes.Exponential
+        };
+
+        var result1 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 1);
+        Assert.IsNotNull(result1);
+        Assert.AreEqual(1, result1.Bailout, BailoutError);
+
+        var result2 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 2);
+        Assert.IsNotNull(result2);
+        Assert.AreEqual(3.1623, result2.Bailout, BailoutError);
+
+        var result3 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 5);
+        Assert.IsNotNull(result3);
+        Assert.AreEqual(100, result3.Bailout, BailoutError);
+    }
+
+    [TestMethod]
+    public void TestCalculateReverseExpoBailout()
+    {
+        FractalParams fractalParams = new();
+        MovieParams movieParams = new MovieParams()
+        {
+            StartBailout = 100,
+            EndBailout = 1,
+            NumberOfImages = 5,
+            DistributionType = DistributionTypes.Exponential
+        };
+
+        var result1 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 1);
+        Assert.IsNotNull(result1);
+        Assert.AreEqual(100, result1.Bailout, BailoutError);
+
+        var result2 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 2);
+        Assert.IsNotNull(result2);
+        Assert.AreEqual(31.6228, result2.Bailout, BailoutError);
+
+        var result3 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 4);
+        Assert.IsNotNull(result3);
+        Assert.AreEqual(3.1623, result3.Bailout, BailoutError);
+
+        var result4 = MovieParamCalculator.CalculateBailoutParams(fractalParams, movieParams, 5);
+        Assert.IsNotNull(result4);
+        Assert.AreEqual(1, result4.Bailout, BailoutError);
     }
 }
 

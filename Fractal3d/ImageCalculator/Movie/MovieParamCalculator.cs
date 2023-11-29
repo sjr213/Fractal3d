@@ -57,14 +57,14 @@ public static class MovieParamCalculator
         return newFractalParams;
     }
 
-    private static FractalParams CalculateBailoutParams(FractalParams fractalParams, MovieParams movieParams,
+    public static FractalParams CalculateBailoutParams(FractalParams fractalParams, MovieParams movieParams,
         int imageNumber)
     {
         var newFractalParams = (FractalParams)fractalParams.Clone();
         if (movieParams.NumberOfImages < 2)
             return newFractalParams;
 
-        var absoluteDif = movieParams.EndBailout - movieParams.StartBailout;
+        var absoluteDif = Math.Abs(movieParams.EndBailout - movieParams.StartBailout);
         if (absoluteDif < MovieConstants.MinBailoutDifference)
             return newFractalParams;
 
