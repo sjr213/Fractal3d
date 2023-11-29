@@ -12,10 +12,13 @@
 
         public float FromAngleX { get; set; }
         public float ToAngleX { get; set; }
+        public bool LoopAngleX { get; set; }
         public float FromAngleY { get; set; }
         public float ToAngleY { get; set;}
+        public bool LoopAngleY { get; set; }
         public float FromAngleZ { get; set;}
         public float ToAngleZ { get; set;}
+        public bool LoopAngleZ { get; set; }
 
         public float StartBailout { get; set; } = 10;
         public float EndBailout { get; set; } = 10;

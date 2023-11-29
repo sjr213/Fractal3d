@@ -148,6 +148,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
+                        <CheckBox Margin="12,2,2,2" VerticalContentAlignment="Center"
+                                  IsChecked="{Binding LoopAngleX}">Loop</CheckBox>
                     </StackPanel>
 
                     <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
@@ -175,6 +177,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
+                        <CheckBox Margin="12,2,2,2" VerticalContentAlignment="Center"
+                                  IsChecked="{Binding LoopAngleY}">Loop</CheckBox>
                     </StackPanel>
 
                     <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
@@ -202,6 +206,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
+                        <CheckBox Margin="12,2,2,2" VerticalContentAlignment="Center"
+                                  IsChecked="{Binding LoopAngleZ}">Loop</CheckBox>
                     </StackPanel>
                 </StackPanel>
 

@@ -1082,6 +1082,9 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
             if (Math.Abs(_movieParams.FromAngleZ - _movieParams.ToAngleZ) > MovieConstants.MinAngleDifference)
                 return true;
+
+            if (_movieParams.LoopAngleX || _movieParams.LoopAngleY || _movieParams.LoopAngleZ)
+                return true;
         }
         else if (_movieParams.MovieType == MovieTypes.Bailout)
         {

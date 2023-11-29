@@ -15,42 +15,44 @@ public static class MovieParamCalculator
         };
     }
 
-    private static FractalParams CalculateFractalAngleParams(FractalParams fractalParams, MovieParams movieParams,
+    public static float CalculateAngle(float fromAngle, float toAngle, bool loop, MovieParams movieParams, int imageNumber)
+    {
+        if (loop)
+        {
+            fromAngle = 0;
+            toAngle = 360f - 360f / movieParams.NumberOfImages;
+        }
+
+        while (fromAngle > 360f)
+            fromAngle -= 360f;
+
+        while (toAngle > 360f)
+            toAngle -= 360f;
+
+        if (toAngle < fromAngle)
+        {
+            (fromAngle, toAngle) = (toAngle, fromAngle);
+        }
+
+        var difX = (toAngle - fromAngle) / (movieParams.NumberOfImages - 1);
+        return fromAngle + (imageNumber - 1) * difX;
+    }
+
+    public static FractalParams CalculateFractalAngleParams(FractalParams fractalParams, MovieParams movieParams,
         int imageNumber)
     {
         var newFractalParams = (FractalParams)fractalParams.Clone();
         if(movieParams.NumberOfImages < 2)
             return newFractalParams;
 
-        var fromX = movieParams.FromAngleX;
-        var toX = movieParams.ToAngleX;
-        if (toX < fromX)
-        {
-            toX += 360;
-        }
+        newFractalParams.TransformParams.RotateX = CalculateAngle(movieParams.FromAngleX, movieParams.ToAngleX,
+            movieParams.LoopAngleX, movieParams, imageNumber);
 
-        var difX = (toX - fromX)/(movieParams.NumberOfImages-1);
-        newFractalParams.TransformParams.RotateX = fromX + (imageNumber - 1) * difX;
+        newFractalParams.TransformParams.RotateY = CalculateAngle(movieParams.FromAngleY, movieParams.ToAngleY,
+            movieParams.LoopAngleY, movieParams, imageNumber);
 
-        var fromY = movieParams.FromAngleY;
-        var toY = movieParams.ToAngleY;
-        if (toY < fromY)
-        {
-            toY += 360;
-        }
-
-        var difY = (toY - fromY) / (movieParams.NumberOfImages - 1);
-        newFractalParams.TransformParams.RotateY = fromY + (imageNumber - 1) * difY;
-
-        var fromZ = movieParams.FromAngleZ;
-        var toZ = movieParams.ToAngleZ;
-        if (toZ < fromZ)
-        {
-            toZ += 360;
-        }
-
-        var difZ = (toZ - fromZ) / (movieParams.NumberOfImages - 1);
-        newFractalParams.TransformParams.RotateZ = fromZ + (imageNumber - 1) * difZ;
+        newFractalParams.TransformParams.RotateZ = CalculateAngle(movieParams.FromAngleZ, movieParams.ToAngleZ,
+            movieParams.LoopAngleZ, movieParams, imageNumber);
 
         return newFractalParams;
     }

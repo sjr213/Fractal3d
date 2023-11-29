@@ -226,6 +226,18 @@ public class MovieParamVm : ViewModelBase
         }
     }
 
+    public bool LoopAngleX
+    {
+        get => _movieParams.LoopAngleX;
+        set
+        {
+            if(_movieParams.LoopAngleX == value) return;
+            _movieParams.LoopAngleX = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
     public float FromAngleY
     {
         get => _movieParams.FromAngleY;
@@ -250,6 +262,18 @@ public class MovieParamVm : ViewModelBase
         }
     }
 
+    public bool LoopAngleY
+    {
+        get => _movieParams.LoopAngleY;
+        set
+        {
+            if (_movieParams.LoopAngleY == value) return;
+            _movieParams.LoopAngleY = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
     public float FromAngleZ
     {
         get => _movieParams.FromAngleZ;
@@ -269,6 +293,18 @@ public class MovieParamVm : ViewModelBase
         {
             if (Math.Abs(_movieParams.ToAngleZ- value) < MinFloatDifference) return;
             _movieParams.ToAngleZ = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public bool LoopAngleZ
+    {
+        get => _movieParams.LoopAngleZ;
+        set
+        {
+            if (_movieParams.LoopAngleZ == value) return;
+            _movieParams.LoopAngleZ = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
