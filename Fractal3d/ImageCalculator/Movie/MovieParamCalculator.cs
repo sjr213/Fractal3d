@@ -195,13 +195,10 @@ public static class MovieParamCalculator
             {
                 // negative exponent
                 if (imageNumber <= numberOfImages / 2)  // this will include the zero
-                    return GetExponentialConstantCValueWithBothEndsNegative(start, (float)-MovieConstants.MinConstantCExponent, imageNumber, numberOfImages / 2);
+                    return GetExponentialConstantCValueWithBothEndsNegative(start, (float)-MovieConstants.LowConstantCExponent, imageNumber, numberOfImages / 2);
 
-                if (imageNumber == numberOfImages / 2 + 1)
-                    return 0f;
-
-                var rightImageNumber = imageNumber - numberOfImages / 2 + 1; // skips zero
-                return GetExponentialConstantCValueWithBothEndsPositive((float)MovieConstants.MinConstantCExponent, end, rightImageNumber, numberOfImages / 2 + 1);
+                var rightImageNumber = imageNumber - numberOfImages / 2; 
+                return GetExponentialConstantCValueWithBothEndsPositive((float)MovieConstants.LowConstantCExponent, end, rightImageNumber, numberOfImages / 2);
             }
         }
         else // positive to negative
@@ -235,18 +232,15 @@ public static class MovieParamCalculator
             {
                 // positive exponent
                 if (imageNumber <= numberOfImages / 2)  // this will include the zero
-                    return GetExponentialConstantCValueWithBothEndsPositive(start, (float)MovieConstants.MinConstantCExponent, imageNumber, numberOfImages / 2);
+                    return GetExponentialConstantCValueWithBothEndsPositive(start, (float)MovieConstants.LowConstantCExponent, imageNumber, numberOfImages / 2);
 
-                if (imageNumber == numberOfImages / 2 + 1)
-                    return 0f;
-
-                var rightImageNumber = imageNumber - numberOfImages / 2 + 1; // skips zero
-                return GetExponentialConstantCValueWithBothEndsNegative((float)-MovieConstants.MinConstantCExponent, end, rightImageNumber, numberOfImages / 2 + 1);
+                var rightImageNumber = imageNumber - numberOfImages / 2; 
+                return GetExponentialConstantCValueWithBothEndsNegative((float)-MovieConstants.LowConstantCExponent, end, rightImageNumber, numberOfImages / 2);
             }
         }
     }
 
-    private static float? GetExponentialConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
+    public static float? GetExponentialConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
     {
         if (Math.Abs(end - start) < MovieConstants.MinConstantCExpoDifference)
             return null;
@@ -260,7 +254,7 @@ public static class MovieParamCalculator
         return GetExponentialConstantCValueOverPositiveNegativeRange(start, end, imageNumber, numberOfImages);
     }
 
-    private static float? GetLinearConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
+    public static float? GetLinearConstantCImageValue(float start, float end, int imageNumber, int numberOfImages)
     {
         if (Math.Abs(end - start) < MovieConstants.MinConstantCDifference)
             return null;
