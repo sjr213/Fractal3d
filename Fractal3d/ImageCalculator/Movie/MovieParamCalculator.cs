@@ -347,5 +347,43 @@ public static class MovieParamCalculator
 
         return newFractalParams;
     }
+
+    private static float CalculateConstantDimension(int step, int numberOfSteps, float startDim, float endDim)
+    {
+        if (numberOfSteps < 2)
+            return startDim;
+
+        if (step < 0 || step >= numberOfSteps)
+            return startDim;
+
+        var stepSize = (endDim - startDim) / (numberOfSteps-1);
+        return startDim + step * stepSize;
+    }
+
+    public static FractalParams CalculateConstantCAlternateParams(FractalParams fractalParams, MovieParams movieParams,
+        int imageNumber)
+    {
+        var newFractalParams = (FractalParams)fractalParams.Clone();
+        var numberOfImages = movieParams.StepsW * movieParams.StepsX * movieParams.StepsY * movieParams.StepsZ;
+        if(imageNumber < 1 || imageNumber > numberOfImages) 
+            return newFractalParams;
+
+        // These are zero base up to Steps? -1
+        var w = (imageNumber - 1) / (movieParams.StepsX * movieParams.StepsY * movieParams.StepsZ);   // zero based
+        var x = (imageNumber - 1) / (movieParams.StepsY * movieParams.StepsZ) % movieParams.StepsX;
+        var y = ((imageNumber - 1) / movieParams.StepsZ) % movieParams.StepsY;
+        var z = (imageNumber - 1) % movieParams.StepsZ;
+
+        var c = newFractalParams.C4;
+
+        c.W = CalculateConstantDimension(w, movieParams.StepsW, movieParams.ConstantCStartW, movieParams.ConstantCEndW);
+        c.X = CalculateConstantDimension(x, movieParams.StepsX, movieParams.ConstantCStartX, movieParams.ConstantCEndX);
+        c.Y = CalculateConstantDimension(y, movieParams.StepsY, movieParams.ConstantCStartY, movieParams.ConstantCEndY);
+        c.Z = CalculateConstantDimension(z, movieParams.StepsZ, movieParams.ConstantCStartZ, movieParams.ConstantCEndZ);
+
+        newFractalParams.C4 = c;
+
+        return newFractalParams;
+    }
 }
 

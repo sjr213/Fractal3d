@@ -1,9 +1,8 @@
 ﻿using System.Numerics;
-
-namespace Fractal3dTests;
-
 using ImageCalculator;
 using ImageCalculator.Movie;
+
+namespace Fractal3dTests;
 
 [TestClass]
 public class MovieParamCalculatorTests

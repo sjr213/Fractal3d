@@ -32,5 +32,10 @@
         public float ConstantCStartZ { get; set; } = 0f;
         public float ConstantCEndZ { get; set; } = 0f;
 
+        public bool Alternate { get; set; } = false;
+        public int StepsW { get; set; } = 5;
+        public int StepsX { get; set; } = 5;
+        public int StepsY { get; set; } = 5;
+        public int StepsZ { get; set; } = 5;
     }
 }
