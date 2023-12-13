@@ -448,6 +448,66 @@ public class MovieParamVm : ViewModelBase
         }
     }
 
+    public bool Alternate
+    {
+        get => _movieParams.Alternate;
+        set
+        {
+            if(_movieParams.Alternate == value) return;
+            _movieParams.Alternate = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public int StepsW
+    {
+        get => _movieParams.StepsW;
+        set
+        {
+            if(_movieParams.StepsW == value) return;
+            _movieParams.StepsW = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public int StepsX
+    {
+        get => _movieParams.StepsX;
+        set
+        {
+            if(_movieParams.StepsX  == value) return;
+            _movieParams.StepsX = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
+    public int StepsY
+    {
+        get => _movieParams.StepsY;
+        set
+        {
+            if(_movieParams.StepsY == value) return;
+            _movieParams.StepsY = value;
+            OnPropertyChanged(); 
+            OnMovieParamsChanged();
+        }
+    }
+
+    public int StepsZ
+    {
+        get => _movieParams.StepsZ;
+        set
+        {
+            if(_movieParams.StepsZ == value) return;
+            _movieParams.StepsZ = value;
+            OnPropertyChanged();
+            OnMovieParamsChanged();
+        }
+    }
+
     #endregion
 }
 

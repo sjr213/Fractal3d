@@ -274,6 +274,11 @@ public static class MovieParamCalculator
     private static FractalParams CalculateConstantCParams(FractalParams fractalParams, MovieParams movieParams,
         int imageNumber)
     {
+        if (movieParams.Alternate)
+        {
+            return CalculateConstantCAlternateParams(fractalParams, movieParams, imageNumber);
+        }
+
         var newFractalParams = (FractalParams)fractalParams.Clone();
         if (movieParams.NumberOfImages < 2)
             return newFractalParams;
