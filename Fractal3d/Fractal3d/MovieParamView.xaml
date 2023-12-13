@@ -152,7 +152,7 @@
                                   IsChecked="{Binding LoopAngleX}">Loop</CheckBox>
                     </StackPanel>
 
-                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
+                    <StackPanel Margin="12,2,2,2" Orientation="Horizontal"> 
                         <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Around Y Axis -  From:"/>
                         <TextBox Style="{StaticResource TextBoxInError}">
                             <TextBox.Text>
@@ -289,6 +289,9 @@
                         </ComboBox>
                     </StackPanel>
 
+                    <CheckBox Margin="16,5,2,7" VerticalContentAlignment="Center"
+                              IsChecked="{Binding Alternate}">Alternate</CheckBox>
+
                     <Grid Margin="12,2,2,2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -297,6 +300,9 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="10"/>
@@ -327,6 +333,17 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
+                        <TextBlock Grid.Row="0" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps W"/>
+                        <TextBox  Grid.Row="0" Grid.Column="7" Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="StepsW" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:IntRangeRule Min="1" Max="100"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
 
                         <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource PlainTextBlockStyle}" Text="Starting X"/>
                         <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource TextBoxInError}">
@@ -346,6 +363,17 @@
                                          UpdateSourceTrigger="LostFocus" >
                                     <Binding.ValidationRules>
                                         <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock Grid.Row="1" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps X"/>
+                        <TextBox  Grid.Row="1" Grid.Column="7" Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="StepsX" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:IntRangeRule Min="1" Max="100"/>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -373,6 +401,17 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
+                        <TextBlock Grid.Row="2" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps Y"/>
+                        <TextBox  Grid.Row="2" Grid.Column="7" Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="StepsY" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:IntRangeRule Min="1" Max="100"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
 
                         <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource PlainTextBlockStyle}" Text="Starting Z"/>
                         <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource TextBoxInError}">
@@ -392,6 +431,17 @@
                                          UpdateSourceTrigger="LostFocus" >
                                     <Binding.ValidationRules>
                                         <basicWpfLibrary:FloatRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock Grid.Row="3" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps Z"/>
+                        <TextBox  Grid.Row="3" Grid.Column="7" Style="{StaticResource TextBoxInError}">
+                            <TextBox.Text>
+                                <Binding Path="StepsZ" 
+                                         UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <basicWpfLibrary:IntRangeRule Min="1" Max="100"/>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
