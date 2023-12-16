@@ -1,4 +1,6 @@
-﻿namespace Fractal3d;
+﻿using System.Windows.Forms.VisualStyles;
+
+namespace Fractal3d;
 
 using BasicWpfLibrary;
 using FractureCommonLib;
@@ -1093,22 +1095,65 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         }
         else if (_movieParams.MovieType == MovieTypes.ConstantC)
         {
-            var minDif = _movieParams.DistributionType == DistributionTypes.Exponential
-                ? MovieConstants.MinConstantCExpoDifference
-                : MovieConstants.MinConstantCDifference;
-
-            if (Math.Abs(_movieParams.ConstantCStartW - _movieParams.ConstantCEndW) > minDif)
-                return true;
-
-            if (Math.Abs(_movieParams.ConstantCStartX - _movieParams.ConstantCEndX) > minDif)
-                return true;
-
-            if (Math.Abs(_movieParams.ConstantCStartY - _movieParams.ConstantCEndY) > minDif)
-                return true;
-
-            if (Math.Abs(_movieParams.ConstantCStartZ - _movieParams.ConstantCEndZ) > minDif)
-                return true;
+            return AreMovieParamsConstCValid();
         }
+
+        return false;
+    }
+
+    (bool pass, bool differenceDetected) CheckAlternateConstantC(float start, float end, int steps)
+    {
+        if (Math.Abs(start - end) > MovieConstants.MinConstantCDifference)
+        {
+            return steps is > ParameterConstants.MinConstantCStep and <= ParameterConstants.MaxConstantCStep ? (true, true) : (false, false);
+        }
+
+        return steps == ParameterConstants.MinConstantCStep ? (true, false) : (false, false);
+    }
+
+    private bool AreMovieParamsConstCValid()
+    {
+        var minDif = _movieParams.DistributionType == DistributionTypes.Exponential
+            ? MovieConstants.MinConstantCExpoDifference
+            : MovieConstants.MinConstantCDifference;
+
+        if (_movieParams is { Alternate: true, DistributionType: DistributionTypes.Exponential })
+            return false;
+
+        if (_movieParams.Alternate)
+        {
+            var differenceInStartEnd = false;
+
+            var checkW = CheckAlternateConstantC(_movieParams.ConstantCStartW, _movieParams.ConstantCEndW, _movieParams.StepsW);
+            if (checkW.pass == false) return false;
+            differenceInStartEnd = checkW.pass;
+
+            var checkX = CheckAlternateConstantC(_movieParams.ConstantCStartX, _movieParams.ConstantCEndX, _movieParams.StepsX);
+            if (checkX.pass == false) return false;
+            differenceInStartEnd |= checkX.pass;
+
+            var checkY = CheckAlternateConstantC(_movieParams.ConstantCStartY, _movieParams.ConstantCEndY, _movieParams.StepsY);
+            if (checkY.pass == false) return false;
+            differenceInStartEnd = checkY.pass;
+
+            var checkZ = CheckAlternateConstantC(_movieParams.ConstantCStartZ, _movieParams.ConstantCEndZ, _movieParams.StepsZ);
+            if (checkZ.pass == false) return false;
+            differenceInStartEnd = checkZ.pass;
+
+            return differenceInStartEnd;
+        }
+
+        if (Math.Abs(_movieParams.ConstantCStartW - _movieParams.ConstantCEndW) > minDif)
+            return true;
+
+        if (Math.Abs(_movieParams.ConstantCStartX - _movieParams.ConstantCEndX) > minDif)
+            return true;
+
+        if (Math.Abs(_movieParams.ConstantCStartY - _movieParams.ConstantCEndY) > minDif)
+            return true;
+
+        if (Math.Abs(_movieParams.ConstantCStartZ - _movieParams.ConstantCEndZ) > minDif)
+            return true;
 
         return false;
     }

@@ -51,5 +51,8 @@ public static class ParameterConstants
 
     public const float MinScale = 1e-5f;
     public const float MaxScale = 1e+5f;
+
+    public const int MinConstantCStep = 1;
+    public const int MaxConstantCStep = 100;
 }
 

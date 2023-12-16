@@ -339,7 +339,7 @@
                                 <Binding Path="StepsW" 
                                          UpdateSourceTrigger="LostFocus" >
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="1" Max="100"/>
+                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinConstantCStep}" Max="{x:Static local:ParameterConstants.MaxConstantCStep}" />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -373,7 +373,7 @@
                                 <Binding Path="StepsX" 
                                          UpdateSourceTrigger="LostFocus" >
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="1" Max="100"/>
+                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinConstantCStep}" Max="{x:Static local:ParameterConstants.MaxConstantCStep}" />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -407,7 +407,7 @@
                                 <Binding Path="StepsY" 
                                          UpdateSourceTrigger="LostFocus" >
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="1" Max="100"/>
+                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinConstantCStep}" Max="{x:Static local:ParameterConstants.MaxConstantCStep}" />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -441,7 +441,7 @@
                                 <Binding Path="StepsZ" 
                                          UpdateSourceTrigger="LostFocus" >
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="1" Max="100"/>
+                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinConstantCStep}" Max="{x:Static local:ParameterConstants.MaxConstantCStep}" />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
