@@ -325,6 +325,11 @@ public class MovieParamVm : ViewModelBase
         set
         {
             _movieParams.DistributionType = value;
+            if (_movieParams.DistributionType == DistributionTypes.Exponential)
+            {
+                Alternate = false;
+            }
+            AlternateVisibility = _movieParams.DistributionType == DistributionTypes.Linear ? Visibility.Visible : Visibility.Collapsed;
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
@@ -457,6 +462,10 @@ public class MovieParamVm : ViewModelBase
         {
             if(_movieParams.Alternate == value) return;
             _movieParams.Alternate = value;
+            if (_movieParams.Alternate)
+            {
+                SelectedDistributionType = DistributionTypes.Linear;
+            }
             StepVisibility = _movieParams.Alternate ? Visibility.Visible : Visibility.Collapsed;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -516,6 +525,14 @@ public class MovieParamVm : ViewModelBase
     {
         get => _stepVisibility;
         set => SetProperty(ref _stepVisibility, value);
+    }
+
+    private Visibility _alternateVisibility = Visibility.Collapsed;
+
+    public Visibility AlternateVisibility
+    {
+        get => _alternateVisibility;
+        set => SetProperty(ref _alternateVisibility, value);
     }
 
     #endregion

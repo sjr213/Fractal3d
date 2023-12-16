@@ -290,7 +290,7 @@
                     </StackPanel>
 
                     <CheckBox Margin="16,5,2,7" VerticalContentAlignment="Center"
-                              IsChecked="{Binding Alternate}">Alternate</CheckBox>
+                              IsChecked="{Binding Alternate}" Visibility="{Binding AlternateVisibility}">Alternate</CheckBox>
 
                     <Grid Margin="12,2,2,2">
                         <Grid.RowDefinitions>
@@ -447,6 +447,13 @@
                             </TextBox.Text>
                         </TextBox>
                     </Grid>
+
+                    <TextBlock Margin="2" TextWrapping="Wrap" Width="450" TextAlignment="Left">
+                        Alternate mode works only with Linear Distribution Type. 
+                        Constant coefficients must have only 1 step.
+                        Any coefficient with a difference in start and end values must have 
+                        greater than 1 step and less than equal 100.
+                    </TextBlock>
                 </StackPanel>
 
             </StackPanel>
