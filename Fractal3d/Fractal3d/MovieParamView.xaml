@@ -333,8 +333,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Grid.Row="0" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps W"/>
-                        <TextBox  Grid.Row="0" Grid.Column="7" Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="0" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps W" Visibility="{Binding StepVisibility}"/>
+                        <TextBox  Grid.Row="0" Grid.Column="7" Style="{StaticResource TextBoxInError}" Visibility="{Binding StepVisibility}">
                             <TextBox.Text>
                                 <Binding Path="StepsW" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -367,8 +367,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Grid.Row="1" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps X"/>
-                        <TextBox  Grid.Row="1" Grid.Column="7" Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="1" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps X" Visibility="{Binding StepVisibility}"/>
+                        <TextBox  Grid.Row="1" Grid.Column="7" Style="{StaticResource TextBoxInError}"  Visibility="{Binding StepVisibility}">
                             <TextBox.Text>
                                 <Binding Path="StepsX" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -401,8 +401,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Grid.Row="2" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps Y"/>
-                        <TextBox  Grid.Row="2" Grid.Column="7" Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="2" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps Y"  Visibility="{Binding StepVisibility}"/>
+                        <TextBox  Grid.Row="2" Grid.Column="7" Style="{StaticResource TextBoxInError}"  Visibility="{Binding StepVisibility}">
                             <TextBox.Text>
                                 <Binding Path="StepsY" 
                                          UpdateSourceTrigger="LostFocus" >
@@ -435,8 +435,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock Grid.Row="3" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps Z"/>
-                        <TextBox  Grid.Row="3" Grid.Column="7" Style="{StaticResource TextBoxInError}">
+                        <TextBlock Grid.Row="3" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps Z" Visibility="{Binding StepVisibility}"/>
+                        <TextBox  Grid.Row="3" Grid.Column="7" Style="{StaticResource TextBoxInError}"  Visibility="{Binding StepVisibility}">
                             <TextBox.Text>
                                 <Binding Path="StepsZ" 
                                          UpdateSourceTrigger="LostFocus" >

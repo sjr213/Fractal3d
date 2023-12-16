@@ -1,4 +1,6 @@
-﻿namespace Fractal3d;
+﻿using System.Windows;
+
+namespace Fractal3d;
 
 using BasicWpfLibrary;
 using ImageCalculator.Movie;
@@ -455,6 +457,7 @@ public class MovieParamVm : ViewModelBase
         {
             if(_movieParams.Alternate == value) return;
             _movieParams.Alternate = value;
+            StepVisibility = _movieParams.Alternate ? Visibility.Visible : Visibility.Collapsed;
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
@@ -506,6 +509,13 @@ public class MovieParamVm : ViewModelBase
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
+    }
+
+    private Visibility _stepVisibility = Visibility.Collapsed;
+    public Visibility StepVisibility
+    {
+        get => _stepVisibility;
+        set => SetProperty(ref _stepVisibility, value);
     }
 
     #endregion
