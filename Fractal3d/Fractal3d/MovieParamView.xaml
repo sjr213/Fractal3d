@@ -80,7 +80,7 @@
                     </StackPanel>
                     <StackPanel Margin="5,2,2,2" Orientation="Horizontal">
                         <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Number of Images" />
-                        <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox Style="{StaticResource TextBoxInError}" IsReadOnly="{Binding NumberOfImagesReadonly}">
                             <TextBox.Text>
                                 <Binding Path="NumberOfImages" 
                                          UpdateSourceTrigger="PropertyChanged">

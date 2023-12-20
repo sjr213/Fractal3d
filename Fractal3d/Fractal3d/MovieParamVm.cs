@@ -146,6 +146,14 @@ public class MovieParamVm : ViewModelBase
         return _moviePlayer.CanMoveImageToQueue();
     }
 
+    private void CalculateNumberOfImages()
+    {
+        if (NumberOfImagesReadonly == false)
+            return;
+
+        NumberOfImages = StepsW * StepsX * StepsY * StepsZ;
+    }
+
     #endregion
 
     #region properties
@@ -165,7 +173,9 @@ public class MovieParamVm : ViewModelBase
         set
         {
             _movieParams.MovieType = value;
+            CalculateNumberOfImages();
             OnPropertyChanged();
+            OnPropertyChanged(nameof(NumberOfImagesReadonly));
             OnMovieParamsChanged();
         }
     }
@@ -476,6 +486,8 @@ public class MovieParamVm : ViewModelBase
             }
             StepVisibility = _movieParams.Alternate ? Visibility.Visible : Visibility.Collapsed;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(NumberOfImagesReadonly));
+            CalculateNumberOfImages();
             OnMovieParamsChanged();
         }
     }
@@ -486,6 +498,7 @@ public class MovieParamVm : ViewModelBase
         set
         {
             _movieParams.StepsW = value;
+            CalculateNumberOfImages();
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
@@ -497,6 +510,7 @@ public class MovieParamVm : ViewModelBase
         set
         {
             _movieParams.StepsX = value;
+            CalculateNumberOfImages();
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
@@ -508,6 +522,7 @@ public class MovieParamVm : ViewModelBase
         set
         {
             _movieParams.StepsY = value;
+            CalculateNumberOfImages();
             OnPropertyChanged(); 
             OnMovieParamsChanged();
         }
@@ -519,6 +534,7 @@ public class MovieParamVm : ViewModelBase
         set
         {
             _movieParams.StepsZ = value;
+            CalculateNumberOfImages();
             OnPropertyChanged();
             OnMovieParamsChanged();
         }
@@ -538,6 +554,8 @@ public class MovieParamVm : ViewModelBase
         get => _alternateVisibility;
         set => SetProperty(ref _alternateVisibility, value);
     }
+
+    public bool NumberOfImagesReadonly => SelectedMovieType == MovieTypes.ConstantC && Alternate;
 
     #endregion
 }
