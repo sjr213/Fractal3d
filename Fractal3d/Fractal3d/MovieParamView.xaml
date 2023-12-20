@@ -335,11 +335,23 @@
                         </TextBox>
                         <TextBlock Grid.Row="0" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps W" Visibility="{Binding StepVisibility}"/>
                         <TextBox  Grid.Row="0" Grid.Column="7" Style="{StaticResource TextBoxInError}" Visibility="{Binding StepVisibility}">
+                            <TextBox.Resources>
+                                <basicWpfLibrary:BindingProxy x:Key="Proxy" Data="{Binding}"/>
+                            </TextBox.Resources>
                             <TextBox.Text>
-                                <Binding Path="StepsW" 
-                                         UpdateSourceTrigger="LostFocus" >
+                                <Binding Path="StepsW" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" >
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinConstantCStep}" Max="{x:Static local:ParameterConstants.MaxConstantCStep}" />
+                                        <basicWpfLibrary:StepIntRangeRule MinDifference="{x:Static movie:MovieConstants.MinConstantCDifference}" 
+                                                                          MinSteps="{x:Static local:ParameterConstants.MinConstantCStep}"
+                                                                          MaxSteps="{x:Static local:ParameterConstants.MaxConstantCStep}"
+                                                                          ValidatesOnTargetUpdated="True">
+                                            <basicWpfLibrary:StepIntRangeRule.Vm>
+                                                <basicWpfLibrary:ExternalViewModel
+                                                    Start="{Binding Data.StartCW, Source={StaticResource Proxy}}"
+                                                    End="{Binding Data.EndCW, Source={StaticResource Proxy}}"
+                                                    Alternate="{Binding Data.Alternate, Source={StaticResource Proxy}}"/>
+                                            </basicWpfLibrary:StepIntRangeRule.Vm>
+                                        </basicWpfLibrary:StepIntRangeRule>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -369,11 +381,23 @@
                         </TextBox>
                         <TextBlock Grid.Row="1" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps X" Visibility="{Binding StepVisibility}"/>
                         <TextBox  Grid.Row="1" Grid.Column="7" Style="{StaticResource TextBoxInError}"  Visibility="{Binding StepVisibility}">
+                            <TextBox.Resources>
+                                <basicWpfLibrary:BindingProxy x:Key="Proxy" Data="{Binding}"/>
+                            </TextBox.Resources>
                             <TextBox.Text>
-                                <Binding Path="StepsX" 
-                                         UpdateSourceTrigger="LostFocus" >
+                                <Binding Path="StepsX" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" >
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinConstantCStep}" Max="{x:Static local:ParameterConstants.MaxConstantCStep}" />
+                                        <basicWpfLibrary:StepIntRangeRule MinDifference="{x:Static movie:MovieConstants.MinConstantCDifference}" 
+                                                                          MinSteps="{x:Static local:ParameterConstants.MinConstantCStep}"
+                                                                          MaxSteps="{x:Static local:ParameterConstants.MaxConstantCStep}"
+                                                                          ValidatesOnTargetUpdated="True">
+                                            <basicWpfLibrary:StepIntRangeRule.Vm>
+                                                <basicWpfLibrary:ExternalViewModel
+                                                    Start="{Binding Data.StartCX, Source={StaticResource Proxy}}"
+                                                    End="{Binding Data.EndCX, Source={StaticResource Proxy}}"
+                                                    Alternate="{Binding Data.Alternate, Source={StaticResource Proxy}}"/>
+                                            </basicWpfLibrary:StepIntRangeRule.Vm>
+                                        </basicWpfLibrary:StepIntRangeRule>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -403,11 +427,23 @@
                         </TextBox>
                         <TextBlock Grid.Row="2" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps Y"  Visibility="{Binding StepVisibility}"/>
                         <TextBox  Grid.Row="2" Grid.Column="7" Style="{StaticResource TextBoxInError}"  Visibility="{Binding StepVisibility}">
+                            <TextBox.Resources>
+                                <basicWpfLibrary:BindingProxy x:Key="Proxy" Data="{Binding}"/>
+                            </TextBox.Resources>
                             <TextBox.Text>
-                                <Binding Path="StepsY" 
-                                         UpdateSourceTrigger="LostFocus" >
+                                <Binding Path="StepsY" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" >
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinConstantCStep}" Max="{x:Static local:ParameterConstants.MaxConstantCStep}" />
+                                        <basicWpfLibrary:StepIntRangeRule MinDifference="{x:Static movie:MovieConstants.MinConstantCDifference}" 
+                                                                          MinSteps="{x:Static local:ParameterConstants.MinConstantCStep}"
+                                                                          MaxSteps="{x:Static local:ParameterConstants.MaxConstantCStep}"
+                                                                          ValidatesOnTargetUpdated="True">
+                                            <basicWpfLibrary:StepIntRangeRule.Vm>
+                                                <basicWpfLibrary:ExternalViewModel
+                                                    Start="{Binding Data.StartCY, Source={StaticResource Proxy}}"
+                                                    End="{Binding Data.EndCY, Source={StaticResource Proxy}}"
+                                                    Alternate="{Binding Data.Alternate, Source={StaticResource Proxy}}"/>
+                                            </basicWpfLibrary:StepIntRangeRule.Vm>
+                                        </basicWpfLibrary:StepIntRangeRule>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
@@ -437,11 +473,23 @@
                         </TextBox>
                         <TextBlock Grid.Row="3" Grid.Column="6" Style="{StaticResource PlainTextBlockStyle}" Text="Steps Z" Visibility="{Binding StepVisibility}"/>
                         <TextBox  Grid.Row="3" Grid.Column="7" Style="{StaticResource TextBoxInError}"  Visibility="{Binding StepVisibility}">
+                            <TextBox.Resources>
+                                <basicWpfLibrary:BindingProxy x:Key="Proxy" Data="{Binding}"/>
+                            </TextBox.Resources>
                             <TextBox.Text>
-                                <Binding Path="StepsZ" 
-                                         UpdateSourceTrigger="LostFocus" >
+                                <Binding Path="StepsZ" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinConstantCStep}" Max="{x:Static local:ParameterConstants.MaxConstantCStep}" />
+                                        <basicWpfLibrary:StepIntRangeRule MinDifference="{x:Static movie:MovieConstants.MinConstantCDifference}" 
+                                                                          MinSteps="{x:Static local:ParameterConstants.MinConstantCStep}"
+                                                                          MaxSteps="{x:Static local:ParameterConstants.MaxConstantCStep}"
+                                                                          ValidatesOnTargetUpdated="True" >
+                                            <basicWpfLibrary:StepIntRangeRule.Vm >
+                                                <basicWpfLibrary:ExternalViewModel
+                                                    Start="{Binding Data.StartCZ, Source={StaticResource Proxy}}"
+                                                    End="{Binding Data.EndCZ, Source={StaticResource Proxy}}"
+                                                    Alternate="{Binding Data.Alternate, Source={StaticResource Proxy}}"/>
+                                            </basicWpfLibrary:StepIntRangeRule.Vm>
+                                        </basicWpfLibrary:StepIntRangeRule>
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>

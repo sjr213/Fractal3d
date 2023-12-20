@@ -367,6 +367,7 @@ public class MovieParamVm : ViewModelBase
             if (Math.Abs(_movieParams.ConstantCStartW - value) < MinFloatDifference) return;
             _movieParams.ConstantCStartW = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(StepsW));
             OnMovieParamsChanged();
         }
     }
@@ -379,6 +380,7 @@ public class MovieParamVm : ViewModelBase
             if (Math.Abs(_movieParams.ConstantCEndW - value) < MinFloatDifference) return;
             _movieParams.ConstantCEndW = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(StepsW));
             OnMovieParamsChanged();
         }
     }
@@ -391,6 +393,7 @@ public class MovieParamVm : ViewModelBase
             if (Math.Abs(_movieParams.ConstantCStartX - value) < MinFloatDifference) return;
             _movieParams.ConstantCStartX = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(StepsX));
             OnMovieParamsChanged();
         }
     }
@@ -403,6 +406,7 @@ public class MovieParamVm : ViewModelBase
             if (Math.Abs(_movieParams.ConstantCEndX - value) < MinFloatDifference) return;
             _movieParams.ConstantCEndX = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(StepsX));
             OnMovieParamsChanged();
         }
     }
@@ -415,6 +419,7 @@ public class MovieParamVm : ViewModelBase
             if (Math.Abs(_movieParams.ConstantCStartY - value) < MinFloatDifference) return;
             _movieParams.ConstantCStartY = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(StepsY));
             OnMovieParamsChanged();
         }
     }
@@ -427,6 +432,7 @@ public class MovieParamVm : ViewModelBase
             if (Math.Abs(_movieParams.ConstantCEndY - value) < MinFloatDifference) return;
             _movieParams.ConstantCEndY = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(StepsY));
             OnMovieParamsChanged();
         }
     }
@@ -439,6 +445,7 @@ public class MovieParamVm : ViewModelBase
             if (Math.Abs(_movieParams.ConstantCStartZ - value) < MinFloatDifference) return;
             _movieParams.ConstantCStartZ = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(StepsZ));
             OnMovieParamsChanged();
         }
     }
@@ -451,6 +458,7 @@ public class MovieParamVm : ViewModelBase
             if (Math.Abs(_movieParams.ConstantCEndZ - value) < MinFloatDifference) return;
             _movieParams.ConstantCEndZ = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(StepsZ));
             OnMovieParamsChanged();
         }
     }
@@ -477,7 +485,6 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.StepsW;
         set
         {
-            if(_movieParams.StepsW == value) return;
             _movieParams.StepsW = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -489,7 +496,6 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.StepsX;
         set
         {
-            if(_movieParams.StepsX  == value) return;
             _movieParams.StepsX = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
@@ -501,7 +507,6 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.StepsY;
         set
         {
-            if(_movieParams.StepsY == value) return;
             _movieParams.StepsY = value;
             OnPropertyChanged(); 
             OnMovieParamsChanged();
@@ -513,7 +518,6 @@ public class MovieParamVm : ViewModelBase
         get => _movieParams.StepsZ;
         set
         {
-            if(_movieParams.StepsZ == value) return;
             _movieParams.StepsZ = value;
             OnPropertyChanged();
             OnMovieParamsChanged();
