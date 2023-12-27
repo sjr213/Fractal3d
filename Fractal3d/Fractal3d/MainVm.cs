@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms.VisualStyles;
+﻿using System.Globalization;
+using System.Windows.Forms.VisualStyles;
 
 namespace Fractal3d;
 
@@ -240,7 +241,18 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
     public double PercentProgress
     {
         get => _percentProgress;
-        set => SetProperty(ref _percentProgress, value);
+        set
+        {
+            SetProperty(ref _percentProgress, value);
+            ProgressString = Math.Round(value, 1).ToString(CultureInfo.InvariantCulture);
+        }
+    }
+
+    private string _progressString = string.Empty;
+    public string ProgressString
+    {
+        get => _progressString;
+        set => SetProperty(ref _progressString, value);
     }
 
     private long _time;
