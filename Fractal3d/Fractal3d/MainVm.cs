@@ -255,6 +255,14 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         set => SetProperty(ref _progressString, value);
     }
 
+    private string _infoString = string.Empty;
+
+    public string InfoString
+    {
+        get => _infoString;
+        set => SetProperty(ref _infoString, value);
+    }
+
     private long _time;
     public long Time
     {
@@ -401,6 +409,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
     protected void OnSaveAll()
     {
+        InfoString = "Saving...";
         if (SelectedViewMode == ViewModes.Movie)
         {
             SaveMovie();
@@ -409,6 +418,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         {
             SaveAll();
         }
+        InfoString = string.Empty;
     }
 
     private void SaveAll()
@@ -448,6 +458,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         };
 
         if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+        
         try
         {
             var results = _movieResult;
@@ -476,6 +487,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
         try
         {
+            InfoString = "Saving...";
             List<FractalResult> results = new() { _fractalResult };
             string jsonString = JsonConvert.SerializeObject(results);
 
@@ -491,6 +503,10 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         {
             System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot save result to file");
         }
+        finally
+        {
+            InfoString = string.Empty;
+        }
     }
 
     protected void OnSaveImage()
@@ -505,6 +521,8 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
         if (saveFileDialog.ShowDialog() != DialogResult.OK)
             return;
+
+        InfoString = "Saving...";
 
         string filename = saveFileDialog.FileName;
         string ext = Path.GetExtension(filename);
@@ -523,6 +541,8 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         {
             SaveAsPng(bmp, filename);
         }
+
+        InfoString = string.Empty;
     }
 
     protected async Task OnOpen()
@@ -540,6 +560,8 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
         if (openFileDialog.ShowDialog() != DialogResult.OK) return;
 
+        InfoString = "Loading...";
+
         string filename = openFileDialog.FileName;
         string ext = Path.GetExtension(filename);
 
@@ -547,6 +569,8 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
             await OpenMovieFile(filename);
         else
             await OpenResultFile(openFileDialog.FileName);
+
+        InfoString = string.Empty;
     }
 
     private void OnOpenFileError(Exception e)

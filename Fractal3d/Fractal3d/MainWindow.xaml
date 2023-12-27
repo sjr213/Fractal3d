@@ -86,6 +86,9 @@
                             <TextBlock Margin="2">Fractal Range:</TextBlock>
                             <TextBlock Margin="2" Text="{Binding FractalRange}"/>
                         </StackPanel>
+                        <StackPanel Margin="2" Orientation="Horizontal">
+                            <TextBlock Margin="12,2,2,2" Text="{Binding InfoString}"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <StackPanel Grid.Row="2" Grid.Column="1" Visibility="{Binding ImageViewVisibility}">
