@@ -34,7 +34,7 @@
             </StackPanel>
         </StackPanel>
         <ScrollViewer Grid.Row="1"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
-                              MaxWidth="500" MaxHeight="600">
+                              MaxWidth="500" >
             <DataGrid Name="PaletteGrid" Margin="2" Padding="2" RowBackground = "AliceBlue"  
                     AutoGenerateColumns = "False" ItemsSource="{Binding PaletteItems}" SelectedItem="{Binding SelectedPalette}">
                 <DataGrid.Columns>
