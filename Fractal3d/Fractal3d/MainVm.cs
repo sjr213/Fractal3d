@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using System.Windows.Forms.VisualStyles;
-
-namespace Fractal3d;
+﻿namespace Fractal3d;
 
 using BasicWpfLibrary;
 using FractureCommonLib;
@@ -14,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -25,13 +23,13 @@ using System.Windows.Media.Imaging;
 
 internal class FractalRange
 {
-    public double FromX { get; set; }
-    public double ToX { get; set; }
-    public double FromY { get; set; }
-    public double ToY { get; set; }
+    public double FromX { get; init; }
+    public double ToX { get; init; }
+    public double FromY { get; init; }
+    public double ToY { get; init; }
 }
 
-public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
+public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 {
     #region Members
 
@@ -116,7 +114,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         _movieVmObserver = MovieViewModel.Subscribe(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_isDisposed)
             return;
@@ -370,7 +368,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         }
     }
 
-    protected bool CanCalculate()
+    private bool CanCalculate()
     {
         if (SelectedViewMode == ViewModes.Movie)
             return AreParametersValid() && AreMovieParamsValid();
@@ -378,7 +376,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         return AreParametersValid();
     }
 
-    protected void OnPaletteChanged(Palette palette)
+    private void OnPaletteChanged(Palette palette)
     {
         _fractalParams.Palette = palette;
 
@@ -386,7 +384,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
             Calculate();
     }
 
-    protected void OnParamsChanged(FractalParams fractalParams)
+    private void OnParamsChanged(FractalParams fractalParams)
     {
         _fractalParams = fractalParams;
         ClearFractalRange();
@@ -407,7 +405,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         return _fractalResult != null;
     }
 
-    protected void OnSaveAll()
+    private void OnSaveAll()
     {
         InfoString = "Saving...";
         if (SelectedViewMode == ViewModes.Movie)
@@ -474,7 +472,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         }
     }
 
-    protected void OnSaveOne()
+    private void OnSaveOne()
     {
         if (_fractalResult == null)
             return;
@@ -509,7 +507,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         }
     }
 
-    protected void OnSaveImage()
+    private void OnSaveImage()
     {
         if (_fractalResult == null || _fractalResult.Image == null)
             return;
@@ -545,7 +543,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         InfoString = string.Empty;
     }
 
-    protected async Task OnOpen()
+    private async Task OnOpen()
     {
         if (_fractalResult != null)
         {
@@ -578,7 +576,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         System.Windows.Forms.MessageBox.Show("Cannot load file: {0}", e.Message);
     }
 
-    protected void OnDelete()
+    private void OnDelete()
     {
         if (_selectedFractalResult != null)
         {
@@ -601,7 +599,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         }
     }
 
-    protected void OnDeleteMost()
+    private void OnDeleteMost()
     {
         if (_selectedFractalResult != null)
         {
@@ -624,17 +622,17 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         }
     }
 
-    protected bool CanDeleteMost()
+    private bool CanDeleteMost()
     {
         return _selectedFractalResult != null && FractalResults.Count > 1;
     }
 
-    protected void OnCancel()
+    private void OnCancel()
     {
         _cancelSource.Cancel();
     }
 
-    protected void OnDisplayInfoChanged(DisplayInfo displayInfo)
+    private void OnDisplayInfoChanged(DisplayInfo displayInfo)
     {
         _fractalParams.ColorInfo = displayInfo;
 
@@ -711,7 +709,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
     #region Methods
 
-    protected async void Calculate()
+    private async void Calculate()
     {
         if (SelectedViewMode == ViewModes.Movie)
         {
@@ -811,7 +809,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         }
     }
 
-    protected void DisplayImage(FractalResult result)
+    private void DisplayImage(FractalResult result)
     {
         if (result.Image == null || result.Params == null)
             return;
@@ -932,7 +930,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         SelectedFractalResult = FractalResults.FirstOrDefault();
     }
 
-    protected async Task OpenResultFile(string filename)
+    private async Task OpenResultFile(string filename)
     {
         var results = await Task.Run(() => ReadFractalResultsFromFile(filename));
 
@@ -1011,7 +1009,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });
     }
 
-    protected async Task OpenMovieFile(string filename)
+    private async Task OpenMovieFile(string filename)
     {
         var movieResult = await Task.Run(() => ReadMovieResultFromFile(filename));
 
@@ -1158,11 +1156,9 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
         if (_movieParams.Alternate)
         {
-            var differenceInStartEnd = false;
-
             var checkW = CheckAlternateConstantC(_movieParams.ConstantCStartW, _movieParams.ConstantCEndW, _movieParams.StepsW);
             if (checkW.pass == false) return false;
-            differenceInStartEnd = checkW.pass;
+            var differenceInStartEnd = checkW.pass;
 
             var checkX = CheckAlternateConstantC(_movieParams.ConstantCStartX, _movieParams.ConstantCEndX, _movieParams.StepsX);
             if (checkX.pass == false) return false;
@@ -1170,11 +1166,11 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
 
             var checkY = CheckAlternateConstantC(_movieParams.ConstantCStartY, _movieParams.ConstantCEndY, _movieParams.StepsY);
             if (checkY.pass == false) return false;
-            differenceInStartEnd = checkY.pass;
+            differenceInStartEnd |= checkY.pass;
 
             var checkZ = CheckAlternateConstantC(_movieParams.ConstantCStartZ, _movieParams.ConstantCEndZ, _movieParams.StepsZ);
             if (checkZ.pass == false) return false;
-            differenceInStartEnd = checkZ.pass;
+            differenceInStartEnd |= checkZ.pass;
 
             return differenceInStartEnd;
         }
@@ -1299,7 +1295,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         return _movieImages.Count == _movieParams.NumberOfImages && SelectedViewMode == ViewModes.Movie;
     }
 
-    protected void OnMovieChanged(MovieChangedEventArgs e)
+    private void OnMovieChanged(MovieChangedEventArgs e)
     {
         MovieChanged?.Invoke(this, e);
     }
@@ -1353,7 +1349,7 @@ public class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver<int>
         // do nothing
     }
 
-    public virtual void OnNext(int value)
+    public void OnNext(int value)
     {
         OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.CurrentImageChanged, CurrentImageIndex = value});
     }

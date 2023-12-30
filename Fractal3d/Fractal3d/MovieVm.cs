@@ -23,21 +23,21 @@ namespace Fractal3d
         public BitmapImage Image
         {
             get => _image;
-            set => SetProperty(ref _image, value);
+            private set => SetProperty(ref _image, value);
         }
 
         private int _width;
         public int Width
         {
             get => _width;
-            set => SetProperty(ref _width, value);
+            private set => SetProperty(ref _width, value);
         }
 
         private int _height;
         public int Height
         {
             get => _height;
-            set => SetProperty(ref _height, value);
+            private set => SetProperty(ref _height, value);
         }
 
         #endregion
