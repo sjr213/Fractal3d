@@ -10,6 +10,8 @@
 
         public MovieParameterTypes MovieParameterType { get; set; } = MovieParameterTypes.Angles;
 
+        public MovieFileTypes MovieFileType { get; set; } = MovieFileTypes.Full;
+
         public float FromAngleX { get; set; }
         public float ToAngleX { get; set; }
         public bool LoopAngleX { get; set; }

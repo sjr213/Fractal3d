@@ -26,17 +26,23 @@ public class MovieParamVm : ViewModelBase
         _reverseCommand = new RelayCommand(_ => OnReverse(), _ => CanReverse());
         _moveImageToQueueCommand = new RelayCommand(_ => OnMoveImageToQueue(), _ => CanMoveImageToQueue());
 
-        AllowedMovieTypes = new ObservableCollection<MovieParameterTypes>
+        AllowedMovieParameterTypes = new ObservableCollection<MovieParameterTypes>
         {
             MovieParameterTypes.Angles, MovieParameterTypes.Bailout, MovieParameterTypes.ConstantC
         };
-        SelectedMovieParameterType = MovieParameterTypes.Angles;
+        SelectedMovieParameterType = _movieParams.MovieParameterType;
+
+        AllowedMovieFileTypes = new ObservableCollection<MovieFileTypes>
+        {
+            MovieFileTypes.Full, MovieFileTypes.AVI
+        };
+        SelectedMovieFileType = _movieParams.MovieFileType;
 
         AllowedDistributionTypes = new ObservableCollection<DistributionTypes>
         {
             DistributionTypes.Linear, DistributionTypes.Exponential
         };
-        SelectedDistributionType = DistributionTypes.Linear;
+        SelectedDistributionType = _movieParams.DistributionType;
 
         moviePlayer.MovieChanged += OnMovieChanged;
     }
@@ -158,11 +164,19 @@ public class MovieParamVm : ViewModelBase
 
     #region properties
 
-    private ObservableCollection<MovieParameterTypes> _allowedMovieTypes = null!;
-    public ObservableCollection<MovieParameterTypes> AllowedMovieTypes
+    private readonly ObservableCollection<MovieParameterTypes> _allowedMovieParameterTypes = null!;
+    public ObservableCollection<MovieParameterTypes> AllowedMovieParameterTypes
     {
-        get => _allowedMovieTypes;
-        set => SetProperty(ref _allowedMovieTypes, value);
+        get => _allowedMovieParameterTypes;
+        private init => SetProperty(ref _allowedMovieParameterTypes, value);
+    }
+    
+    private ObservableCollection<MovieFileTypes> _allowedMovieFileTypes = null!;
+
+    public ObservableCollection<MovieFileTypes> AllowedMovieFileTypes
+    {
+        get => _allowedMovieFileTypes;
+        set => SetProperty(ref _allowedMovieFileTypes, value);
     }
 
     public bool IsMovie => _moviePlayer.IsMovie();
@@ -176,6 +190,17 @@ public class MovieParamVm : ViewModelBase
             CalculateNumberOfImages();
             OnPropertyChanged();
             OnPropertyChanged(nameof(NumberOfImagesReadonly));
+            OnMovieParamsChanged();
+        }
+    }
+
+    public MovieFileTypes SelectedMovieFileType
+    {
+        get => _movieParams.MovieFileType;
+        set
+        {
+            _movieParams.MovieFileType = value;
+            OnPropertyChanged();
             OnMovieParamsChanged();
         }
     }

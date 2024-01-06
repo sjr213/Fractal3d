@@ -46,9 +46,19 @@
             <StackPanel Grid.Row="1" Margin="5" Orientation="Vertical">
                 <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="General" />
                 <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Movie Type: " />
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Parameter Type: " />
                     <ComboBox Margin="2" Padding="2" Width="100" HorizontalAlignment="Left"
-                              ItemsSource="{Binding AllowedMovieTypes}" SelectedItem="{Binding SelectedMovieParameterType}">
+                              ItemsSource="{Binding AllowedMovieParameterTypes}" SelectedItem="{Binding SelectedMovieParameterType}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="     " />
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="File Type: " />
+                    <ComboBox Margin="2" Padding="2" Width="100" HorizontalAlignment="Left"
+                              ItemsSource="{Binding AllowedMovieFileTypes}" SelectedItem="{Binding SelectedMovieFileType}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
