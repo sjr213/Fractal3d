@@ -48,7 +48,7 @@
                 <StackPanel Margin="12,2,2,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Movie Type: " />
                     <ComboBox Margin="2" Padding="2" Width="100" HorizontalAlignment="Left"
-                              ItemsSource="{Binding AllowedMovieTypes}" SelectedItem="{Binding SelectedMovieType}">
+                              ItemsSource="{Binding AllowedMovieTypes}" SelectedItem="{Binding SelectedMovieParameterType}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
@@ -115,7 +115,7 @@
                         <Style TargetType="{x:Type StackPanel}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedMovieType}" Value="Angles">
+                                <DataTrigger Binding="{Binding SelectedMovieParameterType}" Value="Angles">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -216,7 +216,7 @@
                         <Style TargetType="{x:Type StackPanel}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedMovieType}" Value="Bailout">
+                                <DataTrigger Binding="{Binding SelectedMovieParameterType}" Value="Bailout">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -269,7 +269,7 @@
                         <Style TargetType="{x:Type StackPanel}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedMovieType}" Value="ConstantC">
+                                <DataTrigger Binding="{Binding SelectedMovieParameterType}" Value="ConstantC">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>

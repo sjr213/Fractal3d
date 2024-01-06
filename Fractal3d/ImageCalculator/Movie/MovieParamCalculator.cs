@@ -6,11 +6,11 @@ public static class MovieParamCalculator
     {
         var newFractalParams = (FractalParams)fractalParams.Clone();
 
-        return movieParams.MovieType switch
+        return movieParams.MovieParameterType switch
         {
-            MovieTypes.Angles => CalculateFractalAngleParams(fractalParams, movieParams, imageNumber),
-            MovieTypes.Bailout => CalculateBailoutParams(fractalParams, movieParams, imageNumber),
-            MovieTypes.ConstantC => CalculateConstantCParams(fractalParams, movieParams, imageNumber),
+            MovieParameterTypes.Angles => CalculateFractalAngleParams(fractalParams, movieParams, imageNumber),
+            MovieParameterTypes.Bailout => CalculateBailoutParams(fractalParams, movieParams, imageNumber),
+            MovieParameterTypes.ConstantC => CalculateConstantCParams(fractalParams, movieParams, imageNumber),
             _ => newFractalParams
         };
     }

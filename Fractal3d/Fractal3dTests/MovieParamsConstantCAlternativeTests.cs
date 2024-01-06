@@ -15,7 +15,7 @@ public class MovieParamsConstantCAlternativeTests
         FractalParams fp = new FractalParams();
         MovieParams movieParams = new MovieParams()
         {
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = 0,
             ConstantCEndW = 0,
             ConstantCStartX = 1,
@@ -43,7 +43,7 @@ public class MovieParamsConstantCAlternativeTests
         FractalParams fp = new FractalParams();
         MovieParams movieParams = new MovieParams()
         {
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = 0,
             ConstantCEndW = 0,
             ConstantCStartX = 1,
@@ -90,7 +90,7 @@ public class MovieParamsConstantCAlternativeTests
         FractalParams fp = new FractalParams();
         MovieParams movieParams = new MovieParams()
         {
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = 0,
             ConstantCEndW = 0,
             ConstantCStartX = 1,
@@ -149,7 +149,7 @@ public class MovieParamsConstantCAlternativeTests
         FractalParams fp = new FractalParams();
         MovieParams movieParams = new MovieParams()
         {
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = 0,
             ConstantCEndW = 0,
             ConstantCStartX = 1,
@@ -226,7 +226,7 @@ public class MovieParamsConstantCAlternativeTests
         FractalParams fp = new FractalParams();
         MovieParams movieParams = new MovieParams()
         {
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = 1,
             ConstantCEndW = 5,
             ConstantCStartX = 1,
@@ -333,7 +333,7 @@ public class MovieParamsConstantCAlternativeTests
         FractalParams fp = new FractalParams();
         MovieParams movieParams = new MovieParams()
         {
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = 0,
             ConstantCEndW = 3,
             ConstantCStartX = 10,

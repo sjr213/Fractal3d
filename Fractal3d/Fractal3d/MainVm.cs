@@ -1108,7 +1108,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
     private bool AreMovieParamsValid()
     {
-        if (_movieParams.MovieType == MovieTypes.Angles)
+        if (_movieParams.MovieParameterType == MovieParameterTypes.Angles)
         {
             if (Math.Abs(_movieParams.FromAngleX - _movieParams.ToAngleX) > MovieConstants.MinAngleDifference)
                 return true;
@@ -1122,12 +1122,12 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             if (_movieParams.LoopAngleX || _movieParams.LoopAngleY || _movieParams.LoopAngleZ)
                 return true;
         }
-        else if (_movieParams.MovieType == MovieTypes.Bailout)
+        else if (_movieParams.MovieParameterType == MovieParameterTypes.Bailout)
         {
             if (Math.Abs(_movieParams.EndBailout - _movieParams.StartBailout) > MovieConstants.MinBailoutDifference)
                 return true;
         }
-        else if (_movieParams.MovieType == MovieTypes.ConstantC)
+        else if (_movieParams.MovieParameterType == MovieParameterTypes.ConstantC)
         {
             return AreMovieParamsConstCValid();
         }

@@ -651,7 +651,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 10,
             DistributionType = DistributionTypes.Linear,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = 100,
             ConstantCEndW = 100
         };
@@ -662,7 +662,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 5,
             DistributionType = DistributionTypes.Linear,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = -2,
             ConstantCEndW = 2
         };
@@ -673,7 +673,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 5,
             DistributionType = DistributionTypes.Linear,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = -2,
             ConstantCEndW = 2
         };
@@ -684,7 +684,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 5,
             DistributionType = DistributionTypes.Linear,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartX = -2,
             ConstantCEndX = 2
         };
@@ -695,7 +695,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 5,
             DistributionType = DistributionTypes.Linear,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartY = -2,
             ConstantCEndY = 2
         };
@@ -716,7 +716,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 5,
             DistributionType = DistributionTypes.Linear,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartW = 2,
             ConstantCEndW = -2
         };
@@ -727,7 +727,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 5,
             DistributionType = DistributionTypes.Linear,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartZ = 2,
             ConstantCEndZ = -2
         };
@@ -738,7 +738,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 5,
             DistributionType = DistributionTypes.Linear,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartY = 2,
             ConstantCEndY = -2
         };
@@ -749,7 +749,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 5,
             DistributionType = DistributionTypes.Linear,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartX = 2,
             ConstantCEndX = -2
         };
@@ -774,7 +774,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 10,
             DistributionType = DistributionTypes.Exponential,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartX = 0.01f,
             ConstantCEndX = 100f
         };
@@ -807,7 +807,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 10,
             DistributionType = DistributionTypes.Exponential,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartZ = 100f,
             ConstantCEndZ = 0.01f
         };
@@ -838,7 +838,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 7,
             DistributionType = DistributionTypes.Exponential,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartY = -1000f,
             ConstantCEndY = -0.1f
         };
@@ -869,7 +869,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 7,
             DistributionType = DistributionTypes.Exponential,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartY = -0.1f,
             ConstantCEndY = -1000f
         };
@@ -900,7 +900,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 7,
             DistributionType = DistributionTypes.Exponential,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartY = -100f,
             ConstantCEndY = 100f
         };
@@ -934,7 +934,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 8,
             DistributionType = DistributionTypes.Exponential,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartY = -100f,
             ConstantCEndY = 100f
         };
@@ -971,7 +971,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 10,
             DistributionType = DistributionTypes.Exponential,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartY = -0.01f,
             ConstantCEndY = 100f
         };
@@ -1005,7 +1005,7 @@ public class MovieParamCalculatorTests
         {
             NumberOfImages = 10,
             DistributionType = DistributionTypes.Exponential,
-            MovieType = MovieTypes.ConstantC,
+            MovieParameterType = MovieParameterTypes.ConstantC,
             ConstantCStartY = -100f,
             ConstantCEndY = 0.01f
         };

@@ -1,6 +1,6 @@
 ﻿namespace ImageCalculator.Movie
 {
-    public enum MovieTypes
+    public enum MovieParameterTypes
     {
         Angles,
         Bailout,

@@ -8,7 +8,7 @@
         public int FramesPerSecond { get; set; } = 5;
         public DistributionTypes DistributionType { get; set; } = DistributionTypes.Linear;
 
-        public MovieTypes MovieType { get; set; } = MovieTypes.Angles;
+        public MovieParameterTypes MovieParameterType { get; set; } = MovieParameterTypes.Angles;
 
         public float FromAngleX { get; set; }
         public float ToAngleX { get; set; }

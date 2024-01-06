@@ -26,11 +26,11 @@ public class MovieParamVm : ViewModelBase
         _reverseCommand = new RelayCommand(_ => OnReverse(), _ => CanReverse());
         _moveImageToQueueCommand = new RelayCommand(_ => OnMoveImageToQueue(), _ => CanMoveImageToQueue());
 
-        AllowedMovieTypes = new ObservableCollection<MovieTypes>
+        AllowedMovieTypes = new ObservableCollection<MovieParameterTypes>
         {
-            MovieTypes.Angles, MovieTypes.Bailout, MovieTypes.ConstantC
+            MovieParameterTypes.Angles, MovieParameterTypes.Bailout, MovieParameterTypes.ConstantC
         };
-        SelectedMovieType = MovieTypes.Angles;
+        SelectedMovieParameterType = MovieParameterTypes.Angles;
 
         AllowedDistributionTypes = new ObservableCollection<DistributionTypes>
         {
@@ -158,8 +158,8 @@ public class MovieParamVm : ViewModelBase
 
     #region properties
 
-    private ObservableCollection<MovieTypes> _allowedMovieTypes = null!;
-    public ObservableCollection<MovieTypes> AllowedMovieTypes
+    private ObservableCollection<MovieParameterTypes> _allowedMovieTypes = null!;
+    public ObservableCollection<MovieParameterTypes> AllowedMovieTypes
     {
         get => _allowedMovieTypes;
         set => SetProperty(ref _allowedMovieTypes, value);
@@ -167,12 +167,12 @@ public class MovieParamVm : ViewModelBase
 
     public bool IsMovie => _moviePlayer.IsMovie();
 
-    public MovieTypes SelectedMovieType
+    public MovieParameterTypes SelectedMovieParameterType
     {
-        get => _movieParams.MovieType;
+        get => _movieParams.MovieParameterType;
         set
         {
-            _movieParams.MovieType = value;
+            _movieParams.MovieParameterType = value;
             CalculateNumberOfImages();
             OnPropertyChanged();
             OnPropertyChanged(nameof(NumberOfImagesReadonly));
@@ -555,7 +555,7 @@ public class MovieParamVm : ViewModelBase
         set => SetProperty(ref _alternateVisibility, value);
     }
 
-    public bool NumberOfImagesReadonly => SelectedMovieType == MovieTypes.ConstantC && Alternate;
+    public bool NumberOfImagesReadonly => SelectedMovieParameterType == MovieParameterTypes.ConstantC && Alternate;
 
     #endregion
 }
