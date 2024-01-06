@@ -59,4 +59,10 @@
     <Resource Include="Images\stop.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="AForge.Video.FFMPEG">
+      <HintPath>..\..\..\..\..\Program Files (x86)\AForge.NET\Framework\Release\AForge.Video.FFMPEG.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
