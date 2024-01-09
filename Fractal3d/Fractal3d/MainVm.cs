@@ -1,4 +1,6 @@
-﻿namespace Fractal3d;
+﻿using System.Drawing;
+
+namespace Fractal3d;
 
 using BasicWpfLibrary;
 using FractureCommonLib;
@@ -49,6 +51,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     private FractalRange? _fractalRange;
     private MovieResult? _movieResult;
     private List<BitmapImage> _movieImages = new();
+    private List<Bitmap> _movieBitmaps = new();
 
     private MovieParams _movieParams = new();
 
@@ -399,7 +402,16 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     {
         if (SelectedViewMode == ViewModes.Movie)
         {
-            return _movieImages.Count == _movieParams.NumberOfImages;
+            if (_movieParams.MovieFileType == MovieFileTypes.Full)
+            {
+                return _movieImages.Count == _movieParams.NumberOfImages;
+            }
+            else if (_movieParams.MovieFileType == MovieFileTypes.AVI)
+            {
+                return _movieBitmaps.Count == _movieParams.NumberOfImages;
+            }
+
+            return false;
         }
 
         return _fractalResult != null;
@@ -450,6 +462,23 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         if (SelectedViewMode != ViewModes.Movie || _movieResult == null)
             return;
 
+        if (_movieParams.MovieFileType == MovieFileTypes.Full)
+        {
+            SaveFullMovie();
+            return;
+        }
+
+        if (_movieParams.MovieFileType == MovieFileTypes.AVI && _movieBitmaps.Count > 0)
+        {
+            SaveAviMovie();
+            return;
+        }
+        
+        System.Windows.Forms.MessageBox.Show("Cannot save movie: Unknown File type or missing images");
+    }
+
+    private void SaveFullMovie()
+    {
         var saveFileDialog = new SaveFileDialog
         {
             Filter = string.Format("Fractal3D movie file (*{0})|*{0}", Fractal3dConstants.MovieFileExtension)
@@ -464,6 +493,28 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
             //write string to file
             File.WriteAllText(saveFileDialog.FileName, jsonString);
+            _isDirty = false;
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot save movie to file");
+        }
+    }
+
+    private void SaveAviMovie()
+    {
+        var saveFileDialog = new SaveFileDialog
+        {
+            Filter = string.Format("AVI movie file (*{0})|*{0}", "avi")
+        };
+
+        if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+        
+        try
+        {
+            MovieUtil.CreateMovie(saveFileDialog.FileName, _fractalParams.ImageSize.Width, 
+                _fractalParams.ImageSize.Height, _movieParams.FramesPerSecond, _movieBitmaps);
+            
             _isDirty = false;
         }
         catch (Exception ex)
@@ -711,6 +762,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
     private async void Calculate()
     {
+        _movieBitmaps = new List<Bitmap>();
+        
         if (SelectedViewMode == ViewModes.Movie)
         {
             _cancelSource = new();
@@ -819,7 +872,14 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         var image = ImageUtil.BitmapToImageSource(bmp);
         if (SelectedViewMode == ViewModes.Movie)
         {
-            _movieImages.Add(image);
+            if (_movieParams.MovieFileType == MovieFileTypes.Full)
+            {
+                _movieImages.Add(image);
+            }
+            else if(_movieParams.MovieFileType == MovieFileTypes.AVI)
+            {
+                _movieBitmaps.Add(bmp);
+            }
         }
         ImageViewModel = new ImageVm(_fractalParams, image, SetSelectionRect);
     }
@@ -837,7 +897,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         return null;
     }
 
-    private void SaveAsJpg(System.Drawing.Bitmap bmp, string filename)
+    private void SaveAsJpg(Bitmap bmp, string filename)
     {
         var myImageCodecInfo = GetEncoderInfo("image/jpeg");
         if (myImageCodecInfo == null)
@@ -855,7 +915,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         bmp.Save(filename, info, myEncoderParameters);
     }
 
-    private void SaveAsPng(System.Drawing.Bitmap bmp, string filename)
+    private void SaveAsPng(Bitmap bmp, string filename)
     {
         var myImageCodecInfo = GetEncoderInfo("image/png");
         if (myImageCodecInfo == null)
