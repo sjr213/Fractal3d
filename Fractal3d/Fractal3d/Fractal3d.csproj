@@ -12,6 +12,8 @@
     <FileVersion>1.4.9.0</FileVersion>
     <Title>Fractal 3D</Title>
     <ApplicationIcon>bu0030.ico</ApplicationIcon>
+    <Platforms>AnyCPU</Platforms>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.4" />
+    <PackageReference Include="FFMediaToolkit" Version="4.5.1" />
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.5" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>
 
@@ -57,12 +60,6 @@
     <Resource Include="Images\play.png" />
     <Resource Include="Images\reverse.png" />
     <Resource Include="Images\stop.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="AForge.Video.FFMPEG">
-      <HintPath>..\..\..\..\..\Program Files (x86)\AForge.NET\Framework\Release\AForge.Video.FFMPEG.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

@@ -34,7 +34,7 @@ public class MovieParamVm : ViewModelBase
 
         AllowedMovieFileTypes = new ObservableCollection<MovieFileTypes>
         {
-            MovieFileTypes.Full, MovieFileTypes.AVI
+            MovieFileTypes.Full, MovieFileTypes.MP4
         };
         SelectedMovieFileType = _movieParams.MovieFileType;
 

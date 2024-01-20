@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace Fractal3d;
+﻿namespace Fractal3d;
 
 using BasicWpfLibrary;
 using FractureCommonLib;
@@ -12,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
@@ -107,8 +106,6 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     public void Dispose()
     {
         Dispose(true);
-
-        GC.SuppressFinalize(this);
     }
 
     private void AddMovieVm()
@@ -167,6 +164,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     private readonly RelayCommand _defaultParametersCommand;
     public ICommand DefaultParametersCommand => _defaultParametersCommand;
 
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public RelayCommand AddToQueueCommand { get; }
 
     #endregion
@@ -177,7 +175,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     public PaletteVm PaletteViewModel
     {
         get => _paletteVm;
-        set => SetProperty(ref _paletteVm, value);
+        private set => SetProperty(ref _paletteVm, value);
     }
 
     private ImageVm _imageVm;
@@ -406,7 +404,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             {
                 return _movieImages.Count == _movieParams.NumberOfImages;
             }
-            else if (_movieParams.MovieFileType == MovieFileTypes.AVI)
+            else if (_movieParams.MovieFileType == MovieFileTypes.MP4)
             {
                 return _movieBitmaps.Count == _movieParams.NumberOfImages;
             }
@@ -468,7 +466,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             return;
         }
 
-        if (_movieParams.MovieFileType == MovieFileTypes.AVI && _movieBitmaps.Count > 0)
+        if (_movieParams.MovieFileType == MovieFileTypes.MP4 && _movieBitmaps.Count > 0)
         {
             SaveAviMovie();
             return;
@@ -505,14 +503,14 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     {
         var saveFileDialog = new SaveFileDialog
         {
-            Filter = string.Format("AVI movie file (*{0})|*{0}", "avi")
+            Filter = string.Format("mp4 movie file (*{0})|*{0}", ".mp4")
         };
 
         if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
         
         try
         {
-            MovieUtil.CreateMovie(saveFileDialog.FileName, _fractalParams.ImageSize.Width, 
+            MovieUtil.CreateMovieMp4(saveFileDialog.FileName, _fractalParams.ImageSize.Width, 
                 _fractalParams.ImageSize.Height, _movieParams.FramesPerSecond, _movieBitmaps);
             
             _isDirty = false;
@@ -876,7 +874,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             {
                 _movieImages.Add(image);
             }
-            else if(_movieParams.MovieFileType == MovieFileTypes.AVI)
+            else if(_movieParams.MovieFileType == MovieFileTypes.MP4)
             {
                 _movieBitmaps.Add(bmp);
             }

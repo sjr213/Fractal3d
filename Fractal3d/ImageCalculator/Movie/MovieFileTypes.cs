@@ -3,5 +3,5 @@
 public enum MovieFileTypes
 {   
     Full,
-    AVI
+    MP4
 }
