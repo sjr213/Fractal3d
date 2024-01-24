@@ -76,7 +76,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         ImageViewModel = new ImageVm(_fractalParams, new BitmapImage(), SetSelectionRect);
         ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
         UpdateMovieParams();
-        MovieParamViewModel = new MovieParamVm(_movieParams, this);
+        MovieParamViewModel = new MovieParamVm(_movieParams, _fractalParams, this);
         AddMovieVm();
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
@@ -468,7 +468,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
         if (_movieParams.MovieFileType == MovieFileTypes.MP4 && _movieBitmaps.Count > 0)
         {
-            SaveAviMovie();
+            SaveMp4Movie();
             return;
         }
         
@@ -499,7 +499,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         }
     }
 
-    private void SaveAviMovie()
+    private void SaveMp4Movie()
     {
         var saveFileDialog = new SaveFileDialog
         {
@@ -510,8 +510,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         
         try
         {
-            MovieUtil.CreateMovieMp4(saveFileDialog.FileName, _fractalParams.ImageSize.Width, 
-                _fractalParams.ImageSize.Height, _movieParams.FramesPerSecond, _movieBitmaps);
+            MovieUtil.CreateMovieMp4(saveFileDialog.FileName, _movieParams.MovieWidth, 
+                _movieParams.MovieHeight, _movieParams.FramesPerSecond, _movieBitmaps);
             
             _isDirty = false;
         }
@@ -745,7 +745,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         LightingViewModel = new LightingVm(_fractalParams, OnParamsChanged);
         TransformViewModel = new TransformVm(_fractalParams, OnParamsChanged);
         UpdateMovieParams();
-        MovieParamViewModel = new MovieParamVm(_movieParams, this);
+        MovieParamViewModel = new MovieParamVm(_movieParams, _fractalParams,this);
     }
 
     private void OnAddToQueue()
@@ -1061,7 +1061,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         SelectedViewMode = ViewModes.Movie;
 
         ImageViewModel = new ImageVm(_fractalParams, images.First(), SetSelectionRect);
-        MovieParamViewModel = new MovieParamVm(_movieParams, this);
+        MovieParamViewModel = new MovieParamVm(_movieParams, _fractalParams,this);
         MovieViewModel.SetImages(_movieImages, _fractalParams);
 
         OnMovieChanged(new MovieChangedEventArgs() { ChangeType = MovieChangeType.ImageCountChange });

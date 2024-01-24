@@ -39,5 +39,11 @@
         public int StepsX { get; set; } = 1;
         public int StepsY { get; set; } = 1;
         public int StepsZ { get; set; } = 1;
+
+        public bool UseMovieSize { get; set; } = false;
+
+        public int MovieWidth { get; set; } = 400;
+
+        public int MovieHeight { get; set; } = 400;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ImageCalculator;
 
 namespace Fractal3d;
 
@@ -11,13 +12,15 @@ using System.Windows.Input;
 public class MovieParamVm : ViewModelBase
 {
     private readonly MovieParams _movieParams;
+    private readonly FractalParams _fractalParams;
     private readonly IMoviePlayer _moviePlayer;
 
     private const float MinFloatDifference = 0.001f;
 
-    public MovieParamVm(MovieParams movieParams, IMoviePlayer moviePlayer)
+    public MovieParamVm(MovieParams movieParams, FractalParams fractalParams, IMoviePlayer moviePlayer)
     {
         _movieParams = movieParams;
+        _fractalParams = fractalParams;
         _moviePlayer = moviePlayer;
 
         _playCommand = new RelayCommand(_ => OnPlay(), _ => CanPlay());
@@ -45,6 +48,12 @@ public class MovieParamVm : ViewModelBase
         SelectedDistributionType = _movieParams.DistributionType;
 
         moviePlayer.MovieChanged += OnMovieChanged;
+        
+        if (_movieParams.UseMovieSize == false)
+        {
+            MovieWidth = _fractalParams.ImageSize.Width;
+            MovieHeight = _fractalParams.ImageSize.Height;
+        }
     }
 
     #region Commands
@@ -581,6 +590,46 @@ public class MovieParamVm : ViewModelBase
     }
 
     public bool NumberOfImagesReadonly => SelectedMovieParameterType == MovieParameterTypes.ConstantC && Alternate;
+
+    public int ImageWidth => _fractalParams.ImageSize.Width;
+
+    public int ImageHeight => _fractalParams.ImageSize.Height;
+
+    public bool UseMovieSize
+    {
+        get => _movieParams.UseMovieSize;
+        set
+        {
+            _movieParams.UseMovieSize = value;
+            OnPropertyChanged();
+
+            if (_movieParams.UseMovieSize == false)
+            {
+                MovieWidth = _fractalParams.ImageSize.Width;
+                MovieHeight = _fractalParams.ImageSize.Height;
+            }
+        }
+    }
+
+    public int MovieWidth
+    {
+        get => _movieParams.MovieWidth;
+        set
+        {
+            _movieParams.MovieWidth = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public int MovieHeight
+    {
+        get => _movieParams.MovieHeight;
+        set
+        {
+            _movieParams.MovieHeight = value;
+            OnPropertyChanged();
+        }
+    }
 
     #endregion
 }
