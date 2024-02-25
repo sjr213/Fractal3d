@@ -7,17 +7,13 @@ using System.Reactive.Subjects;
 
 namespace ImageCalculator;
 
-public class ParallelFractalFactory : IDisposable
+public class ParallelCraneShaderFactory : IDisposable
 {
-    public delegate void CalculationDelegate(Vector4 q, Vector4 c, out Vector4 q1, out Vector4 dQ1);
-
-    private CalculationDelegate _nextCycle = QuadMath.CalculateNextCycleSquared;
     private readonly Subject<double> _progressSubject = new();
     private static double _totalProgress;
     private readonly object _lockObject = new();
 
     public IObservable<double> Progress => _progressSubject;
-
     bool _isDisposed;
 
     public void Dispose()
@@ -40,78 +36,7 @@ public class ParallelFractalFactory : IDisposable
         _isDisposed = true;
     }
 
-    private static CalculationDelegate GetCalculationDelegate(QuaternionEquationType equationType)
-    {
-        switch (equationType)
-        {
-            case QuaternionEquationType.Q_Squared:
-                return QuadMath.CalculateNextCycleSquared;
-            case QuaternionEquationType.Q_Cubed:
-                return QuadMath.CalculateNextCycleCubed;
-            case QuaternionEquationType.Q_InglesCubed:
-                return QuadMath.CalculateNextCycleInglesCubed;
-            default:
-                throw new ArgumentException("Unknown Quaternion equation");
-        }
-    }
 
-    private float EstimateDistance(Vector3 pt, FractalParams fractalParams)
-    {
-        var z0 = new Vector4(pt, 0.2f);
-        var z = new Vector4(pt, 0.2f);
-        float dr = 1.0f;
-        float r = z.Length();
-
-        for (int i = 0; i < fractalParams.Iterations; ++i)
-        {
-            if (r > fractalParams.Bailout)
-                break;
-            _nextCycle(z, fractalParams.C4, out var z1, out var dz1);
-
-            if (NumericExtensions.IsNan(z1))
-                break;
-
-            r = z1.Length();
-            dr = dz1.Length();
-
-            z = z1;
-            z += z0;
-        }
-
-        if (r == 0.0 || dr == 0.0)
-            return 0.0f;
-
-        return ((float)Math.Log(r) * r) / dr;
-    }
-
-    private float RayMarch(FractalParams fractalParams, Vector3 startPt, Vector3 direction, Matrix4x4 transformMatrix, out Vector3 pt)
-    {
-        float totalDistance = 0.0f;
-        int steps;
-
-        float lastDistance = float.MaxValue;
-        pt = startPt;
-
-        for (steps = 0; steps < fractalParams.MaxRaySteps; steps++)
-        {
-            pt = totalDistance * direction + startPt;
-            var transformedPt = TransformationCalculator.Transform(transformMatrix, pt);
-            float distance = EstimateDistance(transformedPt, fractalParams);
-            totalDistance += distance / fractalParams.StepDivisor;
-            if (distance < fractalParams.MinRayDistance)
-                break;
-
-            if (distance > lastDistance)        // Can have option to block distance increases
-                break;
-
-            if (totalDistance > fractalParams.MaxDistance)
-                break;
-
-            lastDistance = distance;
-        }
-
-        return 1.0f - ((float)steps) / fractalParams.MaxRaySteps;
-    }
 
     private void CalculateImageNew(PixelContainer raw, FractalParams fractalParams, CancellationToken cancelToken, double progress)
     {
@@ -150,20 +75,27 @@ public class ParallelFractalFactory : IDisposable
 
                 var direction = to - from;
 
-                var distance = RayMarch(fractalParams, startPt, direction, transformMatrix, out var outPt);
+                //              var distance = RayMarch(fractalParams, startPt, direction, transformMatrix, out var outPt);
+                float epsilon = 0.01f;
+                // This doesn't take into account the transformation matrix
+                var distance = QuatMath2.IntersectQJulia(ref startPt, direction, fractalParams.C4, fractalParams.Iterations, epsilon);
 
                 if (distance < 0.0f)
                     distance = 0.0f;
 
-                if (distance > 1.0f)
-                    distance = 1.0f;
+                if (distance > epsilon)
+                    distance = epsilon;
 
-                var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
-                float DistanceEstimator(Vector3 pt) => EstimateDistance(pt, fractalParams);
-                var normal = NormalCalculator.CalculateNormal(DistanceEstimator, fractalParams.NormalDistance, transformedPt);
+                var transformedPt = TransformationCalculator.Transform(transformMatrix, startPt);
+                var normal = QuatMath2.NormEstimate(startPt, fractalParams.C4, fractalParams.Iterations);
                 var lighting = LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal);
 
-                var depth = (int)(distance * (palette.NumberOfColors - 1));
+                //          var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
+                //          float DistanceEstimator(Vector3 pt) => EstimateDistance(pt, fractalParams);
+                //          var normal = NormalCalculator.CalculateNormal(DistanceEstimator, fractalParams.NormalDistance, transformedPt);
+                //         var lighting = LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal);
+
+                var depth = (int)(distance/epsilon * (palette.NumberOfColors - 1));
 
                 // need a new raw image that stores Vector3
                 var light = lighting.Diffuse + lighting.Specular;
@@ -200,11 +132,11 @@ public class ParallelFractalFactory : IDisposable
             int fromWidth = i * containerWidth;
             if (i == numberOfContainers - 1)
             {
-                containers.Add(new PixelContainer( fromWidth, size.Width-1, size.Height, depth));
+                containers.Add(new PixelContainer(fromWidth, size.Width - 1, size.Height, depth));
             }
             else
             {
-                containers.Add(new PixelContainer(fromWidth, fromWidth + containerWidth -1, size.Height, depth));
+                containers.Add(new PixelContainer(fromWidth, fromWidth + containerWidth - 1, size.Height, depth));
             }
         }
 
@@ -233,8 +165,6 @@ public class ParallelFractalFactory : IDisposable
         var size = fractalParams.ImageSize;
         _totalProgress = startProgress;
 
-        _nextCycle = GetCalculationDelegate(fractalParams.QuatEquation);
-
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
 
@@ -244,8 +174,8 @@ public class ParallelFractalFactory : IDisposable
         var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, numberOfContainers);
         var fractionProgress = sumProgress / numberOfContainers;
 
-        await Task.Run(() => Parallel.ForEach(containers, 
-            container => CalculateImageNew(container, fractalParams, cancelToken, fractionProgress)), 
+        await Task.Run(() => Parallel.ForEach(containers,
+            container => CalculateImageNew(container, fractalParams, cancelToken, fractionProgress)),
             cancelToken);
 
         if (cancelToken.IsCancellationRequested)
@@ -264,6 +194,4 @@ public class ParallelFractalFactory : IDisposable
             Time = watch.ElapsedMilliseconds
         };
     }
-
 }
-

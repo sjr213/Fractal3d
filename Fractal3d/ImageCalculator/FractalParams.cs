@@ -6,6 +6,17 @@ using System.Drawing;
 using System.Numerics;
 
 [Serializable]
+public enum ShaderType
+{
+    [Description("Fractal Shader")]
+    FractalShader,
+    [Description("Crane Shader")]
+    CraneShader,
+    [Description("Shape Shader")]
+    ShapeShader
+}
+
+[Serializable]
 public enum QuaternionEquationType
 {
     [Description("Quat Squared")]
@@ -75,7 +86,8 @@ public class FractalParams : ICloneable
     public LightCombinationMode LightComboMode { get; set; } = LightCombinationMode.Average;
     public List<Light> Lights { get; set; } = new List<Light>();
     public DisplayInfo ColorInfo { get; set; } = new();
-    public bool PlainShader = false;
+ //   public bool PlainShader = false;
+    public ShaderType ShaderType { get; set; } = ShaderType.FractalShader;
     public ShaderSceneType SceneType = ShaderSceneType.Sphere;
     public TransformationParams TransformParams = new TransformationParams();
 

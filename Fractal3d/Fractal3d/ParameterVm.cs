@@ -21,6 +21,11 @@ public class ParameterVm : ViewModelBase
         _onParamsChanged = paramsChanged;
         IsVisibleChangedCommand = new RelayCommand(param => ExecuteIsVisibleChangedCommand(param is DependencyPropertyChangedEventArgs args ? args : default));
 
+        AllowedShaderTypes = new ObservableCollection<ShaderType>
+        {
+            ShaderType.FractalShader, ShaderType.CraneShader, ShaderType.ShapeShader
+        };  
+
         AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
         {
             QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_InglesCubed
@@ -31,10 +36,10 @@ public class ParameterVm : ViewModelBase
             ShaderSceneType.Sphere, ShaderSceneType.Box, ShaderSceneType.Torus
         };
 
+        SelectedShaderType = _fractalParams.ShaderType;
         SelectedQuatEquationType = _fractalParams.QuatEquation;
         SelectedSceneType = _fractalParams.SceneType;
         AimToOrigin = _fractalParams.AimToOrigin;
-
     }
 
     public RelayCommand IsVisibleChangedCommand { get; }
@@ -424,12 +429,21 @@ public class ParameterVm : ViewModelBase
         }
     }
 
-    public bool Shader
+    private ObservableCollection<ShaderType> _allowedShaderTypes;
+    public ObservableCollection<ShaderType> AllowedShaderTypes  
     {
-        get => _fractalParams.PlainShader;
+        get => _allowedShaderTypes;
+        set => SetProperty(ref _allowedShaderTypes, value);
+    }
+
+    public ShaderType SelectedShaderType
+    {
+        get => _fractalParams.ShaderType;
         set
-        {
-            _fractalParams.PlainShader = value;
+        {             
+            if (value == _fractalParams.ShaderType)
+                return;
+            _fractalParams.ShaderType = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
