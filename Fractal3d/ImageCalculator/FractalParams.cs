@@ -91,6 +91,15 @@ public class FractalParams : ICloneable
     public ShaderSceneType SceneType = ShaderSceneType.Sphere;
     public TransformationParams TransformParams = new TransformationParams();
 
+    // Crane shader fields
+    public float Epsilon { get; set; } = 0.01f;
+
+    public bool RenderShadows { get; set; } = false;
+
+    public float EscapeThreshold { get; set; } = 10.0f;
+
+
+
     public static List<Light> MakeLights()
     {
         var light1 = new Light()

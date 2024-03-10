@@ -75,7 +75,6 @@ public class ParallelCraneShaderFactory : IDisposable
         // float4 rgba 0.3, 0.3, 0.3, 0 to argb 0, 85, 85, 85
         Color backGroundColor = BackgroundColor();
         Color activeColor;
-        bool renderShadows = false;
 
         for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
         {
@@ -93,13 +92,13 @@ public class ParallelCraneShaderFactory : IDisposable
 
                 var direction = to - from;
                 direction = Vector3.Normalize(direction);
-                startPt = QuatMath2.IntersectSphere(startPt, direction);
+                startPt = QuatMath2.IntersectSphere(startPt, direction, fractalParams.Bailout);
 
-                float epsilon = 0.01f;
                 // This doesn't take into account the transformation matrix
-                var distance = QuatMath2.IntersectQJulia(ref startPt, direction, fractalParams.C4, fractalParams.Iterations, epsilon);
+                var distance = QuatMath2.IntersectQJulia(ref startPt, direction, fractalParams.C4, fractalParams.Iterations, fractalParams.Epsilon, 
+                    fractalParams.EscapeThreshold, fractalParams.Bailout);
 
-                if(distance < epsilon)
+                if(distance < fractalParams.Epsilon)
                 {
                     Vector3 normal = QuatMath2.NormEstimate(startPt, fractalParams.C4, fractalParams.Iterations);
 
@@ -108,19 +107,20 @@ public class ParallelCraneShaderFactory : IDisposable
                     Vector3 partialColor = QuatMath2.Phong(light, direction, startPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
 
-                    if(renderShadows == true)
+                    if(fractalParams.RenderShadows)
                     {
                         // The shadow ray will start at the intersection point and go towards the point light.
                         // We initially move the ray origin a little bit along this direction so we don't mistakenly 
                         // find an intersection with the same point again.
 
                         Vector3 L = Vector3.Normalize(light - startPt);
-                        startPt += L * epsilon * 2.0f;
-                        var dist = QuatMath2.IntersectQJulia(ref startPt, L, fractalParams.C4, fractalParams.Iterations, epsilon);
+                        startPt += L * fractalParams.Epsilon * 2.0f;
+                        var dist = QuatMath2.IntersectQJulia(ref startPt, L, fractalParams.C4, fractalParams.Iterations, fractalParams.Epsilon, 
+                            fractalParams.EscapeThreshold, fractalParams.Bailout);
 
                         // Again, if our estimate of the distance to the set is small, we say there was a hit.
                         // In this case it means that the point is in a shadow and should be given a darker shade.
-                        if(dist < epsilon)
+                        if(dist < fractalParams.Epsilon)
                         {
                             activeColor = ShadeColor(activeColor, 0.4f);
                         }

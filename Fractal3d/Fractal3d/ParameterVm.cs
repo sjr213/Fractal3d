@@ -469,4 +469,39 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public float Epsilon
+    {
+        get => _fractalParams.Epsilon;
+        set
+        {
+            _fractalParams.Epsilon = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public bool RenderShadows
+    {
+        get => _fractalParams.RenderShadows;
+        set
+        {
+            if(value == _fractalParams.RenderShadows)
+                return;
+            _fractalParams.RenderShadows = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public float EscapeThreshold
+    {
+        get => _fractalParams.EscapeThreshold;
+        set
+        {
+            _fractalParams.EscapeThreshold = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
 }

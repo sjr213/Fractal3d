@@ -9,10 +9,10 @@ using System.Numerics;
 public static class QuatMath2
 {
     // radius of bounding sphere for the set used to accerate intersection
-    const float BOUNDING_RADIUS_2 = 3.0f;     
+ //   const float BOUNDING_RADIUS_2 = 3.0f;     
 
     // Any series whose points magnitude exceed this threshold are considered divergent
-    const float ESCAPE_THRESHOLD = 1e1f;
+ //   const float ESCAPE_THRESHOLD = 1e1f;
 
     // Delta is used in the infinite difference approximation of the gradient (to determine normals)
     const float DEL = 1e-4f;
@@ -50,14 +50,14 @@ public static class QuatMath2
     // Also produces an estimate of the derivative q, which is required for the distance estimate.
     // The quaternion c is the parameter specifying the Julia set. 
     // To estimate the derivative at q we recursively evaluate q' = 2*q*q'
-    public static void IterateIntersection( ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations)
+    public static void IterateIntersection( ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold)
     {
         for(int i =0; i < maxIterations; i++)
         {
             qp = 2.0f * QuatMult(q, qp);
             q = QuatSq(q) + c;
 
-            if( Vector4.Dot(q, q) > ESCAPE_THRESHOLD ) 
+            if( Vector4.Dot(q, q) > escapeThreshold ) 
             {
                 break;
             }
@@ -95,7 +95,7 @@ public static class QuatMath2
     }
 
     // Finds the intersection of a ray with origin rO and direction rD with the quaternion Julia set specified by the quaternion constant c.
-    public static float IntersectQJulia(ref Vector3 rO, Vector3 rD, Vector4 c, int maxIterations, float epsilon)
+    public static float IntersectQJulia(ref Vector3 rO, Vector3 rD, Vector4 c, int maxIterations, float epsilon, float escapeThreshold, float boundingRadius)
     {
         float dist;
 
@@ -104,13 +104,13 @@ public static class QuatMath2
             Vector4 z = new Vector4(rO, 0);
             Vector4 zp = new Vector4(1, 0, 0, 0);
 
-            IterateIntersection(ref z, ref zp, c, maxIterations);
+            IterateIntersection(ref z, ref zp, c, maxIterations, escapeThreshold);
             float normZ = z.Length();
             dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
 
             rO += rD * dist;
 
-            if(dist < epsilon || Vector3.Dot(rO, rO) > BOUNDING_RADIUS_2)
+            if(dist < epsilon || Vector3.Dot(rO, rO) > boundingRadius)
             {
                 break;
             }
@@ -141,10 +141,10 @@ public static class QuatMath2
 
     // Finds the intersection of a ray with a sphere with statically defined radius BOUNDING_RADIUS centered at the origin.
     // This sphere serves as a bounding volume for the Julia set.
-    public static Vector3 IntersectSphere(Vector3 rO, Vector3 rD)
+    public static Vector3 IntersectSphere(Vector3 rO, Vector3 rD, float boudingRadius)
     {
         float B = 2.0f * Vector3.Dot(rO, rD);
-        float C = Vector3.Dot(rO, rO) - BOUNDING_RADIUS_2;
+        float C = Vector3.Dot(rO, rO) - boudingRadius;
         float d = (float)Math.Sqrt(B*B - 4.0f*C);
         float t0 = (-B + d) * 0.5f;
         float t1 = (-B - d) * 0.5f;
