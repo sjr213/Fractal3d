@@ -36,8 +36,193 @@ public class ParallelCraneShaderFactory : IDisposable
         _isDisposed = true;
     }
 
+    private static Color ConvertVectorToColor(Vector3 c, int a)
+    {
+        c = Vector3.Clamp(c, Vector3.Zero, Vector3.One);
 
+        return Color.FromArgb(a, (int)(c.X * 255), (int)(c.Y * 255), (int)(c.Z * 255));
+    }
 
+    private static Color ShadeColor(Color color, float shade)
+    {
+        var r = (int)(color.R * shade);
+        var g = (int)(color.G * shade);
+        var b = (int)(color.B * shade);
+
+        return Color.FromArgb(color.A, r, g, b);
+    }
+
+    private static Color BackgroundColor()
+    {
+        return Color.FromArgb(0, 85, 85, 85);
+    }
+
+    private void CalculateImageNew(ColorContainer raw, FractalParams fractalParams, double progress, CancellationToken cancelToken)
+    {
+        var size = fractalParams.ImageSize;
+
+        var left = Math.Min(fractalParams.FromX, fractalParams.ToX);
+        var right = Math.Max(fractalParams.FromX, fractalParams.ToX);
+        var bottom = Math.Min(fractalParams.FromY, fractalParams.ToY);
+        var top = Math.Max(fractalParams.FromY, fractalParams.ToY);
+
+        var fromZ = fractalParams.FromZ;
+        var toZ = fractalParams.ToZ;
+
+        var xRange = (right - left) / size.Width;
+        var yRange = (top - bottom) / size.Height;
+
+        // float4 rgba 0.3, 0.3, 0.3, 0 to argb 0, 85, 85, 85
+        Color backGroundColor = BackgroundColor();
+        Color activeColor;
+        bool renderShadows = false;
+
+        for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
+        {
+            for (var y = 0; y < size.Height; ++y)
+            {
+                activeColor = backGroundColor;
+                var fx = x * xRange + left;
+                var fy = y * yRange + bottom;
+
+                var from = new Vector3(fx, fy, fromZ);
+
+                var to = fractalParams.AimToOrigin ? new Vector3(0.0f, 0.0f, toZ) : new Vector3(fx, fy, toZ);
+
+                var startPt = from + fractalParams.Distance * to;
+
+                var direction = to - from;
+                direction = Vector3.Normalize(direction);
+                startPt = QuatMath2.IntersectSphere(startPt, direction);
+
+                float epsilon = 0.01f;
+                // This doesn't take into account the transformation matrix
+                var distance = QuatMath2.IntersectQJulia(ref startPt, direction, fractalParams.C4, fractalParams.Iterations, epsilon);
+
+                if(distance < epsilon)
+                {
+                    Vector3 normal = QuatMath2.NormEstimate(startPt, fractalParams.C4, fractalParams.Iterations);
+
+                    // Check lights later
+                    var light = fractalParams.Lights[0].Position;
+                    Vector3 partialColor = QuatMath2.Phong(light, direction, startPt, normal);
+                    activeColor = ConvertVectorToColor(partialColor, 255);
+
+                    if(renderShadows == true)
+                    {
+                        // The shadow ray will start at the intersection point and go towards the point light.
+                        // We initially move the ray origin a little bit along this direction so we don't mistakenly 
+                        // find an intersection with the same point again.
+
+                        Vector3 L = Vector3.Normalize(light - startPt);
+                        startPt += L * epsilon * 2.0f;
+                        var dist = QuatMath2.IntersectQJulia(ref startPt, L, fractalParams.C4, fractalParams.Iterations, epsilon);
+
+                        // Again, if our estimate of the distance to the set is small, we say there was a hit.
+                        // In this case it means that the point is in a shadow and should be given a darker shade.
+                        if(dist < epsilon)
+                        {
+                            activeColor = ShadeColor(activeColor, 0.4f);
+                        }
+                    }
+                }
+
+                raw.SetColor(x, y, activeColor);
+            }
+
+            if (cancelToken.IsCancellationRequested)
+                return;
+        }
+
+        lock (_lockObject)
+        {
+            _totalProgress += progress;
+        }
+        _progressSubject.OnNext(_totalProgress);
+    }
+
+    private static IList<ColorContainer> CreateContainers(Size size, int depth, int numberOfContainers)
+    {
+        var containers = new ConcurrentBag<ColorContainer>();
+
+        while (size.Width / numberOfContainers < 3)
+        {
+            numberOfContainers--;
+        }
+
+        if (numberOfContainers == 0)
+            numberOfContainers = 1;
+
+        int containerWidth = size.Width / numberOfContainers;
+
+        for (int i = 0; i < numberOfContainers; ++i)
+        {
+            int fromWidth = i * containerWidth;
+            if (i == numberOfContainers - 1)
+            {
+                containers.Add(new ColorContainer(fromWidth, size.Width - 1, size.Height, BackgroundColor()));
+            }
+            else
+            {
+                containers.Add(new ColorContainer(fromWidth, fromWidth + containerWidth - 1, size.Height, BackgroundColor()));
+            }
+        }
+
+        return containers.ToList();
+    }
+
+    private static RawLightedImage CombineContainers(FractalParams fractalParams, IList<ColorContainer> containers)
+    {
+        var size = fractalParams.ImageSize;
+        var raw = new RawLightedImage(size.Width, size.Height);
+
+        foreach (var container in containers)
+        {
+            var colors = container.ColorValues;
+
+            raw.SetBlock(colors, container.FromWidth, container.ToWidth, container.Height);
+        }
+
+        return raw;
+    }
+
+    public async Task<FractalResult> CreateFractalAsync(FractalParams fractalParams, double startProgress, double sumProgress, CancellationToken cancelToken)
+    {
+        var watch = Stopwatch.StartNew();
+        var size = fractalParams.ImageSize;
+        _totalProgress = startProgress;
+
+        if (cancelToken.IsCancellationRequested)
+            return new FractalResult();
+
+        _progressSubject.OnNext(startProgress);
+
+        int numberOfContainers = size.Width / 40;
+        var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, numberOfContainers);
+        var fractionProgress = sumProgress / numberOfContainers;
+
+        await Task.Run(() => Parallel.ForEach(containers,
+            container => CalculateImageNew(container, fractalParams, fractionProgress, cancelToken)),
+            cancelToken);
+
+        if (cancelToken.IsCancellationRequested)
+            return new FractalResult();
+
+        _progressSubject.OnNext(startProgress + sumProgress);
+
+        var raw = CombineContainers(fractalParams, containers);
+
+        watch.Stop();
+
+        return new FractalResult()
+        {
+            Params = (FractalParams)fractalParams.Clone(),
+            Image = raw,
+            Time = watch.ElapsedMilliseconds
+        };
+    }
+
+    /*
     private void CalculateImageNew(PixelContainer raw, FractalParams fractalParams, CancellationToken cancelToken, double progress)
     {
         var size = fractalParams.ImageSize;
@@ -95,7 +280,7 @@ public class ParallelCraneShaderFactory : IDisposable
                 //          var normal = NormalCalculator.CalculateNormal(DistanceEstimator, fractalParams.NormalDistance, transformedPt);
                 //         var lighting = LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal);
 
-                var depth = (int)(distance/epsilon * (palette.NumberOfColors - 1));
+                var depth = (int)(distance / epsilon * (palette.NumberOfColors - 1));
 
                 // need a new raw image that stores Vector3
                 var light = lighting.Diffuse + lighting.Specular;
@@ -112,86 +297,5 @@ public class ParallelCraneShaderFactory : IDisposable
         }
         _progressSubject.OnNext(_totalProgress);
     }
-
-    public static IList<PixelContainer> CreateContainers(Size size, int depth, int numberOfContainers)
-    {
-        var containers = new ConcurrentBag<PixelContainer>();
-
-        while (size.Width / numberOfContainers < 3)
-        {
-            numberOfContainers--;
-        }
-
-        if (numberOfContainers == 0)
-            numberOfContainers = 1;
-
-        int containerWidth = size.Width / numberOfContainers;
-
-        for (int i = 0; i < numberOfContainers; ++i)
-        {
-            int fromWidth = i * containerWidth;
-            if (i == numberOfContainers - 1)
-            {
-                containers.Add(new PixelContainer(fromWidth, size.Width - 1, size.Height, depth));
-            }
-            else
-            {
-                containers.Add(new PixelContainer(fromWidth, fromWidth + containerWidth - 1, size.Height, depth));
-            }
-        }
-
-        return containers.ToList();
-    }
-
-    RawLightedImage CombineContainers(FractalParams fractalParams, IList<PixelContainer> containers)
-    {
-        var size = fractalParams.ImageSize;
-        var raw = new RawLightedImage(size.Width, size.Height, fractalParams.Palette.NumberOfColors);
-
-        foreach (var container in containers)
-        {
-            var pixels = container.PixelValues;
-            var lighting = container.Lighting;
-
-            raw.SetBlock(pixels, lighting, container.FromWidth, container.ToWidth, container.Height, container.Depth);
-        }
-
-        return raw;
-    }
-
-    public async Task<FractalResult> CreateFractalAsync(FractalParams fractalParams, double startProgress, double sumProgress, CancellationToken cancelToken)
-    {
-        var watch = Stopwatch.StartNew();
-        var size = fractalParams.ImageSize;
-        _totalProgress = startProgress;
-
-        if (cancelToken.IsCancellationRequested)
-            return new FractalResult();
-
-        _progressSubject.OnNext(startProgress);
-
-        int numberOfContainers = size.Width / 40;
-        var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, numberOfContainers);
-        var fractionProgress = sumProgress / numberOfContainers;
-
-        await Task.Run(() => Parallel.ForEach(containers,
-            container => CalculateImageNew(container, fractalParams, cancelToken, fractionProgress)),
-            cancelToken);
-
-        if (cancelToken.IsCancellationRequested)
-            return new FractalResult();
-
-        _progressSubject.OnNext(startProgress + sumProgress);
-
-        var raw = CombineContainers(fractalParams, containers);
-
-        watch.Stop();
-
-        return new FractalResult()
-        {
-            Params = (FractalParams)fractalParams.Clone(),
-            Image = raw,
-            Time = watch.ElapsedMilliseconds
-        };
-    }
+    */
 }

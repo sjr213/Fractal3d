@@ -39,9 +39,9 @@ public static class QuatMath2
         var vs = new Vector4();
 
         vs.X = v.X * v.X - v.Y * v.Y - v.Z * v.Z - v.W * v.W;
-        vs.Y = v.X * v.Y;
-        vs.Z = v.X * v.Z;
-        vs.W = v.X * v.W;
+        vs.Y = 2 * v.X * v.Y;
+        vs.Z = 2 * v.X * v.Z;
+        vs.W = 2 * v.X * v.W;
 
         return vs;
     }
