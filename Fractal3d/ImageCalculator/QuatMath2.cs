@@ -110,7 +110,7 @@ public static class QuatMath2
 
             rO += rD * dist;
 
-            if(dist < epsilon || Vector3.Dot(rO, rO) > boundingRadius)
+            if(dist < epsilon || Vector3.Dot(rO, rO) > boundingRadius || float.IsNaN(dist))
             {
                 break;
             }
