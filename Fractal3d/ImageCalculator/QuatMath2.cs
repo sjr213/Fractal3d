@@ -1,5 +1,6 @@
 ﻿namespace ImageCalculator;
 
+using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 
 // This class uses a different order in Vector4. It treats the order as x, y, z, w
@@ -134,7 +135,7 @@ public static class QuatMath2
         diffuse += Vector3.Abs(N) * 0.3f;           // Add some of the normal to the color to make it more interesting
 
         // compute the illumnation using the Phong equation
-        var v3Part = diffuse * Math.Max(NdotL, 0);
+        var v3Part = diffuse * Math.Abs(NdotL);  //   Math.Max(NdotL, 0);
         float scalerPart = specularity * (float)Math.Pow(Math.Max(Vector3.Dot(E, R), 0), specularExponent);
         return new Vector3(v3Part.X + scalerPart, v3Part.Y + scalerPart, v3Part.Z + scalerPart);
     }
