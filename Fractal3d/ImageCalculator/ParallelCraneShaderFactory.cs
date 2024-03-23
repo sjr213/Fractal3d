@@ -95,8 +95,7 @@ public class ParallelCraneShaderFactory : IDisposable
                 startPt = QuatMath2.IntersectSphere(startPt, direction, fractalParams.Bailout);
 
                 // This doesn't take into account the transformation matrix
-                var distance = QuatMath2.IntersectQJulia(ref startPt, direction, fractalParams.C4, fractalParams.Iterations, fractalParams.Epsilon, 
-                    fractalParams.EscapeThreshold, fractalParams.Bailout);
+                var distance = QuatMath2.IntersectQJulia(ref startPt, direction, fractalParams);
 
                 if(distance < fractalParams.Epsilon)
                 {
@@ -115,8 +114,7 @@ public class ParallelCraneShaderFactory : IDisposable
 
                         Vector3 L = Vector3.Normalize(light - startPt);
                         startPt += L * fractalParams.Epsilon * 2.0f;
-                        var dist = QuatMath2.IntersectQJulia(ref startPt, L, fractalParams.C4, fractalParams.Iterations, fractalParams.Epsilon, 
-                            fractalParams.EscapeThreshold, fractalParams.Bailout);
+                        var dist = QuatMath2.IntersectQJulia(ref startPt, L, fractalParams);
 
                         // Again, if our estimate of the distance to the set is small, we say there was a hit.
                         // In this case it means that the point is in a shadow and should be given a darker shade.

@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 // This class uses a different order in Vector4. It treats the order as x, y, z, w
 // Whereas the original QuatMath orders them w, x, y, z. This effects the calculations
@@ -96,7 +97,7 @@ public static class QuatMath2
     }
 
     // Finds the intersection of a ray with origin rO and direction rD with the quaternion Julia set specified by the quaternion constant c.
-    public static float IntersectQJulia(ref Vector3 rO, Vector3 rD, Vector4 c, int maxIterations, float epsilon, float escapeThreshold, float boundingRadius)
+    public static float IntersectQJulia(ref Vector3 rO, Vector3 rD, FractalParams fractalParams)
     {
         float dist;
 
@@ -105,13 +106,13 @@ public static class QuatMath2
             Vector4 z = new Vector4(rO, 0);
             Vector4 zp = new Vector4(1, 0, 0, 0);
 
-            IterateIntersection(ref z, ref zp, c, maxIterations, escapeThreshold);
+            IterateIntersection(ref z, ref zp, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
             float normZ = z.Length();
             dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
 
             rO += rD * dist;
 
-            if(dist < epsilon || Vector3.Dot(rO, rO) > boundingRadius || float.IsNaN(dist))
+            if(dist < fractalParams.Epsilon || Vector3.Dot(rO, rO) > fractalParams.Bailout || float.IsNaN(dist))
             {
                 break;
             }
