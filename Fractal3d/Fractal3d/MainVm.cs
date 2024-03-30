@@ -38,13 +38,15 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
     private readonly ShaderFactory _shaderFactory = new();
     private readonly ParallelFractalFactory _fractalParallelFactory = new();
-    private readonly ParallelCraneShaderFactory _craneFactory = new();
+    private readonly ParallelCraneShaderFactory _craneShaderFactory = new();
+    private readonly ParallelCranePixelShaderFactory _cranePixelFactory = new();
     private FractalParams _fractalParams = new(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
     private FractalResult? _fractalResult;
     private bool _isDisposed;
     private readonly IDisposable? _progressSubject;
-    private readonly IDisposable? _craneProgressSubject;
+    private readonly IDisposable? _progressCraneShaderSubject;
     private readonly IDisposable? _progressShaderSubject;
+    private readonly IDisposable? _progressCranePixelSubject;
     private CancellationTokenSource _cancelSource = new();
     private int _fractalNumber = 1;
     private bool _isDirty;
@@ -95,7 +97,10 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             _progressSubject = _fractalParallelFactory.Progress.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(progress => PercentProgress = progress);
 
-            _craneProgressSubject = _craneFactory.Progress.ObserveOn(SynchronizationContext.Current)
+            _progressCraneShaderSubject = _craneShaderFactory.Progress.ObserveOn(SynchronizationContext.Current)
+                .Subscribe(progress => PercentProgress = progress);
+
+            _progressCranePixelSubject = _cranePixelFactory.Progress.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(progress => PercentProgress = progress);
 
             _progressShaderSubject = _shaderFactory.Progress.ObserveOn(SynchronizationContext.Current)
@@ -127,7 +132,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         if (disposing)
         {
             _progressSubject?.Dispose();
-            _craneProgressSubject?.Dispose();
+            _progressCraneShaderSubject?.Dispose();
+            _progressCranePixelSubject?.Dispose();
             _progressShaderSubject?.Dispose();
             _shaderFactory.Dispose();
             _fractalParallelFactory.Dispose();
@@ -796,7 +802,9 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
                     if (_fractalParams.ShaderType == ShaderType.ShapeShader)
                         fractalResult = await _shaderFactory.CreateShaderAsync(fractalParams, startProgress, sumProgress, cancelToken);
                     else if (_fractalParams.ShaderType == ShaderType.CraneShader)
-                        fractalResult = await _craneFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
+                        fractalResult = await _craneShaderFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
+                    else if (_fractalParams.ShaderType == ShaderType.CranePixel)
+                        fractalResult = await _cranePixelFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
                     else
                         fractalResult = await _fractalParallelFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
 
@@ -840,7 +848,9 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
                 if (_fractalParams.ShaderType == ShaderType.ShapeShader)
                     _fractalResult = await _shaderFactory.CreateShaderAsync(_fractalParams, 0, 100, cancelToken);
                 else if (_fractalParams.ShaderType == ShaderType.CraneShader)
-                    _fractalResult = await _craneFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
+                    _fractalResult = await _craneShaderFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
+                else if (_fractalParams.ShaderType == ShaderType.CranePixel)
+                    _fractalResult = await _cranePixelFactory.CreateFractalAsync(_fractalParams,0, 100, cancelToken);
                 else
                     _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
             }

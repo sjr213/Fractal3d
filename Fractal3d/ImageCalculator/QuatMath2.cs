@@ -19,6 +19,8 @@ public static class QuatMath2
     // Delta is used in the infinite difference approximation of the gradient (to determine normals)
     const float DEL = 1e-4f;
 
+    public delegate void CalculationIntersectionDelegate(ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold);
+
     public static Vector3 YZW(this Vector4 v)
     {
         return new Vector3(v.Y, v.Z, v.W);
@@ -52,7 +54,7 @@ public static class QuatMath2
     // Also produces an estimate of the derivative q, which is required for the distance estimate.
     // The quaternion c is the parameter specifying the Julia set. 
     // To estimate the derivative at q we recursively evaluate q' = 2*q*q'
-    public static void IterateIntersection( ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold)
+    public static void IterateIntersectionSquared( ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold)
     {
         for(int i =0; i < maxIterations; i++)
         {
@@ -97,7 +99,7 @@ public static class QuatMath2
     }
 
     // Finds the intersection of a ray with origin rO and direction rD with the quaternion Julia set specified by the quaternion constant c.
-    public static float IntersectQJulia(ref Vector3 rO, Vector3 rD, FractalParams fractalParams)
+    public static float IntersectQJulia(ref Vector3 rO, Vector3 rD, FractalParams fractalParams, CalculationIntersectionDelegate calculationIntersectionDelegate)
     {
         float dist;
 
@@ -106,7 +108,7 @@ public static class QuatMath2
             Vector4 z = new Vector4(rO, 0);
             Vector4 zp = new Vector4(1, 0, 0, 0);
 
-            IterateIntersection(ref z, ref zp, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
+            calculationIntersectionDelegate(ref z, ref zp, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
             float normZ = z.Length();
             dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
 

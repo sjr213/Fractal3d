@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
 using System.Reactive.Subjects;
+using static ImageCalculator.QuatMath2;
 
 namespace ImageCalculator;
 
@@ -92,18 +93,20 @@ public class ParallelCraneShaderFactory : IDisposable
 
                 var direction = to - from;
                 direction = Vector3.Normalize(direction);
-                startPt = QuatMath2.IntersectSphere(startPt, direction, fractalParams.Bailout);
+                startPt = IntersectSphere(startPt, direction, fractalParams.Bailout);
+
+                CalculationIntersectionDelegate calculationIntersectionDelegate = IterateIntersectionSquared;
 
                 // This doesn't take into account the transformation matrix
-                var distance = QuatMath2.IntersectQJulia(ref startPt, direction, fractalParams);
+                var distance = IntersectQJulia(ref startPt, direction, fractalParams, calculationIntersectionDelegate);
 
                 if(distance < fractalParams.Epsilon)
                 {
-                    Vector3 normal = QuatMath2.NormEstimate(startPt, fractalParams.C4, fractalParams.Iterations);
+                    Vector3 normal = NormEstimate(startPt, fractalParams.C4, fractalParams.Iterations);
 
                     // Check lights later
                     var light = fractalParams.Lights[0].Position;
-                    Vector3 partialColor = QuatMath2.Phong(light, direction, startPt, normal);
+                    Vector3 partialColor = Phong(light, direction, startPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
 
                     if(fractalParams.RenderShadows)
@@ -114,7 +117,7 @@ public class ParallelCraneShaderFactory : IDisposable
 
                         Vector3 L = Vector3.Normalize(light - startPt);
                         startPt += L * fractalParams.Epsilon * 2.0f;
-                        var dist = QuatMath2.IntersectQJulia(ref startPt, L, fractalParams);
+                        var dist = IntersectQJulia(ref startPt, L, fractalParams, calculationIntersectionDelegate);
 
                         // Again, if our estimate of the distance to the set is small, we say there was a hit.
                         // In this case it means that the point is in a shadow and should be given a darker shade.

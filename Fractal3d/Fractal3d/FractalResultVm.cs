@@ -38,6 +38,9 @@ public class FractalResultVm : ViewModelBase
             if(_fractalResult.Params.ShaderType == ShaderType.CraneShader)
                 return "Crane Shader";
 
+            if(_fractalResult.Params.ShaderType == ShaderType.CranePixel)
+                return "Crane Pixel";
+
             var val = _fractalResult.Params.QuatEquation;
             return ((QuaternionEquationType)val).GetDescription();
         }

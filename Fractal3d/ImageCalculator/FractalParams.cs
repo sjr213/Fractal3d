@@ -13,7 +13,9 @@ public enum ShaderType
     [Description("Crane Shader")]
     CraneShader,
     [Description("Shape Shader")]
-    ShapeShader
+    ShapeShader,
+    [Description("Crane Pixel")]
+    CranePixel
 }
 
 [Serializable]
