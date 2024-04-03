@@ -105,7 +105,7 @@ namespace ImageCalculator
                     startPt = IntersectSphere(startPt, direction, fractalParams.Bailout);
 
                     // This doesn't take into account the transformation matrix
-                    var distance = IntersectQJulia(ref startPt, direction, fractalParams, _nextCycle) * 1e5f;
+                    var distance = IntersectQJulia(ref startPt, direction, fractalParams, _nextCycle) * fractalParams.DistanceScale;
 
                     if (distance < 0.0f || float.IsNaN(distance))
                         distance = 0.0f;
