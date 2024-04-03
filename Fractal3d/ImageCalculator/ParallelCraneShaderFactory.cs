@@ -100,7 +100,7 @@ public class ParallelCraneShaderFactory : IDisposable
                 // This doesn't take into account the transformation matrix
                 var distance = IntersectQJulia(ref startPt, direction, fractalParams, calculationIntersectionDelegate);
 
-                if(distance < fractalParams.Epsilon)
+                if(distance < fractalParams.MinRayDistance)
                 {
                     Vector3 normal = NormEstimate(startPt, fractalParams.C4, fractalParams.Iterations);
 
@@ -116,12 +116,12 @@ public class ParallelCraneShaderFactory : IDisposable
                         // find an intersection with the same point again.
 
                         Vector3 L = Vector3.Normalize(light - startPt);
-                        startPt += L * fractalParams.Epsilon * 2.0f;
+                        startPt += L * fractalParams.MinRayDistance * 2.0f;
                         var dist = IntersectQJulia(ref startPt, L, fractalParams, calculationIntersectionDelegate);
 
                         // Again, if our estimate of the distance to the set is small, we say there was a hit.
                         // In this case it means that the point is in a shadow and should be given a darker shade.
-                        if(dist < fractalParams.Epsilon)
+                        if(dist < fractalParams.MinRayDistance)
                         {
                             activeColor = ShadeColor(activeColor, 0.4f);
                         }

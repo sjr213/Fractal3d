@@ -114,7 +114,7 @@ public static class QuatMath2
 
             rO += rD * dist;
 
-            if(dist < fractalParams.Epsilon)
+            if(dist < fractalParams.MinRayDistance)
             {
                 break;
             }

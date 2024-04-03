@@ -16,7 +16,7 @@ public static class ParameterConstants
     public const int MinMaxRaySteps = 1;
     public const int MaxMaxRaySteps = 1000000;
 
-    public const float MinMinRayDistance = 1e-6f;
+    public const float MinMinRayDistance = 1e-8f;
     public const float MaxMinRayDistance = 1f;
 
     public const float MinStepDivisor = 1f;
