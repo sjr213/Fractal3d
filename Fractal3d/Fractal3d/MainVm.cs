@@ -1155,7 +1155,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         if (_fractalParams.StepDivisor is < ParameterConstants.MinStepDivisor or > ParameterConstants.MaxStepDivisor)
             return false;
 
-        if (_fractalParams.Epsilon is < ParameterConstants.MinEpsilon or > ParameterConstants.MaxEpsilon)
+        if (_fractalParams.DistanceScale is < ParameterConstants.MinDistanceScale or > ParameterConstants.MaxDistanceScale)
             return false;
 
         if (_fractalParams.EscapeThreshold is < ParameterConstants.MinEscapeThreshold or > ParameterConstants.MaxEscapeThreshold)

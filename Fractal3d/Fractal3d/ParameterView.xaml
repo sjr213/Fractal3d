@@ -359,14 +359,14 @@
 
             <StackPanel Grid.Row="17" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" >
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Epsilon" />
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="DistanceScale" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
-                            <Binding Path="Epsilon" 
+                            <Binding Path="DistanceScale" 
                                      UpdateSourceTrigger="LostFocus" >
                                 <Binding.ValidationRules>
-                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinEpsilon}" 
-                                                                    Max="{x:Static local:ParameterConstants.MaxEpsilon}"/>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinDistanceScale}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxDistanceScale}"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>

@@ -55,8 +55,8 @@ public static class ParameterConstants
     public const int MinConstantCStep = 1;
     public const int MaxConstantCStep = 100;
 
-    public const float MinEpsilon = 1e-9f;
-    public const float MaxEpsilon = 1e-1f;
+    public const float MinDistanceScale = 1e-2f;
+    public const float MaxDistanceScale = 1e8f;
 
     public const float MinEscapeThreshold = 1e-1f;
     public const float MaxEscapeThreshold = 1e+6f;

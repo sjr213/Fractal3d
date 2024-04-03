@@ -94,7 +94,7 @@ public class FractalParams : ICloneable
     public TransformationParams TransformParams = new TransformationParams();
 
     // Crane shader fields
-    public float Epsilon { get; set; } = 0.01f;
+    public float DistanceScale { get; set; } = 1.0f;
 
     public bool RenderShadows { get; set; } = false;
 

@@ -469,12 +469,12 @@ public class ParameterVm : ViewModelBase
         }
     }
 
-    public float Epsilon
+    public float DistanceScale
     {
-        get => _fractalParams.Epsilon;
+        get => _fractalParams.DistanceScale;
         set
         {
-            _fractalParams.Epsilon = value;
+            _fractalParams.DistanceScale = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
