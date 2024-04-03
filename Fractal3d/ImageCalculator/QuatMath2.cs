@@ -101,9 +101,9 @@ public static class QuatMath2
     // Finds the intersection of a ray with origin rO and direction rD with the quaternion Julia set specified by the quaternion constant c.
     public static float IntersectQJulia(ref Vector3 rO, Vector3 rD, FractalParams fractalParams, CalculationIntersectionDelegate calculationIntersectionDelegate)
     {
-        float dist;
+        float dist = 0;
 
-        while(true)
+        for(int i = 0; i < fractalParams.MaxRaySteps; i++)
         {
             Vector4 z = new Vector4(rO, 0);
             Vector4 zp = new Vector4(1, 0, 0, 0);
@@ -114,10 +114,13 @@ public static class QuatMath2
 
             rO += rD * dist;
 
-            if(dist < fractalParams.Epsilon || Vector3.Dot(rO, rO) > fractalParams.Bailout || float.IsNaN(dist))
+            if(dist < fractalParams.Epsilon)
             {
                 break;
             }
+
+            if(Vector3.Dot(rO, rO) > fractalParams.Bailout || float.IsNaN(dist))
+                return 0;
         }
         return dist;
     }
