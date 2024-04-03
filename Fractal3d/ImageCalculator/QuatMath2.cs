@@ -115,9 +115,10 @@ public static class QuatMath2
             rO += rD * dist;
 
             if(dist < fractalParams.MinRayDistance)
-            {
                 break;
-            }
+
+            if (dist < fractalParams.MaxDistance)
+                break;
 
             if(Vector3.Dot(rO, rO) > fractalParams.Bailout || float.IsNaN(dist))
                 return 0;
