@@ -1,5 +1,6 @@
 ﻿namespace ImageCalculator;
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -99,31 +100,106 @@ public static class QuatMath2
     }
 
     // Finds the intersection of a ray with origin rO and direction rD with the quaternion Julia set specified by the quaternion constant c.
-    public static float IntersectQJulia(ref Vector3 rO, Vector3 rD, FractalParams fractalParams, CalculationIntersectionDelegate calculationIntersectionDelegate)
+    public static float IntersectQJulia(ref Vector3 startPt, Vector3 direction, FractalParams fractalParams, CalculationIntersectionDelegate calculationIntersectionDelegate)
     {
         float dist = 0;
 
         for(int i = 0; i < fractalParams.MaxRaySteps; i++)
         {
-            Vector4 z = new Vector4(rO, 0);
+            Vector4 z = new Vector4(startPt, 0);
             Vector4 zp = new Vector4(1, 0, 0, 0);
 
             calculationIntersectionDelegate(ref z, ref zp, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
             float normZ = z.Length();
             dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
 
-            rO += rD * dist;
+            startPt += direction * dist;
 
-            if(dist < fractalParams.MinRayDistance)
+            if (float.IsNaN(dist))
+                return 1;
+
+            if (dist < fractalParams.MinRayDistance)
                 break;
 
             if (dist > fractalParams.MaxDistance)
                 break;
 
-            if(Vector3.Dot(rO, rO) > fractalParams.Bailout || float.IsNaN(dist))
+            if (Vector3.Dot(startPt, startPt) > fractalParams.Bailout)
+                return 1;
+        }
+        return dist;
+    }
+
+    public static float IntersectQJuliaForPixelShader(ref Vector3 startPt, Vector3 direction, FractalParams fractalParams, CalculationIntersectionDelegate calculationIntersectionDelegate)
+    {
+        float dist = 0;
+
+        for (int i = 0; i < fractalParams.MaxRaySteps; i++)
+        {
+            Vector4 z = new Vector4(startPt, 0);
+            Vector4 zp = new Vector4(1, 0, 0, 0);
+
+            calculationIntersectionDelegate(ref z, ref zp, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
+            float normZ = z.Length();
+            dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
+
+            startPt += direction * dist;
+
+            if (float.IsNaN(dist))
+                return 0;
+
+            if (dist < fractalParams.MinRayDistance)
+                break;
+
+            if (dist > fractalParams.MaxDistance)
+                break;
+
+            if (Vector3.Dot(startPt, startPt) > fractalParams.Bailout)
                 return 0;
         }
         return dist;
+    }
+
+    public static float RayMarchQJulia(ref Vector3 startPt, Vector3 direction, FractalParams fractalParams, CalculationIntersectionDelegate calculationIntersectionDelegate)
+    {
+        float dist = 0;
+        float totalDistance = 0.0f;
+        int steps;
+
+        float lastDistance = float.MaxValue;
+
+        for (steps = 0; steps < fractalParams.MaxRaySteps; steps++)
+        {
+            Vector4 z = new Vector4(startPt, 0);
+            Vector4 zp = new Vector4(1, 0, 0, 0);
+
+            calculationIntersectionDelegate(ref z, ref zp, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
+            float normZ = z.Length();
+            dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
+
+            startPt += direction * dist;
+
+            totalDistance += dist / fractalParams.StepDivisor;
+
+            if (dist < fractalParams.MinRayDistance)
+                break;
+
+            if (dist > lastDistance)
+                return 0;
+
+            if (totalDistance > fractalParams.MaxDistance)
+                break;
+
+            if (float.IsNaN(dist))
+                return 0;
+
+            if (Vector3.Dot(startPt, startPt) > fractalParams.Bailout)
+                return 0;
+
+            lastDistance = dist;
+        }
+
+        return 1.0f - ((float)steps) / fractalParams.MaxRaySteps;
     }
 
     // Computes the direct illumination for the point pt with normal N due to a point light and viewer at eye.
