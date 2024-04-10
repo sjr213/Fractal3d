@@ -480,6 +480,17 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public float ColorBase
+    {
+        get => _fractalParams.ColorBase;
+        set
+        {
+            _fractalParams.ColorBase = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
     public bool RenderShadows
     {
         get => _fractalParams.RenderShadows;

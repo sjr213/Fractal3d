@@ -7,7 +7,7 @@
                  xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
                  mc:Ignorable="d" d:DesignWidth="800"
                  d:DataContext="{d:DesignInstance Type=local:ParameterVm}"
-                 basicWpfLibrary:UserControlBehavior.IsVisibleChangedCommand="{Binding IsVisibleChangedCommand}" Height="570">
+                 basicWpfLibrary:UserControlBehavior.IsVisibleChangedCommand="{Binding IsVisibleChangedCommand}" Height="615">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,9 +15,10 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Width="420" Height="570" Style="{StaticResource BorderStyle}">
+    <Border Width="420" Height="605" Style="{StaticResource BorderStyle}">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
@@ -358,20 +359,6 @@
             <Separator Grid.Row="16"/>
 
             <StackPanel Grid.Row="17" Margin="2,5" Orientation="Horizontal">
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="DistanceScale" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
-                        <TextBox.Text>
-                            <Binding Path="DistanceScale" 
-                                     UpdateSourceTrigger="LostFocus" >
-                                <Binding.ValidationRules>
-                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinDistanceScale}" 
-                                                                    Max="{x:Static local:ParameterConstants.MaxDistanceScale}"/>
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Escape Threshold" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -388,6 +375,38 @@
                 </StackPanel>
                 <CheckBox Margin="20, 0, 0, 0" VerticalContentAlignment="Center" VerticalAlignment="Center"
                   IsChecked="{Binding RenderShadows}">Shadows</CheckBox>
+            </StackPanel>
+
+            <StackPanel Grid.Row="18" Margin="2,5" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Color Base" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="ColorBase" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinColorBase}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxColorBase}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="DistanceScale" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="DistanceScale" 
+                                     UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinDistanceScale}" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxDistanceScale}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Border>

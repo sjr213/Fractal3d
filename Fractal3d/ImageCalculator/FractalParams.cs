@@ -82,7 +82,6 @@ public class FractalParams : ICloneable
     public float StepDivisor { get; set; } = 10.0f;
     public QuaternionEquationType QuatEquation = QuaternionEquationType.Q_Squared;
     public bool AimToOrigin { get; set; } = false;
-
     public float NormalDistance { get; set; } = 0.01f;
     public float AmbientPower { get; set; } = 0.5f;
     public LightCombinationMode LightComboMode { get; set; } = LightCombinationMode.Average;
@@ -95,6 +94,8 @@ public class FractalParams : ICloneable
 
     // Crane shader fields
     public float DistanceScale { get; set; } = 1.0f;
+
+    public float ColorBase { get; set; } = 0.1f;
 
     public bool RenderShadows { get; set; } = false;
 

@@ -58,6 +58,9 @@ public static class ParameterConstants
     public const float MinDistanceScale = 1e-2f;
     public const float MaxDistanceScale = 1e8f;
 
+    public const float MinColorBase = 0.0f;
+    public const float MaxColorBase = 0.99f;
+
     public const float MinEscapeThreshold = 1e-1f;
     public const float MaxEscapeThreshold = 1e+6f;
 }
