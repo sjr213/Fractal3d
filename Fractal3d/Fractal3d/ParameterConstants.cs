@@ -25,7 +25,7 @@ public static class ParameterConstants
     public const int MinIterations = 2;
     public const int MaxIterations = 1000000;
 
-    public const float MinDistance = 0.0001f;
+    public const float MinDistance = 1e-6f;
     public const float MaxDistance = 10000f;
 
     public const float MinNormalDistance = 0.00001f;
