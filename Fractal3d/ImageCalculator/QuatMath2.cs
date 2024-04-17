@@ -132,7 +132,7 @@ public static class QuatMath2
 
     public static float IntersectQJuliaForPixelShader(ref Vector3 startPt, Vector3 direction, FractalParams fractalParams, CalculationIntersectionDelegate calculationIntersectionDelegate)
     {
-        float dist = 0;
+        float normZ = 0;
 
         for (int i = 0; i < fractalParams.MaxRaySteps; i++)
         {
@@ -140,8 +140,8 @@ public static class QuatMath2
             Vector4 zp = new Vector4(1, 0, 0, 0);
 
             calculationIntersectionDelegate(ref z, ref zp, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
-            float normZ = z.Length();
-            dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
+            normZ = z.Length();
+            float dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
 
             startPt += direction * dist;
 
@@ -157,7 +157,9 @@ public static class QuatMath2
             if (Vector3.Dot(startPt, startPt) > fractalParams.Bailout)
                 return 0;
         }
-        return dist;
+
+        normZ = normZ * 0.1f;
+        return normZ * normZ;
     }
 
     public static float RayMarchQJulia(ref Vector3 startPt, Vector3 direction, FractalParams fractalParams, CalculationIntersectionDelegate calculationIntersectionDelegate)
