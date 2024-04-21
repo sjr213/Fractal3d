@@ -26,11 +26,6 @@ public class ParameterVm : ViewModelBase
             ShaderType.FractalShader, ShaderType.CraneShader, ShaderType.CranePixel, ShaderType.CraneRaymarch, ShaderType.ShapeShader
         };  
 
-        AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
-        {
-            QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_InglesCubed
-        };
-
         AllowedSceneTypes = new List<ShaderSceneType>
         {
             ShaderSceneType.Sphere, ShaderSceneType.Box, ShaderSceneType.Torus
@@ -40,6 +35,7 @@ public class ParameterVm : ViewModelBase
         SelectedQuatEquationType = _fractalParams.QuatEquation;
         SelectedSceneType = _fractalParams.SceneType;
         AimToOrigin = _fractalParams.AimToOrigin;
+        UpdateQuatEquationAndShaderSceneTypeVisibility();
     }
 
     public RelayCommand IsVisibleChangedCommand { get; }
@@ -403,6 +399,58 @@ public class ParameterVm : ViewModelBase
         set => SetProperty(ref _allowedQuatEquations, value);
     }
 
+    private Visibility _quatEquationVisibility = Visibility.Collapsed;
+    public Visibility QuatEquationVisibility
+    {
+        get => _quatEquationVisibility;
+        set
+        {
+            _quatEquationVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Visibility _shaderSceneTypeVisibility = Visibility.Collapsed;
+    public Visibility ShaderSceneTypeVisibility
+    {
+        get => _shaderSceneTypeVisibility;
+        set
+        {
+            _shaderSceneTypeVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void UpdateQuatEquationAndShaderSceneTypeVisibility()
+    {
+        QuatEquationVisibility = SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || SelectedShaderType == ShaderType.CraneRaymarch ? 
+            Visibility.Visible : Visibility.Collapsed;
+
+        ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader ? Visibility.Visible : Visibility.Collapsed;
+
+        UpdateAllowedQuatEquations();
+    }
+
+    private void UpdateAllowedQuatEquations()
+    {
+        if(SelectedShaderType == ShaderType.FractalShader)
+        { 
+            AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
+            {
+                QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_InglesCubed
+            };
+        }
+        else
+        {
+            AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
+            {
+                QuaternionEquationType.Q_Squared
+            };
+
+            SelectedQuatEquationType = QuaternionEquationType.Q_Squared;
+        }
+    }
+
     public QuaternionEquationType SelectedQuatEquationType
     {
         get => _fractalParams.QuatEquation;
@@ -445,6 +493,7 @@ public class ParameterVm : ViewModelBase
                 return;
             _fractalParams.ShaderType = value;
             OnPropertyChanged();
+            UpdateQuatEquationAndShaderSceneTypeVisibility();
             _onParamsChanged(_fractalParams);
         }
     }
