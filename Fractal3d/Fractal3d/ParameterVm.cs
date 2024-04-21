@@ -23,7 +23,7 @@ public class ParameterVm : ViewModelBase
 
         AllowedShaderTypes = new ObservableCollection<ShaderType>
         {
-            ShaderType.FractalShader, ShaderType.CraneShader, ShaderType.CranePixel, ShaderType.ShapeShader
+            ShaderType.FractalShader, ShaderType.CraneShader, ShaderType.CranePixel, ShaderType.CraneRaymarch, ShaderType.ShapeShader
         };  
 
         AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
