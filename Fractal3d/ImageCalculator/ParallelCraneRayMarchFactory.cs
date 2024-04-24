@@ -112,9 +112,6 @@ namespace ImageCalculator
                     if (distance < 0.0f || float.IsNaN(distance))
                         distance = 0.0f;
 
-                    if (distance > 0)
-                        distance += fractalParams.ColorBase;
-
                     if (distance > 1.0f)
                         distance = 1.0f;
 
