@@ -421,12 +421,26 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    private Visibility _rayTraceFieldVisibility = Visibility.Collapsed;
+    public Visibility RayTraceFieldVisibility
+    {
+        get => _rayTraceFieldVisibility;
+        set
+        {
+            _rayTraceFieldVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
     private void UpdateQuatEquationAndShaderSceneTypeVisibility()
     {
         QuatEquationVisibility = SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || SelectedShaderType == ShaderType.CraneRaymarch ? 
             Visibility.Visible : Visibility.Collapsed;
 
         ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader ? Visibility.Visible : Visibility.Collapsed;
+
+        RayTraceFieldVisibility = SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.ShapeShader ? 
+            Visibility.Visible : Visibility.Collapsed;   
 
         UpdateAllowedQuatEquations();
     }

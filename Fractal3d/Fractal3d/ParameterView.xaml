@@ -278,8 +278,8 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal">
-                <StackPanel Orientation="Horizontal" >
+            <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal" >
+                <StackPanel Orientation="Horizontal" Margin="0,0,20,0" Visibility="{Binding RayTraceFieldVisibility}">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Min Ray Distance" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
@@ -293,7 +293,7 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Max Ray Steps" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
@@ -338,7 +338,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="13" Margin="2, 5" Orientation="Horizontal">
+            <StackPanel Grid.Row="13" Margin="2, 5" Orientation="Horizontal" Visibility="{Binding RayTraceFieldVisibility}">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Step Divisor" />
                 <TextBox Style="{StaticResource TextBoxInError}" MaxWidth="80">
                     <TextBox.Text>
