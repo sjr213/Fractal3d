@@ -7,7 +7,7 @@
                  xmlns:basicWpfLibrary="clr-namespace:BasicWpfLibrary;assembly=BasicWpfLibrary"
                  mc:Ignorable="d" d:DesignWidth="800"
                  d:DataContext="{d:DesignInstance Type=local:ParameterVm}"
-                 basicWpfLibrary:UserControlBehavior.IsVisibleChangedCommand="{Binding IsVisibleChangedCommand}" Height="615">
+                 basicWpfLibrary:UserControlBehavior.IsVisibleChangedCommand="{Binding IsVisibleChangedCommand}" Height="590">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,7 +15,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Width="420" Height="605" Style="{StaticResource BorderStyle}">
+    <Border Width="420" Height="570" Style="{StaticResource BorderStyle}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -356,7 +356,7 @@
 
             <Separator Grid.Row="14"/>
             <StackPanel Grid.Row="15" Margin="2,5" Orientation="Horizontal">
-                <StackPanel Orientation="Horizontal" Margin="20,0,0,0" Visibility="{Binding EscapeThresholdVisibility}">
+                <StackPanel Orientation="Horizontal" Margin="0,0,20,0" Visibility="{Binding EscapeThresholdVisibility}">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Escape Threshold" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
@@ -370,11 +370,11 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <CheckBox Margin="20, 0, 0, 0" VerticalContentAlignment="Center" VerticalAlignment="Center"
+                <CheckBox VerticalContentAlignment="Center" VerticalAlignment="Center"
                   IsChecked="{Binding RenderShadows}" Style="{StaticResource ShadowsCheckBox}">Shadows</CheckBox>
             </StackPanel>
 
-            <StackPanel Grid.Row="16" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="16" Margin="2,5" Orientation="Horizontal" Style="{StaticResource CranePixelStack}">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Color Base" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
