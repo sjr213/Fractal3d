@@ -34,6 +34,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" Margin="2" >
@@ -353,8 +354,9 @@
                 </TextBox>
             </StackPanel>
 
-            <StackPanel Grid.Row="14" Margin="2,5" Orientation="Horizontal">
-                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+            <Separator Grid.Row="14"/>
+            <StackPanel Grid.Row="15" Margin="2,5" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Margin="20,0,0,0" Visibility="{Binding EscapeThresholdVisibility}">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Escape Threshold" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
@@ -372,7 +374,7 @@
                   IsChecked="{Binding RenderShadows}">Shadows</CheckBox>
             </StackPanel>
 
-            <StackPanel Grid.Row="15" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="16" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Color Base" />
                     <TextBox Style="{StaticResource TextBoxInError}" >

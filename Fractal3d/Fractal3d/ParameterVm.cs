@@ -432,6 +432,17 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    private Visibility _escapeThresholdVisibility = Visibility.Collapsed;
+    public Visibility EscapeThresholdVisibility
+    {
+        get => _escapeThresholdVisibility;
+        set
+        {
+            _escapeThresholdVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
     private void UpdateQuatEquationAndShaderSceneTypeVisibility()
     {
         QuatEquationVisibility = SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || SelectedShaderType == ShaderType.CraneRaymarch ? 
@@ -441,6 +452,9 @@ public class ParameterVm : ViewModelBase
 
         RayTraceFieldVisibility = SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.ShapeShader ? 
             Visibility.Visible : Visibility.Collapsed;   
+
+        EscapeThresholdVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || SelectedShaderType == ShaderType.CraneRaymarch ?
+            Visibility.Visible : Visibility.Collapsed;
 
         UpdateAllowedQuatEquations();
     }
