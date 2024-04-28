@@ -19,7 +19,7 @@ public static class TransformationCalculator
         var translation = Matrix4x4.CreateTranslation(transParams.TranslateX, transParams.TranslateY, transParams.TranslateZ);
         var rotX = Matrix4x4.CreateRotationX(ConvertToRadians(transParams.RotateX));
         var rotY = Matrix4x4.CreateRotationY(ConvertToRadians(transParams.RotateY));
-        var rotZ = Matrix4x4.CreateRotationY(ConvertToRadians(transParams.RotateZ));
+        var rotZ = Matrix4x4.CreateRotationZ(ConvertToRadians(transParams.RotateZ));
         var scale = Matrix4x4.CreateScale(transParams.ScaleX, transParams.ScaleY, transParams.ScaleZ);
 
         var transformation = scale * rotX * rotY * rotZ * translation;
