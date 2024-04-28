@@ -83,9 +83,9 @@ namespace ImageCalculator
 
             var viewPos = new Vector3(0, 0, fromZ);
 
- //           var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
-  //          var transformedLights = LightUtil.TransformLights(fractalParams.Lights, transformMatrix);
- //           var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
+            var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
+            var transformedLights = LightUtil.TransformLights(fractalParams.Lights, transformMatrix);
+            var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
 
             for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
             {
@@ -102,12 +102,12 @@ namespace ImageCalculator
 
                     var direction = to - from;
 
-                    startPt = IntersectSphere(startPt, direction, fractalParams.Bailout);
+                    var transformedPt = TransformationCalculator.Transform(transformMatrix, startPt);
+
+                    transformedPt = IntersectSphere(transformedPt, direction, fractalParams.Bailout);
 
                     // This doesn't take into account the transformation matrix
-                    var distance = IntersectQJuliaForPixelShader(ref startPt, direction, fractalParams, _nextCycle) * fractalParams.DistanceScale;
-
-                    //var distance = RayMarchQJulia(ref startPt, direction, fractalParams, _nextCycle);
+                    var distance = IntersectQJuliaForPixelShader(ref transformedPt, direction, fractalParams, _nextCycle) * fractalParams.DistanceScale;
 
                     if (distance < 0.0f || float.IsNaN(distance))
                         distance = 0.0f;
@@ -118,15 +118,10 @@ namespace ImageCalculator
                     if (distance > 1.0f)
                         distance = 1.0f;
 
-                    // var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
-                    //  float DistanceEstimator(Vector3 pt) => EstimateDistance(pt, fractalParams);
-                    //  var normal = NormalCalculator.CalculateNormal(DistanceEstimator, fractalParams.NormalDistance, transformedPt);
-                    //  var lighting = LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal);
-
-                    Vector3 normal = fractalParams.QuatEquation == QuaternionEquationType.Q_Squared ? NormEstimate(startPt, fractalParams.C4, fractalParams.Iterations) :
+                    Vector3 normal = fractalParams.QuatEquation == QuaternionEquationType.Q_Squared ? NormEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations) :
                         throw new ArgumentException("Unknown Quaternion equation");
 
-                    var lighting = LightUtil.GetPointLight(fractalParams.Lights, fractalParams.LightComboMode, startPt, viewPos, normal);
+                    var lighting = LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal);
 
                     var depth = (int)(distance * (palette.NumberOfColors - 1));
 
