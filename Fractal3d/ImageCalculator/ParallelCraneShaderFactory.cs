@@ -77,6 +77,9 @@ public class ParallelCraneShaderFactory : IDisposable
         Color backGroundColor = BackgroundColor();
         Color activeColor;
 
+        var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
+        var transformedLights = LightUtil.TransformLights(fractalParams.Lights, transformMatrix);
+
         for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
         {
             for (var y = 0; y < size.Height; ++y)
@@ -93,20 +96,23 @@ public class ParallelCraneShaderFactory : IDisposable
 
                 var direction = to - from;
                 direction = Vector3.Normalize(direction);
-                startPt = IntersectSphere(startPt, direction, fractalParams.Bailout);
+
+                var transformedPt = TransformationCalculator.Transform(transformMatrix, startPt);
+
+                transformedPt = IntersectSphere(transformedPt, direction, fractalParams.Bailout);
 
                 CalculationIntersectionDelegate calculationIntersectionDelegate = IterateIntersectionSquared;
 
                 // This doesn't take into account the transformation matrix
-                var distance = IntersectQJulia(ref startPt, direction, fractalParams, calculationIntersectionDelegate);
+                var distance = IntersectQJulia(ref transformedPt, direction, fractalParams, calculationIntersectionDelegate);
 
                 if(distance < fractalParams.MinRayDistance)
                 {
-                    Vector3 normal = NormEstimate(startPt, fractalParams.C4, fractalParams.Iterations);
+                    Vector3 normal = NormEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations);
 
                     // Check lights later
-                    var light = fractalParams.Lights[0].Position;
-                    Vector3 partialColor = Phong(light, direction, startPt, normal);
+                    var light = transformedLights[0].Position;
+                    Vector3 partialColor = Phong(light, direction, transformedPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
 
                     if(fractalParams.RenderShadows)
@@ -115,9 +121,9 @@ public class ParallelCraneShaderFactory : IDisposable
                         // We initially move the ray origin a little bit along this direction so we don't mistakenly 
                         // find an intersection with the same point again.
 
-                        Vector3 L = Vector3.Normalize(light - startPt);
-                        startPt += L * fractalParams.MinRayDistance * 2.0f;
-                        var dist = IntersectQJulia(ref startPt, L, fractalParams, calculationIntersectionDelegate);
+                        Vector3 L = Vector3.Normalize(light - transformedPt);
+                        transformedPt += L * fractalParams.MinRayDistance * 2.0f;
+                        var dist = IntersectQJulia(ref transformedPt, L, fractalParams, calculationIntersectionDelegate);
 
                         // Again, if our estimate of the distance to the set is small, we say there was a hit.
                         // In this case it means that the point is in a shadow and should be given a darker shade.
