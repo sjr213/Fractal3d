@@ -103,11 +103,12 @@ namespace ImageCalculator
                     var direction = to - from;
 
                     var transformedPt = TransformationCalculator.Transform(transformMatrix, startPt);
+                    var transformedDir = TransformationCalculator.Transform(transformMatrix, direction);
 
-                    transformedPt = IntersectSphere(transformedPt, direction, fractalParams.Bailout);
+                    transformedPt = IntersectSphere(transformedPt, transformedDir, fractalParams.Bailout);
 
                     // This doesn't take into account the transformation matrix
-                    var distance = RayMarchQJulia(ref transformedPt, direction, fractalParams, _nextCycle);
+                    var distance = RayMarchQJulia(ref transformedPt, transformedDir, fractalParams, _nextCycle);
 
                     if (distance < 0.0f || float.IsNaN(distance))
                         distance = 0.0f;

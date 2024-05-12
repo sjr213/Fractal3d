@@ -98,13 +98,13 @@ public class ParallelCraneShaderFactory : IDisposable
                 direction = Vector3.Normalize(direction);
 
                 var transformedPt = TransformationCalculator.Transform(transformMatrix, startPt);
-
-                transformedPt = IntersectSphere(transformedPt, direction, fractalParams.Bailout);
+                var transformedDir = TransformationCalculator.Transform(transformMatrix, direction);
+                transformedPt = IntersectSphere(transformedPt, transformedDir, fractalParams.Bailout);
 
                 CalculationIntersectionDelegate calculationIntersectionDelegate = IterateIntersectionSquared;
 
                 // This doesn't take into account the transformation matrix
-                var distance = IntersectQJulia(ref transformedPt, direction, fractalParams, calculationIntersectionDelegate);
+                var distance = IntersectQJulia(ref transformedPt, transformedDir, fractalParams, calculationIntersectionDelegate);
 
                 if(distance < fractalParams.MinRayDistance)
                 {
@@ -112,7 +112,7 @@ public class ParallelCraneShaderFactory : IDisposable
 
                     // Check lights later
                     var light = transformedLights[0].Position;
-                    Vector3 partialColor = Phong(light, direction, transformedPt, normal);
+                    Vector3 partialColor = Phong(light, transformedDir, transformedPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
 
                     if(fractalParams.RenderShadows)
