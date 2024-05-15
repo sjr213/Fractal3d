@@ -472,7 +472,7 @@ public class ParameterVm : ViewModelBase
         {
             AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
             {
-                QuaternionEquationType.Q_Squared
+                QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed
             };
 
             SelectedQuatEquationType = QuaternionEquationType.Q_Squared;

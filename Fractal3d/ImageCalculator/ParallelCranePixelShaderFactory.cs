@@ -14,6 +14,7 @@ namespace ImageCalculator
         private static double _totalProgress;
         private readonly object _lockObject = new();
         private CalculationIntersectionDelegate _nextCycle = IterateIntersectionSquared;
+        private NormEstimateDelegate _normEstimate = NormEstimateSquared;
 
         public IObservable<double> Progress => _progressSubject;
         bool _isDisposed;
@@ -36,17 +37,6 @@ namespace ImageCalculator
             }
 
             _isDisposed = true;
-        }
-
-        private static CalculationIntersectionDelegate GetCalculationDelegate(QuaternionEquationType equationType)
-        {
-            switch (equationType)
-            {
-                case QuaternionEquationType.Q_Squared:
-                    return IterateIntersectionSquared;
-                default:
-                    throw new ArgumentException("Unknown Quaternion equation");
-            }
         }
 
         RawLightedImage CombineContainers(FractalParams fractalParams, IList<PixelContainer> containers)
@@ -119,8 +109,7 @@ namespace ImageCalculator
                     if (distance > 1.0f)
                         distance = 1.0f;
 
-                    Vector3 normal = fractalParams.QuatEquation == QuaternionEquationType.Q_Squared ? NormEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations) :
-                        throw new ArgumentException("Unknown Quaternion equation");
+                    Vector3 normal = _normEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations);
 
                     var lighting = LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal);
 
@@ -149,6 +138,7 @@ namespace ImageCalculator
             _totalProgress = startProgress;
 
             _nextCycle = GetCalculationDelegate(fractalParams.QuatEquation);
+            _normEstimate = GetNormEstimateDelegate(fractalParams.QuatEquation);
 
             if (cancelToken.IsCancellationRequested)
                 return new FractalResult();

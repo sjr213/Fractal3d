@@ -22,6 +22,8 @@ public static class QuatMath2
 
     public delegate void CalculationIntersectionDelegate(ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold);
 
+    public delegate Vector3 NormEstimateDelegate(Vector3 p, Vector4 c, int maxIterations);
+
     public static Vector3 YZW(this Vector4 v)
     {
         return new Vector3(v.Y, v.Z, v.W);
@@ -51,6 +53,14 @@ public static class QuatMath2
         return vs;
     }
 
+    public static Vector4 QuatCubed(Vector4 v)
+    {
+        float x = v.X * v.X - 3.0f * v.Y * v.Y - 3.0f * v.Z * v.Z - 3.0f * v.W * v.W;
+        float r = -1 * (v.X * v.X + v.Y * v.Y + v.Z * v.Z + v.W * v.W);
+
+        return new Vector4(x, v.Y * r, v.Z * r, v.W * r);
+    }
+
     // Iterates the quaternion for the purposes of intersection.
     // Also produces an estimate of the derivative q, which is required for the distance estimate.
     // The quaternion c is the parameter specifying the Julia set. 
@@ -69,8 +79,22 @@ public static class QuatMath2
         }
     }
 
+    public static void IterateIntersectionCubed(ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold)
+    {
+        for (int i = 0; i < maxIterations; i++)
+        {
+            qp = 3.0f * QuatMult(QuatSq(q), qp);
+            q = QuatCubed(q) + c;
+
+            if (Vector4.Dot(q, q) > escapeThreshold)
+            {
+                break;
+            }
+        }
+    }
+
     // Create a shading normal for the current point.
-    public static Vector3 NormEstimate(Vector3 p, Vector4 c, int maxIterations)
+    public static Vector3 NormEstimateSquared(Vector3 p, Vector4 c, int maxIterations)
     {
         Vector4 qp = new Vector4(p, 0f);
 
@@ -97,6 +121,62 @@ public static class QuatMath2
 
         var v = new Vector3(gradX, gradY, gradZ);
         return Vector3.Normalize(v);
+    }
+
+    // Create a shading normal for the current point.
+    public static Vector3 NormEstimateCubed(Vector3 p, Vector4 c, int maxIterations)
+    {
+        Vector4 qp = new Vector4(p, 0f);
+
+        Vector4 gx1 = new Vector4(qp.X - DEL, qp.Y, qp.Z, qp.W);
+        Vector4 gx2 = new Vector4(qp.X + DEL, qp.Y, qp.Z, qp.W);
+        Vector4 gy1 = new Vector4(qp.X, qp.Y - DEL, qp.Z, qp.W);
+        Vector4 gy2 = new Vector4(qp.X, qp.Y + DEL, qp.Z, qp.W);
+        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - DEL, qp.W);
+        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + DEL, qp.W);
+
+        for (int i = 0; i < maxIterations; i++)
+        {
+            gx1 = QuatCubed(gx1) + c;
+            gx2 = QuatCubed(gx2) + c;
+            gy1 = QuatCubed(gy1) + c;
+            gy2 = QuatCubed(gy2) + c;
+            gz1 = QuatCubed(gz1) + c;
+            gz2 = QuatCubed(gz2) + c;
+        }
+
+        var gradX = gx2.Length() - gx1.Length();
+        var gradY = gy2.Length() - gy1.Length();
+        var gradZ = gz2.Length() - gz1.Length();
+
+        var v = new Vector3(gradX, gradY, gradZ);
+        return Vector3.Normalize(v);
+    }
+
+    public static CalculationIntersectionDelegate GetCalculationDelegate(QuaternionEquationType equationType)
+    {
+        switch (equationType)
+        {
+            case QuaternionEquationType.Q_Squared:
+                return IterateIntersectionSquared;
+            case QuaternionEquationType.Q_Cubed:
+                return IterateIntersectionCubed;
+            default:
+                throw new ArgumentException("Unknown Quaternion equation");
+        }
+    }
+
+    public static NormEstimateDelegate GetNormEstimateDelegate(QuaternionEquationType equationType)
+    {
+        switch (equationType)
+        {
+            case QuaternionEquationType.Q_Squared:
+                return NormEstimateSquared;
+            case QuaternionEquationType.Q_Cubed:
+                return NormEstimateCubed;
+            default:
+                throw new ArgumentException("Unknown Quaternion equation");
+        }
     }
 
     // Finds the intersection of a ray with origin rO and direction rD with the quaternion Julia set specified by the quaternion constant c.
@@ -164,7 +244,6 @@ public static class QuatMath2
 
     public static float RayMarchQJulia(ref Vector3 startPt, Vector3 direction, FractalParams fractalParams, CalculationIntersectionDelegate calculationIntersectionDelegate)
     {
-        float dist = 0;
         float totalDistance = 0.0f;
         int steps;
 
@@ -177,7 +256,7 @@ public static class QuatMath2
 
             calculationIntersectionDelegate(ref z, ref zp, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
             float normZ = z.Length();
-            dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
+            float dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
 
             startPt += direction * dist;
 

@@ -17,6 +17,9 @@ public class ParallelCraneShaderFactory : IDisposable
     public IObservable<double> Progress => _progressSubject;
     bool _isDisposed;
 
+    private CalculationIntersectionDelegate _nextCycle = IterateIntersectionSquared;
+    private NormEstimateDelegate _normEstimate = NormEstimateSquared;
+
     public void Dispose()
     {
         Dispose(true);
@@ -101,14 +104,12 @@ public class ParallelCraneShaderFactory : IDisposable
                 var transformedDir = TransformationCalculator.Transform(transformMatrix, direction);
                 transformedPt = IntersectSphere(transformedPt, transformedDir, fractalParams.Bailout);
 
-                CalculationIntersectionDelegate calculationIntersectionDelegate = IterateIntersectionSquared;
-
                 // This doesn't take into account the transformation matrix
-                var distance = IntersectQJulia(ref transformedPt, transformedDir, fractalParams, calculationIntersectionDelegate);
+                var distance = IntersectQJulia(ref transformedPt, transformedDir, fractalParams, _nextCycle);
 
                 if(distance < fractalParams.MinRayDistance)
                 {
-                    Vector3 normal = NormEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations);
+                    Vector3 normal = _normEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations);
 
                     // Check lights later
                     var light = transformedLights[0].Position;
@@ -123,7 +124,7 @@ public class ParallelCraneShaderFactory : IDisposable
 
                         Vector3 L = Vector3.Normalize(light - transformedPt);
                         transformedPt += L * fractalParams.MinRayDistance * 2.0f;
-                        var dist = IntersectQJulia(ref transformedPt, L, fractalParams, calculationIntersectionDelegate);
+                        var dist = IntersectQJulia(ref transformedPt, L, fractalParams, _nextCycle);
 
                         // Again, if our estimate of the distance to the set is small, we say there was a hit.
                         // In this case it means that the point is in a shadow and should be given a darker shade.
@@ -201,6 +202,9 @@ public class ParallelCraneShaderFactory : IDisposable
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
+
+        _nextCycle = GetCalculationDelegate(fractalParams.QuatEquation);
+        _normEstimate = GetNormEstimateDelegate(fractalParams.QuatEquation);
 
         _progressSubject.OnNext(startProgress);
 
