@@ -467,15 +467,19 @@ public class ParameterVm : ViewModelBase
             {
                 QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_InglesCubed
             };
+
+            if(SelectedQuatEquationType == QuaternionEquationType.Q_CubedZZ2 || SelectedQuatEquationType == QuaternionEquationType.Q_CubedZ2Z)
+                SelectedQuatEquationType = QuaternionEquationType.Q_Squared;
         }
         else
         {
             AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
             {
-                QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed
+                QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_CubedZZ2, QuaternionEquationType.Q_CubedZ2Z
             };
 
-            SelectedQuatEquationType = QuaternionEquationType.Q_Squared;
+            if(SelectedQuatEquationType == QuaternionEquationType.Q_InglesCubed)
+                SelectedQuatEquationType = QuaternionEquationType.Q_Squared;
         }
     }
 

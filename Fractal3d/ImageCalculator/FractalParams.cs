@@ -28,7 +28,11 @@ public enum QuaternionEquationType
     [Description("Quat Cubed")]
     Q_Cubed,
     [Description("Ingles Cubed")]
-    Q_InglesCubed
+    Q_InglesCubed,
+    [Description("Quat Cubed ZZ2")]
+    Q_CubedZZ2,
+    [Description("Quat Cubed Z2Z")]
+    Q_CubedZ2Z,
 }
 
 [Serializable]

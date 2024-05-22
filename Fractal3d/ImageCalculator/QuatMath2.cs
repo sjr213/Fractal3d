@@ -24,6 +24,8 @@ public static class QuatMath2
 
     public delegate Vector3 NormEstimateDelegate(Vector3 p, Vector4 c, int maxIterations);
 
+    public delegate Vector4 QuatCubedDelegate(Vector4 v);
+
     public static Vector3 YZW(this Vector4 v)
     {
         return new Vector3(v.Y, v.Z, v.W);
@@ -53,12 +55,36 @@ public static class QuatMath2
         return vs;
     }
 
-    public static Vector4 QuatCubed(Vector4 v)
+    public static Vector4 QuatCubedOld(Vector4 v)
     {
         float x = v.X * v.X - 3.0f * v.Y * v.Y - 3.0f * v.Z * v.Z - 3.0f * v.W * v.W;
         float r = -1 * (v.X * v.X + v.Y * v.Y + v.Z * v.Z + v.W * v.W);
 
         return new Vector4(x, v.Y * r, v.Z * r, v.W * r);
+    }
+
+    // QuatCubed(Z^2)Z
+    public static Vector4 QuatCubedZ2Z(Vector4 v)
+    {
+        var vs = new Vector4();
+        vs.X = v.X * (v.X * v.X - 3.0f * v.Y * v.Y - 3.0f * v.Z * v.Z - 3.0f * v.W * v.W);
+        vs.Y = 3.0f * v.X * v.X * v.Y + v.X * v.X * v.Z - v.Z * v.Z * v.Y- v.Z * v.Z * v.X;
+        vs.Z = -1.0f *(v.Y * v.Y * v.Y + v.Y * v.Y * v.Z + v.Z * v.Z * v.Z + 2.0f * v.X * v.X * v.Z + v.W * v.W * v.Z);
+        vs.W = v.W * (3.0f * v.X * v.X - v.Y * v.Y - v.Z * v.Z - v.W * v.W);
+
+        return vs;
+    }
+
+    // QuatCubedZZ^2
+    public static Vector4 QuatCubedZZ2(Vector4 v)
+    {
+        var vs = new Vector4();
+        vs.X = v.X * (v.X * v.X - 3.0f * v.Y * v.Y - 3.0f * v.Z * v.Z - 3.0f * v.W * v.W);
+        vs.Y = v.Y * (3.0f * v.X * v.X - v.Y * v.Y - v.Z * v.Z - v.W * v.W);
+        vs.Z = v.Z * (3.0f * v.X * v.X - v.Y * v.Y - v.Z * v.Z - v.W * v.W);
+        vs.W = v.W * (3.0f * v.X * v.X - v.Y * v.Y - v.Z * v.Z - v.W * v.W);
+
+        return vs;
     }
 
     // Iterates the quaternion for the purposes of intersection.
@@ -79,12 +105,40 @@ public static class QuatMath2
         }
     }
 
-    public static void IterateIntersectionCubed(ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold)
+    public static void IterateIntersectionCubedOld(ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold)
     {
         for (int i = 0; i < maxIterations; i++)
         {
             qp = 3.0f * QuatMult(QuatSq(q), qp);
-            q = QuatCubed(q) + c;
+            q = QuatCubedOld(q) + c;
+
+            if (Vector4.Dot(q, q) > escapeThreshold)
+            {
+                break;
+            }
+        }
+    }
+
+    public static void IterateIntersectionCubedZ2Z(ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold)
+    {
+        for (int i = 0; i < maxIterations; i++)
+        {
+            qp = 3.0f * QuatMult(QuatSq(q), qp);
+            q = QuatCubedZ2Z(q) + c;
+
+            if (Vector4.Dot(q, q) > escapeThreshold)
+            {
+                break;
+            }
+        }
+    }
+
+    public static void IterateIntersectionCubedZZ2(ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold)
+    {
+        for (int i = 0; i < maxIterations; i++)
+        {
+            qp = 3.0f * QuatMult(QuatSq(q), qp);
+            q = QuatCubedZZ2(q) + c;
 
             if (Vector4.Dot(q, q) > escapeThreshold)
             {
@@ -124,7 +178,7 @@ public static class QuatMath2
     }
 
     // Create a shading normal for the current point.
-    public static Vector3 NormEstimateCubed(Vector3 p, Vector4 c, int maxIterations)
+    public static Vector3 NormEstimateCubedOld(Vector3 p, Vector4 c, int maxIterations)
     {
         Vector4 qp = new Vector4(p, 0f);
 
@@ -137,12 +191,12 @@ public static class QuatMath2
 
         for (int i = 0; i < maxIterations; i++)
         {
-            gx1 = QuatCubed(gx1) + c;
-            gx2 = QuatCubed(gx2) + c;
-            gy1 = QuatCubed(gy1) + c;
-            gy2 = QuatCubed(gy2) + c;
-            gz1 = QuatCubed(gz1) + c;
-            gz2 = QuatCubed(gz2) + c;
+            gx1 = QuatCubedOld(gx1) + c;
+            gx2 = QuatCubedOld(gx2) + c;
+            gy1 = QuatCubedOld(gy1) + c;
+            gy2 = QuatCubedOld(gy2) + c;
+            gz1 = QuatCubedOld(gz1) + c;
+            gz2 = QuatCubedOld(gz2) + c;
         }
 
         var gradX = gx2.Length() - gx1.Length();
@@ -153,14 +207,79 @@ public static class QuatMath2
         return Vector3.Normalize(v);
     }
 
-    public static CalculationIntersectionDelegate GetCalculationDelegate(QuaternionEquationType equationType)
+    // Create a shading normal for the current point.
+    public static Vector3 NormEstimateCubedOldZ2Z(Vector3 p, Vector4 c, int maxIterations)
+    {
+        Vector4 qp = new Vector4(p, 0f);
+
+        Vector4 gx1 = new Vector4(qp.X - DEL, qp.Y, qp.Z, qp.W);
+        Vector4 gx2 = new Vector4(qp.X + DEL, qp.Y, qp.Z, qp.W);
+        Vector4 gy1 = new Vector4(qp.X, qp.Y - DEL, qp.Z, qp.W);
+        Vector4 gy2 = new Vector4(qp.X, qp.Y + DEL, qp.Z, qp.W);
+        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - DEL, qp.W);
+        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + DEL, qp.W);
+
+        for (int i = 0; i < maxIterations; i++)
+        {
+            gx1 = QuatCubedZ2Z(gx1) + c;
+            gx2 = QuatCubedZ2Z(gx2) + c;
+            gy1 = QuatCubedZ2Z(gy1) + c;
+            gy2 = QuatCubedZ2Z(gy2) + c;
+            gz1 = QuatCubedZ2Z(gz1) + c;
+            gz2 = QuatCubedZ2Z(gz2) + c;
+        }
+
+        var gradX = gx2.Length() - gx1.Length();
+        var gradY = gy2.Length() - gy1.Length();
+        var gradZ = gz2.Length() - gz1.Length();
+
+        var v = new Vector3(gradX, gradY, gradZ);
+        return Vector3.Normalize(v);
+    }
+
+    // Create a shading normal for the current point.
+    public static Vector3 NormEstimateCubedZZ2(Vector3 p, Vector4 c, int maxIterations)
+    {
+        Vector4 qp = new Vector4(p, 0f);
+
+        Vector4 gx1 = new Vector4(qp.X - DEL, qp.Y, qp.Z, qp.W);
+        Vector4 gx2 = new Vector4(qp.X + DEL, qp.Y, qp.Z, qp.W);
+        Vector4 gy1 = new Vector4(qp.X, qp.Y - DEL, qp.Z, qp.W);
+        Vector4 gy2 = new Vector4(qp.X, qp.Y + DEL, qp.Z, qp.W);
+        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - DEL, qp.W);
+        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + DEL, qp.W);
+
+        for (int i = 0; i < maxIterations; i++)
+        {
+            gx1 = QuatCubedZZ2(gx1) + c;
+            gx2 = QuatCubedZZ2(gx2) + c;
+            gy1 = QuatCubedZZ2(gy1) + c;
+            gy2 = QuatCubedZZ2(gy2) + c;
+            gz1 = QuatCubedZZ2(gz1) + c;
+            gz2 = QuatCubedZZ2(gz2) + c;
+        }
+
+        var gradX = gx2.Length() - gx1.Length();
+        var gradY = gy2.Length() - gy1.Length();
+        var gradZ = gz2.Length() - gz1.Length();
+
+        var v = new Vector3(gradX, gradY, gradZ);
+        return Vector3.Normalize(v);
+    }
+
+    public static CalculationIntersectionDelegate GetCalculationDelegate
+        (QuaternionEquationType equationType)
     {
         switch (equationType)
         {
             case QuaternionEquationType.Q_Squared:
                 return IterateIntersectionSquared;
             case QuaternionEquationType.Q_Cubed:
-                return IterateIntersectionCubed;
+                return IterateIntersectionCubedOld;
+            case QuaternionEquationType.Q_CubedZZ2:
+                return IterateIntersectionCubedZZ2;
+            case QuaternionEquationType.Q_CubedZ2Z:
+                return IterateIntersectionCubedZ2Z;
             default:
                 throw new ArgumentException("Unknown Quaternion equation");
         }
@@ -173,7 +292,11 @@ public static class QuatMath2
             case QuaternionEquationType.Q_Squared:
                 return NormEstimateSquared;
             case QuaternionEquationType.Q_Cubed:
-                return NormEstimateCubed;
+                return NormEstimateCubedOld;
+            case QuaternionEquationType.Q_CubedZZ2:
+                return NormEstimateCubedZZ2;
+            case QuaternionEquationType.Q_CubedZ2Z:
+                return NormEstimateCubedOldZ2Z;
             default:
                 throw new ArgumentException("Unknown Quaternion equation");
         }
