@@ -380,10 +380,11 @@ public static class QuatMath2
             calculationIntersectionDelegate(ref z, ref zp, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
             float normZ = z.Length();
             float dist = 0.5f * normZ * (float)Math.Log(normZ) / zp.Length();
+            dist /= fractalParams.StepDivisor;
 
             startPt += direction * dist;
 
-            totalDistance += dist / fractalParams.StepDivisor;
+            totalDistance += dist;
 
             if (dist < fractalParams.MinRayDistance)
                 break;
