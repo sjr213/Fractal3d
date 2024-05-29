@@ -439,8 +439,10 @@ public static class QuatMath2
         float NdotL = Vector3.Dot(N, L);            // find cosine of the angle between light and normal
         Vector3 R = L - 2 * NdotL * N;              // reflected vector
 
-        //       diffuse += Vector3.Abs(N) * light.DiffusePower;           // Add some of the normal to the color to make it more interesting
-        diffuse *= light.DiffusePower;
+        if(light.UseNormalComponent)
+            diffuse += Vector3.Abs(N) * light.DiffusePower;           // Add some of the normal to the color to make it more interesting
+        else
+            diffuse *= light.DiffusePower;
 
         // compute the illumnation using the Phong equation
         var v3Part = diffuse * Math.Abs(NdotL);  //   Math.Max(NdotL, 0);

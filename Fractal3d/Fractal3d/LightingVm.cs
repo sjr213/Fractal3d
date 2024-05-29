@@ -42,6 +42,7 @@ public class LightingVm : ViewModelBase
         SelectedLightComboMode = _fractalParams.LightComboMode;
         UpdateLightIndices();
         SelectedReflectionType = _fractalParams.Lights[SelectedLightIndex-1].ReflectionType;
+        UseNormalComponent = _fractalParams.Lights[SelectedLightIndex-1].UseNormalComponent;
 
         _addLightCommand = new RelayCommand(_ => AddLight(), _ => true);
         _deleteLightCommand = new RelayCommand(_ => DeleteLight(), _ => CanDeleteLight());
@@ -83,6 +84,7 @@ public class LightingVm : ViewModelBase
         LightPositionZ = light.Position.Z;
         SelectedReflectionType = light.ReflectionType;
         SelectedLightType = light.LightType;
+        UseNormalComponent = light.UseNormalComponent;
     }
 
     public float NormalDistance
@@ -386,6 +388,18 @@ public class LightingVm : ViewModelBase
         {
             var light = CurrentLight();
             light.ReflectionType = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public bool UseNormalComponent
+    {
+        get => CurrentLight().UseNormalComponent;
+        set
+        {
+            var light = CurrentLight();
+            light.UseNormalComponent = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }

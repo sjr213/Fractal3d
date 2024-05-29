@@ -34,6 +34,9 @@ public class Light : ICloneable
     public float SpecularPower { get; set; } = 0.5f;
     public float Shininess = 16.0f;
 
+    // Only used for ParallelCraneShaderFactory
+    public bool UseNormalComponent { get; set; } = true;    
+
     public object Clone()
     {
         var cpy = (Light)MemberwiseClone();
