@@ -428,6 +428,49 @@ public static class QuatMath2
         return new Vector3(v3Part.X + scalerPart, v3Part.Y + scalerPart, v3Part.Z + scalerPart);
     }
 
+    // Computes the direct illumination for the point pt with normal N due to a point light and viewer at eye.
+    // This version was made to use the rest of out light fields, not just Crane's.
+    public static Vector3 PhongExpanded(Light light, Vector3 eye, Vector3 pt, Vector3 N)
+    {
+        var diffuse = light.DiffuseColor;
+
+        Vector3 L = Vector3.Normalize(light.Position - pt);  // find the vector to the light
+        Vector3 E = Vector3.Normalize(eye - pt);    // find the vector to the eye
+        float NdotL = Vector3.Dot(N, L);            // find cosine of the angle between light and normal
+        Vector3 R = L - 2 * NdotL * N;              // reflected vector
+
+        //       diffuse += Vector3.Abs(N) * light.DiffusePower;           // Add some of the normal to the color to make it more interesting
+        diffuse *= light.DiffusePower;
+
+        // compute the illumnation using the Phong equation
+        var v3Part = diffuse * Math.Abs(NdotL);  //   Math.Max(NdotL, 0);
+        var scalerPart = light.SpecularColor * light.SpecularPower * (float)Math.Pow(Math.Max(Vector3.Dot(E, R), 0), light.Shininess/4.0f);
+        return new Vector3(v3Part.X + scalerPart.X, v3Part.Y + scalerPart.Y, v3Part.Z + scalerPart.Z);
+    }
+
+    public static Vector3 GetPhongLightsExpanded(List<Light> lights, LightCombinationMode lightComboMode, Vector3 eye, Vector3 pt, Vector3 normal)
+    {
+        var lighting = new Vector3();
+
+        int numberOfLights = lights.Count;
+        foreach (var light in lights)
+        {
+            var singleLight = PhongExpanded(light, eye, pt, normal);
+            if (lightComboMode == LightCombinationMode.Average)
+            {
+                lighting += singleLight / numberOfLights;
+            }
+            else
+            {
+                lighting += singleLight;
+            }
+        }
+
+        lighting = Vector3.Clamp(lighting, Vector3.Zero, Vector3.One);
+
+        return lighting;
+    }
+
     // Finds the intersection of a ray with a sphere with statically defined radius BOUNDING_RADIUS centered at the origin.
     // This sphere serves as a bounding volume for the Julia set.
     public static Vector3 IntersectSphere(Vector3 rO, Vector3 rD, float boudingRadius)

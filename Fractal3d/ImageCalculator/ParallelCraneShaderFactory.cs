@@ -110,10 +110,7 @@ public class ParallelCraneShaderFactory : IDisposable
                 if(distance < fractalParams.MinRayDistance)
                 {
                     Vector3 normal = _normEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations);
-
-                    // Check lights later
-                    var light = transformedLights[0].Position;
-                    Vector3 partialColor = Phong(light, transformedDir, transformedPt, normal);
+                    Vector3 partialColor = GetPhongLightsExpanded(transformedLights, fractalParams.LightComboMode, transformedDir, transformedPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
 
                     if(fractalParams.RenderShadows)
@@ -121,8 +118,7 @@ public class ParallelCraneShaderFactory : IDisposable
                         // The shadow ray will start at the intersection point and go towards the point light.
                         // We initially move the ray origin a little bit along this direction so we don't mistakenly 
                         // find an intersection with the same point again.
-
-                        Vector3 L = Vector3.Normalize(light - transformedPt);
+                        Vector3 L = Vector3.Normalize(transformedLights[0].Position - transformedPt);
                         transformedPt += L * fractalParams.MinRayDistance * 2.0f;
                         var dist = IntersectQJulia(ref transformedPt, L, fractalParams, _nextCycle);
 
@@ -232,81 +228,4 @@ public class ParallelCraneShaderFactory : IDisposable
             Time = watch.ElapsedMilliseconds
         };
     }
-
-    /*
-    private void CalculateImageNew(PixelContainer raw, FractalParams fractalParams, CancellationToken cancelToken, double progress)
-    {
-        var size = fractalParams.ImageSize;
-        var palette = fractalParams.Palette;
-
-        var left = Math.Min(fractalParams.FromX, fractalParams.ToX);
-        var right = Math.Max(fractalParams.FromX, fractalParams.ToX);
-        var bottom = Math.Min(fractalParams.FromY, fractalParams.ToY);
-        var top = Math.Max(fractalParams.FromY, fractalParams.ToY);
-
-        var fromZ = fractalParams.FromZ;
-        var toZ = fractalParams.ToZ;
-
-        var xRange = (right - left) / size.Width;
-        var yRange = (top - bottom) / size.Height;
-
-        var viewPos = new Vector3(0, 0, fromZ);
-
-        var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
-        var transformedLights = LightUtil.TransformLights(fractalParams.Lights, transformMatrix);
-        var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
-
-        for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
-        {
-            for (var y = 0; y < size.Height; ++y)
-            {
-                var fx = x * xRange + left;
-                var fy = y * yRange + bottom;
-
-                var from = new Vector3(fx, fy, fromZ);
-
-                var to = (fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, toZ) : new Vector3(fx, fy, toZ);
-
-                var startPt = from + fractalParams.Distance * to;
-
-                var direction = to - from;
-
-                //              var distance = RayMarch(fractalParams, startPt, direction, transformMatrix, out var outPt);
-                float epsilon = 0.01f;
-                // This doesn't take into account the transformation matrix
-                var distance = QuatMath2.IntersectQJulia(ref startPt, direction, fractalParams.C4, fractalParams.Iterations, epsilon);
-
-                if (distance < 0.0f)
-                    distance = 0.0f;
-
-                if (distance > epsilon)
-                    distance = epsilon;
-
-                var transformedPt = TransformationCalculator.Transform(transformMatrix, startPt);
-                var normal = QuatMath2.NormEstimate(startPt, fractalParams.C4, fractalParams.Iterations);
-                var lighting = LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal);
-
-                //          var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
-                //          float DistanceEstimator(Vector3 pt) => EstimateDistance(pt, fractalParams);
-                //          var normal = NormalCalculator.CalculateNormal(DistanceEstimator, fractalParams.NormalDistance, transformedPt);
-                //         var lighting = LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal);
-
-                var depth = (int)(distance / epsilon * (palette.NumberOfColors - 1));
-
-                // need a new raw image that stores Vector3
-                var light = lighting.Diffuse + lighting.Specular;
-                raw.SetPixel(x, y, depth, light);
-            }
-
-            if (cancelToken.IsCancellationRequested)
-                return;
-        }
-
-        lock (_lockObject)
-        {
-            _totalProgress += progress;
-        }
-        _progressSubject.OnNext(_totalProgress);
-    }
-    */
 }
