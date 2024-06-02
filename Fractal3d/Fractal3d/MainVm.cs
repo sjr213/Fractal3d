@@ -412,6 +412,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         ClearFractalRange();
         OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
+        if(LightingViewModel != null)
+            LightingViewModel.SetFractalParams(_fractalParams);
 
         if (SelectedViewMode == ViewModes.Temp)
             Calculate();

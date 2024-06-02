@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 public class LightingVm : ViewModelBase
 {
-    private readonly FractalParams _fractalParams;
+    private FractalParams _fractalParams;
     private readonly Action<FractalParams> _onParamsChanged;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -41,8 +41,9 @@ public class LightingVm : ViewModelBase
         SelectedLightType = _fractalParams.Lights[SelectedLightIndex - 1].LightType;
         SelectedLightComboMode = _fractalParams.LightComboMode;
         UpdateLightIndices();
-        SelectedReflectionType = _fractalParams.Lights[SelectedLightIndex-1].ReflectionType;
-        UseNormalComponent = _fractalParams.Lights[SelectedLightIndex-1].UseNormalComponent;
+        SelectedReflectionType = _fractalParams.Lights[SelectedLightIndex - 1].ReflectionType;
+        UseNormalComponent = _fractalParams.Lights[SelectedLightIndex - 1].UseNormalComponent;
+        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
 
         _addLightCommand = new RelayCommand(_ => AddLight(), _ => true);
         _deleteLightCommand = new RelayCommand(_ => DeleteLight(), _ => CanDeleteLight());
@@ -67,7 +68,7 @@ public class LightingVm : ViewModelBase
     protected void UpdateFields()
     {
         var light = CurrentLight();
-        
+
         DiffuseColorRed = light.DiffuseColor.X;
         DiffuseColorGreen = light.DiffuseColor.Y;
         DiffuseColorBlue = light.DiffuseColor.Z;
@@ -85,6 +86,7 @@ public class LightingVm : ViewModelBase
         SelectedReflectionType = light.ReflectionType;
         SelectedLightType = light.LightType;
         UseNormalComponent = light.UseNormalComponent;
+        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
     }
 
     public float NormalDistance
@@ -137,12 +139,12 @@ public class LightingVm : ViewModelBase
 
     protected Light CurrentLight()
     {
-        if( _fractalParams.Lights.Count == 0) return new Light();
+        if (_fractalParams.Lights.Count == 0) return new Light();
 
-        if( SelectedLightIndex < 1 || SelectedLightIndex > _fractalParams.Lights.Count)
+        if (SelectedLightIndex < 1 || SelectedLightIndex > _fractalParams.Lights.Count)
             return new Light();
 
-        return _fractalParams.Lights[SelectedLightIndex-1];
+        return _fractalParams.Lights[SelectedLightIndex - 1];
     }
 
     private readonly RelayCommand _addLightCommand;
@@ -160,7 +162,7 @@ public class LightingVm : ViewModelBase
 
     protected void DeleteLight()
     {
-        _fractalParams.Lights.RemoveAt(SelectedLightIndex-1);
+        _fractalParams.Lights.RemoveAt(SelectedLightIndex - 1);
         UpdateLightIndices();
         _onParamsChanged(_fractalParams);
     }
@@ -405,6 +407,18 @@ public class LightingVm : ViewModelBase
         }
     }
 
+    private bool _isCraneShader = false;
+    public bool IsCraneShader
+    {
+        get => _isCraneShader;
+        set
+        {
+            _isCraneShader = value;
+            OnPropertyChanged();
+        }
+
+    }
+
     private readonly RelayCommand _exportCommand;
     public ICommand ExportCommand => _exportCommand;
 
@@ -427,7 +441,7 @@ public class LightingVm : ViewModelBase
                 AmbientPower = _fractalParams.AmbientPower,
                 LightComboMode = _fractalParams.LightComboMode
             };
-            
+
             string jsonString = JsonConvert.SerializeObject(extendedLights);
 
             //write string to file
@@ -464,12 +478,19 @@ public class LightingVm : ViewModelBase
             NormalDistance = _fractalParams.NormalDistance;
             AmbientPower = _fractalParams.AmbientPower;
             SelectedLightComboMode = _fractalParams.LightComboMode;
+            IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
             _onParamsChanged(_fractalParams);
         }
         catch (Exception ex)
         {
             System.Windows.Forms.MessageBox.Show(ex.Message, "Cannot load result from file");
         }
+    }
+
+    public void SetFractalParams(FractalParams fractalParams)
+    {
+        _fractalParams = fractalParams;
+        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
     }
 
 }

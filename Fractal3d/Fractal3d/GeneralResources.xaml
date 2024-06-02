@@ -5,6 +5,9 @@
 
     <converters:EnumToDescriptionConverter x:Key="EnumConverter" />
 
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverterShowOnTrue" VisibleValue="True" IsHidden="False"/>
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverterShowOnFalse" VisibleValue="False" IsHidden="False"/>
+
     <Style TargetType="Border" x:Key="BorderStyle">
         <Setter Property="BorderBrush" Value="Navy" />
         <Setter Property="BorderThickness" Value="1"/>

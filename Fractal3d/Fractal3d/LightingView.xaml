@@ -48,7 +48,8 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="1" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="1" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IsCraneShader, 
+                Converter={StaticResource BoolToVisibilityConverterShowOnFalse}, UpdateSourceTrigger=PropertyChanged}">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Light Type" />
                 <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedLightTypes}" SelectedItem="{Binding SelectedLightType}">
                     <ComboBox.ItemTemplate>
@@ -94,7 +95,8 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="5" Margin="2,5" Orientation="Horizontal">
-                <StackPanel Margin="2" Orientation="Horizontal" >
+                <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding IsCraneShader, 
+                    Converter={StaticResource BoolToVisibilityConverterShowOnFalse}, UpdateSourceTrigger=PropertyChanged}">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Ambient Power" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
@@ -247,8 +249,9 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal">
-                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Lighting Type" />
+            <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IsCraneShader, 
+                Converter={StaticResource BoolToVisibilityConverterShowOnFalse}, UpdateSourceTrigger=PropertyChanged}">
+                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Reflection Type" />
                 <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedReflectionTypes}" SelectedItem="{Binding SelectedReflectionType}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -257,7 +260,8 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
-            <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IsCraneShader, 
+                Converter={StaticResource BoolToVisibilityConverterShowOnTrue}, UpdateSourceTrigger=PropertyChanged}">
                 <CheckBox Margin="5" Padding="2" VerticalContentAlignment="Center"
                   IsChecked="{Binding UseNormalComponent}">Normal Component</CheckBox>
             </StackPanel>
