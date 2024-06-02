@@ -106,7 +106,7 @@ namespace ImageCalculator
                     if (distance > 1.0f)
                         distance = 1.0f;
 
-                    Vector3 normal = _normEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations);
+                    Vector3 normal = _normEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations, fractalParams.NormalDistance);
 
                     var lighting = LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal);
 

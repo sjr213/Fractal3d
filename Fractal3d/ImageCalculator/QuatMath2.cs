@@ -18,11 +18,11 @@ public static class QuatMath2
  //   const float ESCAPE_THRESHOLD = 1e1f;
 
     // Delta is used in the infinite difference approximation of the gradient (to determine normals)
-    const float DEL = 1e-4f;
+    // const float DEL = 1e-4f; This was the original default distance value Fractal3D default is 0.01f
 
     public delegate void CalculationIntersectionDelegate(ref Vector4 q, ref Vector4 qp, Vector4 c, int maxIterations, float escapeThreshold);
 
-    public delegate Vector3 NormEstimateDelegate(Vector3 p, Vector4 c, int maxIterations);
+    public delegate Vector3 NormEstimateDelegate(Vector3 p, Vector4 c, int maxIterations, float distance);
 
     public delegate Vector4 QuatCubedDelegate(Vector4 v);
 
@@ -148,16 +148,16 @@ public static class QuatMath2
     }
 
     // Create a shading normal for the current point.
-    public static Vector3 NormEstimateSquared(Vector3 p, Vector4 c, int maxIterations)
+    public static Vector3 NormEstimateSquared(Vector3 p, Vector4 c, int maxIterations, float distance)
     {
         Vector4 qp = new Vector4(p, 0f);
 
-        Vector4 gx1 = new Vector4(qp.X - DEL, qp.Y, qp.Z, qp.W);
-        Vector4 gx2 = new Vector4(qp.X + DEL, qp.Y, qp.Z, qp.W);
-        Vector4 gy1 = new Vector4(qp.X, qp.Y - DEL, qp.Z, qp.W);
-        Vector4 gy2 = new Vector4(qp.X, qp.Y + DEL, qp.Z, qp.W);
-        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - DEL, qp.W);
-        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + DEL, qp.W);
+        Vector4 gx1 = new Vector4(qp.X - distance, qp.Y, qp.Z, qp.W);
+        Vector4 gx2 = new Vector4(qp.X + distance, qp.Y, qp.Z, qp.W);
+        Vector4 gy1 = new Vector4(qp.X, qp.Y - distance, qp.Z, qp.W);
+        Vector4 gy2 = new Vector4(qp.X, qp.Y + distance, qp.Z, qp.W);
+        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - distance, qp.W);
+        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + distance, qp.W);
 
         for(int i = 0; i < maxIterations; i++)
         {
@@ -178,16 +178,16 @@ public static class QuatMath2
     }
 
     // Create a shading normal for the current point.
-    public static Vector3 NormEstimateCubedOld(Vector3 p, Vector4 c, int maxIterations)
+    public static Vector3 NormEstimateCubedOld(Vector3 p, Vector4 c, int maxIterations, float distance)
     {
         Vector4 qp = new Vector4(p, 0f);
 
-        Vector4 gx1 = new Vector4(qp.X - DEL, qp.Y, qp.Z, qp.W);
-        Vector4 gx2 = new Vector4(qp.X + DEL, qp.Y, qp.Z, qp.W);
-        Vector4 gy1 = new Vector4(qp.X, qp.Y - DEL, qp.Z, qp.W);
-        Vector4 gy2 = new Vector4(qp.X, qp.Y + DEL, qp.Z, qp.W);
-        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - DEL, qp.W);
-        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + DEL, qp.W);
+        Vector4 gx1 = new Vector4(qp.X - distance, qp.Y, qp.Z, qp.W);
+        Vector4 gx2 = new Vector4(qp.X + distance, qp.Y, qp.Z, qp.W);
+        Vector4 gy1 = new Vector4(qp.X, qp.Y - distance, qp.Z, qp.W);
+        Vector4 gy2 = new Vector4(qp.X, qp.Y + distance, qp.Z, qp.W);
+        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - distance, qp.W);
+        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + distance, qp.W);
 
         for (int i = 0; i < maxIterations; i++)
         {
@@ -208,16 +208,16 @@ public static class QuatMath2
     }
 
     // Create a shading normal for the current point.
-    public static Vector3 NormEstimateCubedOldZ2Z(Vector3 p, Vector4 c, int maxIterations)
+    public static Vector3 NormEstimateCubedOldZ2Z(Vector3 p, Vector4 c, int maxIterations, float distance)
     {
         Vector4 qp = new Vector4(p, 0f);
 
-        Vector4 gx1 = new Vector4(qp.X - DEL, qp.Y, qp.Z, qp.W);
-        Vector4 gx2 = new Vector4(qp.X + DEL, qp.Y, qp.Z, qp.W);
-        Vector4 gy1 = new Vector4(qp.X, qp.Y - DEL, qp.Z, qp.W);
-        Vector4 gy2 = new Vector4(qp.X, qp.Y + DEL, qp.Z, qp.W);
-        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - DEL, qp.W);
-        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + DEL, qp.W);
+        Vector4 gx1 = new Vector4(qp.X - distance, qp.Y, qp.Z, qp.W);
+        Vector4 gx2 = new Vector4(qp.X + distance, qp.Y, qp.Z, qp.W);
+        Vector4 gy1 = new Vector4(qp.X, qp.Y - distance, qp.Z, qp.W);
+        Vector4 gy2 = new Vector4(qp.X, qp.Y + distance, qp.Z, qp.W);
+        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - distance, qp.W);
+        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + distance, qp.W);
 
         for (int i = 0; i < maxIterations; i++)
         {
@@ -238,16 +238,16 @@ public static class QuatMath2
     }
 
     // Create a shading normal for the current point.
-    public static Vector3 NormEstimateCubedZZ2(Vector3 p, Vector4 c, int maxIterations)
+    public static Vector3 NormEstimateCubedZZ2(Vector3 p, Vector4 c, int maxIterations, float distance)
     {
         Vector4 qp = new Vector4(p, 0f);
 
-        Vector4 gx1 = new Vector4(qp.X - DEL, qp.Y, qp.Z, qp.W);
-        Vector4 gx2 = new Vector4(qp.X + DEL, qp.Y, qp.Z, qp.W);
-        Vector4 gy1 = new Vector4(qp.X, qp.Y - DEL, qp.Z, qp.W);
-        Vector4 gy2 = new Vector4(qp.X, qp.Y + DEL, qp.Z, qp.W);
-        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - DEL, qp.W);
-        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + DEL, qp.W);
+        Vector4 gx1 = new Vector4(qp.X - distance, qp.Y, qp.Z, qp.W);
+        Vector4 gx2 = new Vector4(qp.X + distance, qp.Y, qp.Z, qp.W);
+        Vector4 gy1 = new Vector4(qp.X, qp.Y - distance, qp.Z, qp.W);
+        Vector4 gy2 = new Vector4(qp.X, qp.Y + distance, qp.Z, qp.W);
+        Vector4 gz1 = new Vector4(qp.X, qp.Y, qp.Z - distance, qp.W);
+        Vector4 gz2 = new Vector4(qp.X, qp.Y, qp.Z + distance, qp.W);
 
         for (int i = 0; i < maxIterations; i++)
         {
