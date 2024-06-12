@@ -63,5 +63,8 @@ public static class ParameterConstants
 
     public const float MinEscapeThreshold = 1e-1f;
     public const float MaxEscapeThreshold = 1e+6f;
+
+    public const int MinColorComponent = 0;
+    public const int MaxColorComponent = 255;
 }
 

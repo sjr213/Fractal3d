@@ -107,7 +107,8 @@ public class FractalParams : ICloneable
 
     public float EscapeThreshold { get; set; } = 10.0f;
 
-
+    // For Crane Pixel Shader only
+    public Color BackgroundColor { get; set; } = Color.FromArgb(255, 255, 255, 255);
 
     public static List<Light> MakeLights()
     {

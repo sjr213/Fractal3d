@@ -56,11 +56,6 @@ public class ParallelCraneShaderFactory : IDisposable
         return Color.FromArgb(color.A, r, g, b);
     }
 
-    private static Color BackgroundColor()
-    {
-        return Color.FromArgb(0, 85, 85, 85);
-    }
-
     private void CalculateImageNew(ColorContainer raw, FractalParams fractalParams, double progress, CancellationToken cancelToken)
     {
         var size = fractalParams.ImageSize;
@@ -76,8 +71,6 @@ public class ParallelCraneShaderFactory : IDisposable
         var xRange = (right - left) / size.Width;
         var yRange = (top - bottom) / size.Height;
 
-        // float4 rgba 0.3, 0.3, 0.3, 0 to argb 0, 85, 85, 85
-        Color backGroundColor = BackgroundColor();
         Color activeColor;
 
         var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
@@ -87,7 +80,7 @@ public class ParallelCraneShaderFactory : IDisposable
         {
             for (var y = 0; y < size.Height; ++y)
             {
-                activeColor = backGroundColor;
+                activeColor = fractalParams.BackgroundColor;
                 var fx = x * xRange + left;
                 var fy = y * yRange + bottom;
 
@@ -145,7 +138,7 @@ public class ParallelCraneShaderFactory : IDisposable
         _progressSubject.OnNext(_totalProgress);
     }
 
-    private static IList<ColorContainer> CreateContainers(Size size, int depth, int numberOfContainers)
+    private static IList<ColorContainer> CreateContainers(Size size, Color background, int numberOfContainers)
     {
         var containers = new ConcurrentBag<ColorContainer>();
 
@@ -164,11 +157,11 @@ public class ParallelCraneShaderFactory : IDisposable
             int fromWidth = i * containerWidth;
             if (i == numberOfContainers - 1)
             {
-                containers.Add(new ColorContainer(fromWidth, size.Width - 1, size.Height, BackgroundColor()));
+                containers.Add(new ColorContainer(fromWidth, size.Width - 1, size.Height, background));
             }
             else
             {
-                containers.Add(new ColorContainer(fromWidth, fromWidth + containerWidth - 1, size.Height, BackgroundColor()));
+                containers.Add(new ColorContainer(fromWidth, fromWidth + containerWidth - 1, size.Height, background));
             }
         }
 
@@ -205,7 +198,7 @@ public class ParallelCraneShaderFactory : IDisposable
         _progressSubject.OnNext(startProgress);
 
         int numberOfContainers = size.Width / 40;
-        var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, numberOfContainers);
+        var containers = CreateContainers(size, fractalParams.BackgroundColor, numberOfContainers);
         var fractionProgress = sumProgress / numberOfContainers;
 
         await Task.Run(() => Parallel.ForEach(containers,

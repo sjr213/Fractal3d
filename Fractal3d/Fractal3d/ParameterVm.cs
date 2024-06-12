@@ -6,6 +6,8 @@ using BasicWpfLibrary;
 using ImageCalculator;
 using System;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Security.Permissions;
 using System.Windows;
 
 public class ParameterVm : ViewModelBase
@@ -456,6 +458,8 @@ public class ParameterVm : ViewModelBase
         EscapeThresholdVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || SelectedShaderType == ShaderType.CraneRaymarch ?
             Visibility.Visible : Visibility.Collapsed;
 
+        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
+
         UpdateAllowedQuatEquations();
     }
 
@@ -596,4 +600,80 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public int BackgroundColorA
+    {
+        get => _fractalParams.BackgroundColor.A;
+        set
+        {
+            if(value < 0 || value > 255)
+                return;
+
+            var bValue = (byte)value;
+            if (bValue == _fractalParams.BackgroundColor.A)
+                return;
+            _fractalParams.BackgroundColor = Color.FromArgb(bValue, _fractalParams.BackgroundColor.R, _fractalParams.BackgroundColor.G, _fractalParams.BackgroundColor.B);
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public int BackgroundColorR
+    {
+        get => _fractalParams.BackgroundColor.R;
+        set
+        {
+            if(value < 0 || value > 255)
+                return;
+            var bValue = (byte)value;
+            if(bValue == _fractalParams.BackgroundColor.R)
+                return;
+            _fractalParams.BackgroundColor = Color.FromArgb(_fractalParams.BackgroundColor.A, bValue, _fractalParams.BackgroundColor.G, _fractalParams.BackgroundColor.B);
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public int BackgroundColorG
+    {
+        get => _fractalParams.BackgroundColor.G;
+        set
+        {
+            if(value < 0 || value > 255)
+                return;
+            var bValue = (byte)value;
+            if(bValue == _fractalParams.BackgroundColor.G)
+                return;
+            _fractalParams.BackgroundColor = Color.FromArgb(_fractalParams.BackgroundColor.A, _fractalParams.BackgroundColor.R, bValue, _fractalParams.BackgroundColor.B);
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public int BackgroundColorB
+    {
+        get => _fractalParams.BackgroundColor.B;
+        set
+        {
+            if(value < 0 || value > 255)
+                return;
+            var bValue = (byte)value;
+            if(bValue == _fractalParams.BackgroundColor.B)
+                return;
+            _fractalParams.BackgroundColor = Color.FromArgb(_fractalParams.BackgroundColor.A, _fractalParams.BackgroundColor.R, _fractalParams.BackgroundColor.G, bValue);
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    private bool _isCraneShader = false;
+    public bool IsCraneShader
+    {
+        get => _isCraneShader;
+        set
+        {
+            _isCraneShader = value;
+            OnPropertyChanged();
+        }
+
+    }
 }

@@ -35,6 +35,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" Margin="2" >
@@ -399,6 +400,69 @@
                                 <Binding.ValidationRules>
                                     <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinDistanceScale}" 
                                                                     Max="{x:Static local:ParameterConstants.MaxDistanceScale}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Row="17" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}"
+                        Visibility="{Binding IsCraneShader, Converter={StaticResource BoolToVisibilityConverterShowOnTrue}, UpdateSourceTrigger=PropertyChanged}">
+                <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Background" />
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="A:" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="BackgroundColorA" 
+                                 UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinColorComponent}" 
+                                                                Max="{x:Static local:ParameterConstants.MaxColorComponent}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="R:" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="BackgroundColorR" 
+                                 UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinColorComponent}" 
+                                                                Max="{x:Static local:ParameterConstants.MaxColorComponent}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="G:" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="BackgroundColorG" 
+                                 UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinColorComponent}" 
+                                                                Max="{x:Static local:ParameterConstants.MaxColorComponent}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="B:" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="BackgroundColorB" 
+                                 UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinColorComponent}" 
+                                                                Max="{x:Static local:ParameterConstants.MaxColorComponent}"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox.Text>
