@@ -290,6 +290,17 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         set => SetProperty(ref _time, value);
     }
 
+    private string _fileName = string.Empty;
+    public string FileName
+    {
+        get => _fileName;
+        set
+        {
+            var fileName = Path.GetFileName(value);
+            SetProperty(ref _fileName, fileName);
+        }
+    }
+
     private string _fractalRangeText = "";
     public string FractalRange
     {
@@ -470,7 +481,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
             //write string to file
             File.WriteAllText(saveFileDialog.FileName, jsonString);
-            _isDirty = false;
+            SetDirty(false);
+            FileName = saveFileDialog.FileName;
         }
         catch (Exception ex)
         {
@@ -509,12 +521,13 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         
         try
         {
-            var results = _movieResult;
+            var results = _movieResult; 
             string jsonString = JsonConvert.SerializeObject(results);
 
             //write string to file
             File.WriteAllText(saveFileDialog.FileName, jsonString);
-            _isDirty = false;
+            SetDirty(false);
+            FileName = saveFileDialog.FileName;
         }
         catch (Exception ex)
         {
@@ -536,7 +549,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             MovieUtil.CreateMovieMp4(saveFileDialog.FileName, _movieParams.MovieWidth, 
                 _movieParams.MovieHeight, _movieParams.FramesPerSecond, _movieBitmaps);
             
-            _isDirty = false;
+            SetDirty(false);
+            FileName = saveFileDialog.FileName;
         }
         catch (Exception ex)
         {
@@ -566,8 +580,10 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
             if (FractalResults.Count <= 1)
             {
-                _isDirty = false;
+                SetDirty(false);
+                FileName = saveFileDialog.FileName;
             }
+   
         }
         catch (Exception ex)
         {
@@ -667,8 +683,9 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
         if (FractalResults.Count == 0)
         {
-            _isDirty = false;
+            SetDirty(false);
         }
+        FileName = string.Empty;
     }
 
     private void OnDeleteMost()
@@ -690,8 +707,9 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
         if (FractalResults.Count == 0)
         {
-            _isDirty = false;
+            SetDirty(false);
         }
+        FileName = string.Empty;
     }
 
     private bool CanDeleteMost()
@@ -832,8 +850,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
                 OnMovieChanged(new MovieChangedEventArgs(){ ChangeType = MovieChangeType.ImageCountChange });
                 MovieViewModel.UpdateCurrentImage(nImages-1);
-
-                _isDirty = true;
+                SetDirty(true);
 
             }
             catch (Exception)
@@ -891,7 +908,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             if (SelectedViewMode == ViewModes.Queue)
                 FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
 
-            _isDirty = true;
+            SetDirty(true);
         }
     }
 
@@ -1005,7 +1022,6 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         }
 
         _fractalResult = results.Last();
-        _isDirty = false;
 
         _fractalParams = _fractalResult.Params ?? throw new InvalidOperationException("Fractal parameters was null");
         PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
@@ -1026,7 +1042,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     private async Task OpenResultFile(string filename)
     {
         var results = await Task.Run(() => ReadFractalResultsFromFile(filename));
-
+        SetDirty(false);
+        FileName = filename;
         UpdateUiWithFractalResults(results);
     }
 
@@ -1084,7 +1101,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         var result = movieResult.Results[0];
         FractalResults.Add(new FractalResultVm(result, _fractalNumber++));
         _fractalResult = result;
-        _isDirty = false;
+        SetDirty(false);
 
         _fractalParams = _fractalResult.Params ?? throw new InvalidOperationException("Movie fractal parameters were null");
         PaletteViewModel.SetNewPalette(_fractalParams.Palette, _fractalParams.ColorInfo);
@@ -1108,6 +1125,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
         var movieImages = await Task.Run(() => LoadMovieImages(movieResult));
 
+        SetDirty(false);
+        FileName = filename;
         UpdateUiWithMovieResults(movieResult, movieImages);
     }
 
@@ -1350,6 +1369,13 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         _movieParams.FromAngleZ = _movieParams.ToAngleZ = _fractalParams.TransformParams.RotateZ;
     }
 
+    private void SetDirty(bool dirty)
+    {
+        _isDirty = dirty;
+        if(dirty)
+            FileName = string.Empty;
+    }
+
     #endregion
 
     #region IMoviePlayer
@@ -1424,7 +1450,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
         FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
 
-        _isDirty = true;
+        SetDirty(true);
     }
 
     public bool CanMoveImageToQueue()
