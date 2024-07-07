@@ -97,7 +97,6 @@ public class ParallelCraneShaderFactory : IDisposable
                 var transformedDir = TransformationCalculator.Transform(transformMatrix, direction);
                 transformedPt = IntersectSphere(transformedPt, transformedDir, fractalParams.Bailout);
 
-                // This doesn't take into account the transformation matrix
                 var distance = IntersectQJulia(ref transformedPt, transformedDir, fractalParams, _nextCycle);
 
                 if(distance < fractalParams.MinRayDistance)

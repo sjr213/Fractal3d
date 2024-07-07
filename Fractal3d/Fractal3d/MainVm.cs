@@ -992,10 +992,14 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         if (string.IsNullOrEmpty(ext))
             return;
 
+        InfoString = "Loading...";
+
         if (ext == Fractal3dConstants.FileExtension)
             await OpenResultFile(filename);
         else if (ext == Fractal3dConstants.MovieFileExtension)
             await OpenMovieFile(filename);
+
+        InfoString = string.Empty;
     }
 
     private static List<FractalResult>? ReadFractalResultsFromFile(string filename)
