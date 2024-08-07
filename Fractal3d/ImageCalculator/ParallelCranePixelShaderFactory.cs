@@ -115,7 +115,7 @@ namespace ImageCalculator
                     var depth = (int)(distance * (palette.NumberOfColors - 1));
 
                     // need a new raw image that stores Vector3
-                    var light = lighting.Diffuse + lighting.Specular;
+                    var light = depth == 0 ? new Vector3(0f, 0f, 0f) : lighting.Diffuse + lighting.Specular;
                     raw.SetPixel(x, y, depth, light);
                 }
 
