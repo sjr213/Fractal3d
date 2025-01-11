@@ -7,9 +7,9 @@
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Copyright>Copyright © Steven Robles 2024</Copyright>
-    <AssemblyVersion>1.7.5</AssemblyVersion>
-    <FileVersion>1.7.5</FileVersion>
+    <Copyright>Copyright © Steven Robles 2025</Copyright>
+    <AssemblyVersion>1.7.6</AssemblyVersion>
+    <FileVersion>1.7.6</FileVersion>
     <Title>Fractal 3D</Title>
     <ApplicationIcon>bu0030.ico</ApplicationIcon>
     <Platforms>AnyCPU</Platforms>
