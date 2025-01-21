@@ -6,7 +6,7 @@
             xmlns:local="clr-namespace:Fractal3d"
             mc:Ignorable="d"
             d:DataContext="{d:DesignInstance Type=local:MainVm}"
-            Title="Fractal 3D" Width="1300">
+            Title="Fractal 3D" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -28,121 +28,128 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" >
-            <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
-                <Grid  DataContext="{Binding}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
-                        <RowDefinition Height="25" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" MaxHeight="35">
-                        <Button Margin="2" Padding="2" Command="{Binding CalculateCommand}">Calculate</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding SaveOneCommand}">Save One</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding SaveImageCommand}">Save Image</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding SaveAllCommand}">Save All</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding OpenCommand}">Open</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding DeleteCommand}">Delete</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding DeleteMostCommand}">Delete Most</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding ApplyRectCommand}"
+            <Grid  DataContext="{Binding}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" >
+                    <Button Margin="2" Padding="2" Command="{Binding CalculateCommand}">Calculate</Button>
+                    <Button Margin="2" Padding="2" Command="{Binding SaveOneCommand}">Save One</Button>
+                    <Button Margin="2" Padding="2" Command="{Binding SaveImageCommand}">Save Image</Button>
+                    <Button Margin="2" Padding="2" Command="{Binding SaveAllCommand}">Save All</Button>
+                    <Button Margin="2" Padding="2" Command="{Binding OpenCommand}">Open</Button>
+                    <Button Margin="2" Padding="2" Command="{Binding DeleteCommand}">Delete</Button>
+                    <Button Margin="2" Padding="2" Command="{Binding DeleteMostCommand}">Delete Most</Button>
+                    <Button Margin="2" Padding="2" Command="{Binding ApplyRectCommand}"
                             Visibility="{Binding ApplyRectVisibility}">Apply Rect</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding DefaultParametersCommand}">Defaults</Button>
-                        <Button Margin="2" Padding="2" Command="{Binding AddToQueueCommand}" Content="+ 2 Q">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Button Margin="2" Padding="2" Command="{Binding DefaultParametersCommand}">Defaults</Button>
+                    <Button Margin="2" Padding="2" Command="{Binding AddToQueueCommand}" Content="+ 2 Q">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedViewMode}" Value="Temp">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <StackPanel Margin="2, 0" Orientation="Horizontal" Visibility="{Binding ProgressVisibility}">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Percent Progress" />
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="{Binding ProgressString}" Width="40"/>
+                        <Button Margin="2" Padding="2" Command="{Binding CancelCommand}">Cancel</Button>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" >
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="View Mode:" />
+                    <ComboBox Margin="5,2" Padding="2" 
+                                  ItemsSource="{Binding AllowedViewModes}" SelectedItem="{Binding SelectedViewMode}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Margin="2" >Time (ms):</TextBlock>
+                        <TextBlock Margin="2" Text="{Binding Time}"/>
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ApplyRectVisibility}" >
+                        <TextBlock Margin="2">Fractal Range:</TextBlock>
+                        <TextBlock Margin="2" Text="{Binding FractalRange}"/>
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Margin="12,2,2,2" Text="{Binding InfoString}"/>
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Margin="12,2,2,2" >File:</TextBlock>
+                        <TextBlock Margin="2" Text="{Binding FileName}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="2" Grid.Column="1" 
+                              HorizontalScrollBarVisibility="Auto" 
+                              VerticalScrollBarVisibility="Auto" 
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"
+                              BorderThickness="1">
+                    <Grid>
+                        <StackPanel Visibility="{Binding ImageViewVisibility}">
+                            <ContentPresenter Content="{Binding ImageViewModel}" >
+                                <ContentPresenter.Resources>
+                                    <DataTemplate DataType="{x:Type local:ImageVm}" >
+                                        <local:ImageView/>
+                                    </DataTemplate>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </StackPanel>
+
+                        <StackPanel Visibility="{Binding MovieViewVisibility}">
+                            <ContentPresenter Content="{Binding MovieViewModel}" >
+                                <ContentPresenter.Resources>
+                                    <DataTemplate DataType="{x:Type local:MovieVm}" >
+                                        <local:MovieView/>
+                                    </DataTemplate>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+
+                <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" >
+                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="1">
+                        <ListBox ItemsSource="{Binding Path=FractalResults}" BorderThickness="0" SelectedItem="{Binding Path=SelectedFractalResult, Mode=TwoWay}">
+                            <ListBox.ItemContainerStyle>
+                                <Style>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedViewMode}" Value="Temp">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
+                                        <EventTrigger RoutedEvent="Control.PreviewMouseLeftButtonDown">
+                                            <BeginStoryboard>
+                                                <Storyboard Storyboard.TargetProperty="(Selector.IsSelected)">
+                                                    <BooleanAnimationUsingKeyFrames Duration="0:0:0">
+                                                        <DiscreteBooleanKeyFrame Value="True" />
+                                                    </BooleanAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </Button.Style>
-                        </Button>
-                        <StackPanel Margin="2, 0" Orientation="Horizontal" Visibility="{Binding ProgressVisibility}">
-                            <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Percent Progress" />
-                            <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="{Binding ProgressString}" Width="40"/>
-                            <Button Margin="2" Padding="2" Command="{Binding CancelCommand}">Cancel</Button>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal" MaxHeight="30">
-                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="View Mode:" />
-                        <ComboBox Margin="5,2" Padding="2" 
-                                  ItemsSource="{Binding AllowedViewModes}" SelectedItem="{Binding SelectedViewMode}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate >
+                                    <ContentPresenter ContentTemplate="{StaticResource FractalResultView}" />
                                 </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <StackPanel Margin="2" Orientation="Horizontal">
-                            <TextBlock Margin="2" >Time (ms):</TextBlock>
-                            <TextBlock Margin="2" Text="{Binding Time}"/>
-                        </StackPanel>
-                        <StackPanel Margin="2" Orientation="Horizontal" Visibility="{Binding ApplyRectVisibility}" >
-                            <TextBlock Margin="2">Fractal Range:</TextBlock>
-                            <TextBlock Margin="2" Text="{Binding FractalRange}"/>
-                        </StackPanel>
-                        <StackPanel Margin="2" Orientation="Horizontal">
-                            <TextBlock Margin="12,2,2,2" Text="{Binding InfoString}"/>
-                        </StackPanel>
-                        <StackPanel Margin="2" Orientation="Horizontal">
-                            <TextBlock Margin="12,2,2,2" >File:</TextBlock>
-                            <TextBlock Margin="2" Text="{Binding FileName}"/>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="2" Grid.Column="1" Visibility="{Binding ImageViewVisibility}">
-                        <ContentPresenter Content="{Binding ImageViewModel}" >
-                            <ContentPresenter.Resources>
-                                <DataTemplate DataType="{x:Type local:ImageVm}" >
-                                    <local:ImageView/>
-                                </DataTemplate>
-                            </ContentPresenter.Resources>
-                        </ContentPresenter>
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="2" Grid.Column="1" Visibility="{Binding MovieViewVisibility}">
-                        <ContentPresenter Content="{Binding MovieViewModel}" >
-                            <ContentPresenter.Resources>
-                                <DataTemplate DataType="{x:Type local:MovieVm}" >
-                                    <local:MovieView/>
-                                </DataTemplate>
-                            </ContentPresenter.Resources>
-                        </ContentPresenter>
-                    </StackPanel>
-
-                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" MaxWidth="150" Height="{Binding ResultListHeight}">
-                        <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
-                            <ListBox ItemsSource="{Binding Path=FractalResults}" BorderThickness="0" SelectedItem="{Binding Path=SelectedFractalResult, Mode=TwoWay}">
-                                <ListBox.ItemContainerStyle>
-                                    <Style>
-                                        <Style.Triggers>
-                                            <EventTrigger RoutedEvent="Control.PreviewMouseLeftButtonDown">
-                                                <BeginStoryboard>
-                                                    <Storyboard Storyboard.TargetProperty="(Selector.IsSelected)">
-                                                        <BooleanAnimationUsingKeyFrames Duration="0:0:0">
-                                                            <DiscreteBooleanKeyFrame Value="True" />
-                                                        </BooleanAnimationUsingKeyFrames>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </EventTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate >
-                                        <ContentPresenter ContentTemplate="{StaticResource FractalResultView}" />
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </ScrollViewer>
-                    </Border>
-                </Grid>
-            </ScrollViewer>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
         </Border>
 
         <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource BorderBlackNarrowStyle}" >

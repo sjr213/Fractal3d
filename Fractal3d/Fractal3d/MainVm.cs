@@ -322,8 +322,6 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         set => SetProperty(ref _applyRectVisibility, value);
     }
 
-    public double ResultListHeight => 50 + _fractalParams.DisplaySize.Height;
-
     private ObservableCollection<ViewModes> _allowedViewModes;
     public ObservableCollection<ViewModes> AllowedViewModes
     {
@@ -421,7 +419,6 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     {
         _fractalParams = fractalParams;
         ClearFractalRange();
-        OnPropertyChanged(nameof(ResultListHeight));
         ImageViewModel.SetFractalParams(_fractalParams);
         if(LightingViewModel != null)
             LightingViewModel.SetFractalParams(_fractalParams);
