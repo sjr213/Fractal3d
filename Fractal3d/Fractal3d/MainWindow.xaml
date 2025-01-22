@@ -153,20 +153,20 @@
         </Border>
 
         <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource BorderBlackNarrowStyle}" >
-            <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
-                <TabControl >
+            <TabControl >
 
-                    <TabItem Header="Palettes" DataContext="{Binding }">
-                        <ContentPresenter Content="{Binding PaletteViewModel}">
-                            <ContentPresenter.Resources>
-                                <DataTemplate DataType="{x:Type local:PaletteVm}" >
-                                    <local:PalettesView/>
-                                </DataTemplate>
-                            </ContentPresenter.Resources>
-                        </ContentPresenter>
-                    </TabItem>
+                <TabItem Header="Palettes" DataContext="{Binding }">
+                    <ContentPresenter Content="{Binding PaletteViewModel}">
+                        <ContentPresenter.Resources>
+                            <DataTemplate DataType="{x:Type local:PaletteVm}" >
+                                <local:PalettesView/>
+                            </DataTemplate>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
+                </TabItem>
 
-                    <TabItem Header="Parameters" DataContext="{Binding }">
+                <TabItem Header="Parameters" DataContext="{Binding }">
+                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
                         <ContentPresenter Content="{Binding ParameterViewModel}">
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type local:ParameterVm}" >
@@ -174,9 +174,11 @@
                                 </DataTemplate>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
-                    </TabItem>
+                    </ScrollViewer> 
+                </TabItem>
 
-                    <TabItem Header="Lighting" DataContext="{Binding }">
+                <TabItem Header="Lighting" DataContext="{Binding }">
+                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
                         <ContentPresenter Content="{Binding LightingViewModel}">
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type local:LightingVm}" >
@@ -184,9 +186,11 @@
                                 </DataTemplate>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
-                    </TabItem>
+                    </ScrollViewer>
+                </TabItem>
 
-                    <TabItem Header="Transform" DataContext="{Binding}">
+                <TabItem Header="Transform" DataContext="{Binding}">
+                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
                         <ContentPresenter Content="{Binding TransformViewModel}">
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type local:TransformVm}">
@@ -194,27 +198,31 @@
                                 </DataTemplate>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
-                    </TabItem>
+                    </ScrollViewer>
+                </TabItem>
 
-                    <TabItem Header="Display" DataContext="{Binding }">
+                <TabItem Header="Display" DataContext="{Binding }">
+                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
                         <ContentPresenter Content="{Binding DisplayInfoViewModel}" ContentTemplate="{StaticResource DisplayInfoView}">
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type local:DisplayInfoVm}"  />
                             </ContentPresenter.Resources>
                         </ContentPresenter>
-                    </TabItem>
+                    </ScrollViewer>
+                </TabItem>
 
-                    <TabItem Header="Movie" DataContext="{Binding }" >
-                        <TabItem.Style>
-                            <Style TargetType="{x:Type TabItem}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedViewMode}" Value="Movie">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TabItem.Style>
+                <TabItem Header="Movie" DataContext="{Binding }" >
+                    <TabItem.Style>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedViewMode}" Value="Movie">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabItem.Style>
+                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="0">
                         <ContentPresenter Content="{Binding MovieParamViewModel}">
                             <ContentPresenter.Resources>
                                 <DataTemplate DataType="{x:Type local:MovieParamVm}">
@@ -222,10 +230,10 @@
                                 </DataTemplate>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
-                    </TabItem>
+                    </ScrollViewer>
+                </TabItem>
 
-                </TabControl>
-            </ScrollViewer>
+            </TabControl>
         </Border>
 
         <ContentPresenter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding PaletteViewModel}"

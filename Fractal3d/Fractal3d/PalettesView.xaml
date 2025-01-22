@@ -33,13 +33,12 @@
                 <Button Margin="2" Padding="2" Command="{Binding RedoPaletteCommand}">Redo</Button>
             </StackPanel>
         </StackPanel>
-        <ScrollViewer Grid.Row="1"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible"
-                              MaxWidth="500" >
+        <ScrollViewer Grid.Row="1"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
             <DataGrid Name="PaletteGrid" Margin="2" Padding="2" RowBackground = "AliceBlue"  
                     AutoGenerateColumns = "False" ItemsSource="{Binding PaletteItems}" SelectedItem="{Binding SelectedPalette}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header = "Name" Binding = "{Binding Name, Mode=OneWay}" CanUserSort="False" />
-                    <DataGridTemplateColumn Header="Palette" IsReadOnly="True" Width="360">
+                    <DataGridTemplateColumn Header="Palette" IsReadOnly="True" Width="350">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Image Source="{Binding BmpImage}" Width="350" Height="15" Stretch="Fill"/>
