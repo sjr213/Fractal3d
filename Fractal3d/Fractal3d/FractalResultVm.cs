@@ -4,15 +4,21 @@ namespace Fractal3d;
 using BasicWpfLibrary;
 using ImageCalculator;
 using System.Text;
+using System.Windows;
 
 public class FractalResultVm : ViewModelBase
 {
     private readonly FractalResult _fractalResult;
+    private Visibility _lightingOnZeroIndexVisibility = Visibility.Collapsed;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public FractalResultVm(FractalResult fractalResult, int number)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
         _fractalResult = fractalResult;
         _number = number;
+        if(_fractalResult != null && _fractalResult.Params != null)
+            LightingOnZeroIndexVisibility = _fractalResult.Params.ShaderType == ShaderType.FractalShader ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private int _number;
@@ -230,7 +236,27 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
-public FractalResult Result => _fractalResult;
+    public string LightingOnZeroIndex
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+            return _fractalResult.Params.LightingOnZeroIndex ? "Yes" : "No";
+        }
+    }
+
+    public Visibility LightingOnZeroIndexVisibility
+    {
+        get => _lightingOnZeroIndexVisibility;
+        set
+        {
+            _lightingOnZeroIndexVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public FractalResult Result => _fractalResult;
 
 };
 

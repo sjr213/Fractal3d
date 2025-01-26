@@ -110,6 +110,9 @@ public class FractalParams : ICloneable
     // For Crane Pixel Shader only
     public Color BackgroundColor { get; set; } = Color.FromArgb(255, 255, 255, 255);
 
+    // For RawLightedImage with ImageMode.Depth: so all shaders except ParallelCraneShaderFactory
+    public bool LightingOnZeroIndex { get; set; } = true;
+
     public static List<Light> MakeLights()
     {
         var light1 = new Light()
