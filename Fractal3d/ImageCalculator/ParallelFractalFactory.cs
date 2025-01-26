@@ -215,6 +215,7 @@ public class ParallelFractalFactory : IDisposable
     {
         var size = fractalParams.ImageSize;
         var raw = new RawLightedImage(size.Width, size.Height, fractalParams.Palette.NumberOfColors);
+        raw.LightingOnZeroIndex = fractalParams.LightingOnZeroIndex;
 
         foreach (var container in containers)
         {

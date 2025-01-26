@@ -190,6 +190,7 @@ public class ShaderFactory : IDisposable
         _fractalParams = fractalParams;
         var size = fractalParams.ImageSize;
         var raw = new RawLightedImage(size.Width, size.Height, fractalParams.Palette.NumberOfColors);
+        raw.LightingOnZeroIndex = fractalParams.LightingOnZeroIndex;
 
         _distanceEstimator = GetSceneDel(fractalParams.SceneType);
 
