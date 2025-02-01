@@ -100,7 +100,12 @@ namespace ImageCalculator
 
                     var distance = RayMarchQJulia(ref transformedPt, transformedDir, fractalParams, _nextCycle);
 
-                    if (distance < 0.0f || float.IsNaN(distance))
+                    if(float.IsNaN(distance))
+                        distance = 0.0f;
+                    
+                    distance = (distance - fractalParams.MinStretchDistance) / (fractalParams.MaxStretchDistance - fractalParams.MinStretchDistance);
+
+                    if (distance < 0.0f)
                         distance = 0.0f;
 
                     if (distance > 1.0f)

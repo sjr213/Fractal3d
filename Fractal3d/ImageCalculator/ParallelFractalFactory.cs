@@ -151,6 +151,12 @@ public class ParallelFractalFactory : IDisposable
                 var direction = to - from;
 
                 var distance = RayMarch(fractalParams, startPt, direction, transformMatrix, out var outPt);
+                if(float.IsNaN(distance))
+                {
+                    distance = 0.0f;
+                }
+
+                distance = (distance - fractalParams.MinStretchDistance) / (fractalParams.MaxStretchDistance - fractalParams.MinStretchDistance);
 
                 if (distance < 0.0f)
                     distance = 0.0f;

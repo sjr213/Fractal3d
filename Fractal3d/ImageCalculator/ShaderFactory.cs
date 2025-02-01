@@ -141,6 +141,8 @@ public class ShaderFactory : IDisposable
                 bool hit = tuple.Item1;
                 float distance = tuple.Item2;
 
+                distance = (distance - fractalParams.MinStretchDistance) / (fractalParams.MaxStretchDistance - fractalParams.MinStretchDistance);
+
                 if (distance < 0.0f)
                     distance = 0.0f;
 

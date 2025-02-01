@@ -100,10 +100,14 @@ namespace ImageCalculator
 
                     var distance = IntersectQJuliaForPixelShader(ref transformedPt, transformedDir, fractalParams, _nextCycle) * fractalParams.DistanceScale;
 
-                    if (distance < 0.0f || float.IsNaN(distance))
+                    if (float.IsNaN(distance))
                         distance = 0.0f;
 
-                    if (distance > 0)
+                    distance = (distance - fractalParams.MinStretchDistance) / (fractalParams.MaxStretchDistance - fractalParams.MinStretchDistance);
+
+                    if(distance < 0.0f)
+                        distance = 0.0f;
+                    else if (distance > 0)
                         distance += fractalParams.ColorBase;
 
                     if (distance > 1.0f)

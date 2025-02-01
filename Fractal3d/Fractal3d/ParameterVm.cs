@@ -429,7 +429,7 @@ public class ParameterVm : ViewModelBase
         }
     }
 
-    public Visibility LightingOnZeroIndexVisibility
+    public Visibility NonCraneShaderVisibility
     {
         get => _lightingOnZeroIndexVisibility;
         set
@@ -626,6 +626,44 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public float MinStretchDistance
+    {
+        get => _fractalParams.MinStretchDistance;
+        set
+        {
+            if(value > MaxStretchDistance)
+            {
+                var max = MaxStretchDistance;
+                MaxStretchDistance = value;
+                _fractalParams.MinStretchDistance = max;
+            }
+            else
+                _fractalParams.MinStretchDistance = value;
+
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public float MaxStretchDistance
+    {
+        get => _fractalParams.MaxStretchDistance;
+        set
+        {
+            if (value < MinStretchDistance)
+            {
+                var min = MinStretchDistance;
+                MinStretchDistance = value;
+                _fractalParams.MaxStretchDistance = min;
+            }
+            else
+                _fractalParams.MaxStretchDistance = value;
+
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
     #endregion
 
     #region handlers
@@ -674,7 +712,7 @@ public class ParameterVm : ViewModelBase
         EscapeThresholdVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || SelectedShaderType == ShaderType.CraneRaymarch ?
             Visibility.Visible : Visibility.Collapsed;
 
-        LightingOnZeroIndexVisibility = SelectedShaderType == ShaderType.CraneShader ? Visibility.Collapsed : Visibility.Visible;
+        NonCraneShaderVisibility = SelectedShaderType == ShaderType.CraneShader ? Visibility.Collapsed : Visibility.Visible;
 
         IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
 

@@ -113,6 +113,9 @@ public class FractalParams : ICloneable
     // For RawLightedImage with ImageMode.Depth: so all shaders except ParallelCraneShaderFactory
     public bool LightingOnZeroIndex { get; set; } = true;
 
+    public float MinStretchDistance { get; set; } = 0.0f;
+    public float MaxStretchDistance { get; set; } = 1.0f;
+
     public static List<Light> MakeLights()
     {
         var light1 = new Light()

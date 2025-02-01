@@ -66,5 +66,8 @@ public static class ParameterConstants
 
     public const int MinColorComponent = 0;
     public const int MaxColorComponent = 255;
+
+    public const float MinDistanceStretch = 0.0f;
+    public const float MaxDistanceStretch = 1.0f;
 }
 
