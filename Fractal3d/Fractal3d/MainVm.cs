@@ -395,7 +395,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     {
         if (_isDirty)
         {
-            DoYouWantToSaveResults();
+            if(! DoYouWantToSaveResults())
+                e.Cancel = true;
         }
     }
 
@@ -630,9 +631,10 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
     private async Task OnOpen()
     {
-        if (_fractalResult != null)
+        if (_fractalResult != null && _isDirty)
         {
-            DoYouWantToSaveResults();
+            if (!DoYouWantToSaveResults())
+                return;
         }
 
         var openFileDialog = new OpenFileDialog
@@ -1318,13 +1320,18 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         return false;
     }
 
-    private void DoYouWantToSaveResults()
+    private bool DoYouWantToSaveResults()
     {
-        DialogResult result = System.Windows.Forms.MessageBox.Show("Do you want to save your results?", "Unsaved Changes", MessageBoxButtons.YesNo);
+        DialogResult result = System.Windows.Forms.MessageBox.Show("Do you want to save your results?", "Unsaved Changes", MessageBoxButtons.YesNoCancel);
+        if (result == DialogResult.Cancel)
+            return false;
+
         if (result == DialogResult.Yes)
         {
             OnSaveAll();
         }
+
+        return true;
     }
 
     private void SetSelectionRect(Rect rect)
