@@ -9,7 +9,7 @@ using System.Windows;
 public class FractalResultVm : ViewModelBase
 {
     private readonly FractalResult _fractalResult;
-    private Visibility _lightingOnZeroIndexVisibility = Visibility.Collapsed;
+    private Visibility _nonCraneShaderVisibility = Visibility.Collapsed;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public FractalResultVm(FractalResult fractalResult, int number)
@@ -17,8 +17,10 @@ public class FractalResultVm : ViewModelBase
     {
         _fractalResult = fractalResult;
         _number = number;
-        if(_fractalResult != null && _fractalResult.Params != null)
-            LightingOnZeroIndexVisibility = _fractalResult.Params.ShaderType == ShaderType.FractalShader ? Visibility.Visible : Visibility.Collapsed;
+        if (_fractalResult != null && _fractalResult.Params != null)
+        {
+            NonCraneShaderVisibility = _fractalResult.Params.ShaderType == ShaderType.CraneShader ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 
     private int _number;
@@ -246,14 +248,20 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
-    public Visibility LightingOnZeroIndexVisibility
+    public string StretchDistanceRangeText
     {
-        get => _lightingOnZeroIndexVisibility;
-        set
+        get
         {
-            _lightingOnZeroIndexVisibility = value;
-            OnPropertyChanged();
+            if (_fractalResult.Params == null)
+                return string.Empty;
+            return string.Format("{0:F2} < Stretch Distance < {1:F2}", _fractalResult.Params.MinStretchDistance, _fractalResult.Params.MaxStretchDistance);
         }
+    }
+
+    public Visibility NonCraneShaderVisibility
+    {
+        get => _nonCraneShaderVisibility;
+        set => SetProperty(ref _nonCraneShaderVisibility, value);
     }
 
     public FractalResult Result => _fractalResult;

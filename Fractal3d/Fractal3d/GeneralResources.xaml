@@ -187,6 +187,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -221,9 +222,11 @@
                     <TextBlock Grid.Row="13" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Aim to Origin</TextBlock>
                     <TextBlock Grid.Row="13" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=AimToOrigin }"/>
                     <TextBlock Grid.Row="14" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" 
-                               Visibility="{Binding LightingOnZeroIndexVisibility}">Lighting on Zero Index</TextBlock>
+                               Visibility="{Binding NonCraneShaderVisibility}">Lighting on Zero Index</TextBlock>
                     <TextBlock Grid.Row="14" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
-                               Visibility="{Binding LightingOnZeroIndexVisibility}" Text="{Binding Path=LightingOnZeroIndex }"/>
+                               Visibility="{Binding NonCraneShaderVisibility}" Text="{Binding Path=LightingOnZeroIndex }"/>
+                    <TextBlock Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SmallTextBlockStyle}"
+                               Visibility="{Binding NonCraneShaderVisibility}" Text="{Binding Path=StretchDistanceRangeText}"/>
                 </Grid>
             </Expander>
         </Border>
