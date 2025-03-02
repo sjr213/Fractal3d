@@ -907,6 +907,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             if (SelectedViewMode == ViewModes.Queue)
                 FractalResults.Add(new FractalResultVm((FractalResult)_fractalResult.Clone(), _fractalNumber++));
 
+            ParameterViewModel = new ParameterVm(_fractalParams, OnParamsChanged);
+
             SetDirty(true);
         }
     }
