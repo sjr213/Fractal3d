@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows;
 using BasicWpfLibrary;
 using System.Windows.Controls;
@@ -13,11 +12,8 @@ namespace Fractal3d
     public class ImageVm : ViewModelBase
     {
         #region members
-        private FractalParams _fractalParams;
-        private System.Windows.Point _startPt;
-        private System.Windows.Point _endPt;
-        private PointF _fromPt;
-        private PointF _toPt;
+        private Point _startPt;
+        private Point _endPt;
         private readonly Action<Rect> _setSelectionRect;
         private bool _mouseCaptured;
         #endregion
@@ -26,7 +22,6 @@ namespace Fractal3d
 
         public ImageVm(FractalParams fractalParams, BitmapImage image, Action<Rect> setSelectionRect)
         {
-            _fractalParams = fractalParams;
             Image = image;
             Width = fractalParams.DisplaySize.Width;
             Height = fractalParams.DisplaySize.Height;
@@ -118,11 +113,9 @@ namespace Fractal3d
             var canvas = GetCanvas(e.Source);
             if (canvas == null)
                 return;
-
             _endPt = e.GetPosition(canvas);
 
-            if (CalculateImageRange(canvas.Width, canvas.Height) == false)
-                return;
+            if (canvas.Width == 0 || canvas.Height == 0) return;
 
             DrawRectangle();
         }
@@ -153,47 +146,28 @@ namespace Fractal3d
 
             _endPt = e.GetPosition(canvas);
 
-            if (CalculateImageRange(canvas.Width, canvas.Height) == false)
-                return;
+            if (canvas.Width == 0 || canvas.Height == 0) return;
 
             DrawRectangle();
         }
 
-        private bool CalculateImageRange(double width, double height)
-        {
-            if(width == 0 || height == 0) return false;
-
-            double fractalWidth = _fractalParams.ToX - _fractalParams.FromX;
-
-            float x1 = (float)(_startPt.X / width * fractalWidth + _fractalParams.FromX);
-            float x2 = (float)(_endPt.X / width * fractalWidth + _fractalParams.FromX);
-
-            double fractalHeight = _fractalParams.ToY - _fractalParams.FromY;
-
-            float y1 = (float)(_startPt.Y / height * fractalHeight + _fractalParams.FromY);
-            float y2 = (float)(_endPt.Y / height * fractalHeight + _fractalParams.FromY);
-
-            _fromPt.X  = Math.Min(x1, x2);
-            _fromPt.Y = Math.Min(y1, y2);
-
-            _toPt.X = Math.Max(x1, x2);
-            _toPt.Y = Math.Max(y1, y2);
-
-            return true;
-        }
-
         private void DrawRectangle()
         {
-            var width = _endPt.X - _startPt.X;
-            var height = _endPt.Y - _startPt.Y;
+            var minX = Math.Min(_startPt.X, _endPt.X);
+            var maxX = Math.Max(_startPt.X, _endPt.X);
+            var minY = Math.Min(_startPt.Y, _endPt.Y);
+            var maxY = Math.Max(_startPt.Y, _endPt.Y);
+
+            var width = maxX - minX;
+            var height = maxY - minY;
 
             RectWidth = width;
             RectHeight = height;
-            RectLeft = _startPt.X;
-            RectTop = _startPt.Y;
+            RectLeft = minX;
+            RectTop = minY;
 
-            var relativeX = _startPt.X / Width;
-            var relativeY = _startPt.Y / Height;
+            var relativeX = minX / Width;
+            var relativeY = minY / Height;
             var relativeWidth = width / Width;
             var relativeHeight = height / Height;
 
@@ -214,13 +188,11 @@ namespace Fractal3d
 
         public void SetFractalParams(FractalParams fractalParams)
         {
-            _fractalParams = fractalParams;
             Width = fractalParams.DisplaySize.Width;
             Height = fractalParams.DisplaySize.Height;
 
             // Reset rectangle
             ClearRectangle();
-
         }
 
         #endregion
