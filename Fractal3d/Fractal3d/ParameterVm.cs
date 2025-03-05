@@ -117,10 +117,10 @@ public class ParameterVm : ViewModelBase
 
     public float FromX
     {
-        get => _fractalParams.FromX;
+        get => (float)Math.Round(_fractalParams.FromX,5,MidpointRounding.AwayFromZero);
         set
         {
-            if (value > ToX)
+            if(value > ToX)
             {
                 var from = ToX;
                 ToX = value;
@@ -138,7 +138,7 @@ public class ParameterVm : ViewModelBase
 
     public float ToX
     {
-        get => _fractalParams.ToX;
+        get => (float)Math.Round(_fractalParams.ToX, 5, MidpointRounding.AwayFromZero);
         set
         {
             if (value < FromX)
@@ -159,7 +159,7 @@ public class ParameterVm : ViewModelBase
 
     public float FromY
     {
-        get => _fractalParams.FromY;
+        get => (float)Math.Round(_fractalParams.FromY, 5, MidpointRounding.AwayFromZero);
         set
         {
             if (value > ToY)
@@ -180,7 +180,7 @@ public class ParameterVm : ViewModelBase
 
     public float ToY
     {
-        get => _fractalParams.ToY;
+        get => (float)Math.Round(_fractalParams.ToY, 5, MidpointRounding.AwayFromZero);
         set
         {
             if (value < FromY)

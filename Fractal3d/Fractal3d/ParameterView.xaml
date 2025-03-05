@@ -112,7 +112,7 @@
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="From X" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
-                            <Binding Path="FromX" 
+                            <Binding Path="FromX"
                                      UpdateSourceTrigger="LostFocus" >
                                 <Binding.ValidationRules>
                                     <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinFromTo}" 

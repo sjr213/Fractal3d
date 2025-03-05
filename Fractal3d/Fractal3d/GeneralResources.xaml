@@ -56,7 +56,7 @@
         <Setter Property="Margin" Value="4,2" />
         <Setter Property="Padding" Value="2" />
         <Setter Property="MinWidth" Value="40"/>
-        <Setter Property="MaxWidth" Value="70"/>
+        <Setter Property="MaxWidth" Value="60"/>
     </Style>
 
     <Style TargetType="Slider" x:Key="DisplayInfoSliderStyle">
