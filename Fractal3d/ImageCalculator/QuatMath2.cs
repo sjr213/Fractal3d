@@ -31,6 +31,7 @@ public static class QuatMath2
         return new Vector3(v.Y, v.Z, v.W);
     }
 
+    /* This is the original version from Crane's paper, kept for reference
     public static Vector4 QuatMult(Vector4 q1, Vector4 q2)
     {
         float x = q1.X * q2.X - q1.Y * q2.Y - q1.Z * q2.Z - q1.W * q2.W;
@@ -39,6 +40,25 @@ public static class QuatMath2
         float y = q1.X * q2.Y + q2.X * q1.Y + cross.X;
         float z = q1.X * q2.Z + q2.X * q1.Z + cross.Y;
         float w = q1.X * q2.W + q2.X * q1.W + cross.Z;
+
+        return new Vector4(x, y, z, w);
+    }
+    */
+
+    // This comes from shadertoy
+    public static Vector4 QuatMult(Vector4 q1, Vector4 q2)
+    {
+        // a.x * b.x - a.y * b.y - a.z * b.z - a.w * b.w,
+        float x = q1.X * q2.X - q1.Y * q2.Y - q1.Z * q2.Z - q1.W * q2.W;
+
+        // a.y* b.x + a.x * b.y + a.z * b.w - a.w * b.z, 
+        float y = q1.Y * q2.X + q1.X * q2.Y + q1.Z * q2.W - q1.W * q2.Z;
+
+        // a.z * b.x + a.x * b.z + a.w * b.y - a.y * b.w,
+        float z = q1.Z * q2.X + q1.X * q2.Z + q1.W * q2.Y - q1.Y * q2.W;
+
+        // a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y 
+        float w = q1.W * q2.X + q1.X * q2.W + q1.Y * q2.Z - q1.Z * q2.Y;
 
         return new Vector4(x, y, z, w);
     }
