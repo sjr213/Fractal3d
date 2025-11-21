@@ -94,15 +94,6 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="ShadowsCheckBox" TargetType="{x:Type CheckBox}" >
-        <Setter Property="Visibility" Value="Collapsed" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding SelectedShaderType}" Value="CraneShader">
-                <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
     <Style x:Key="CranePixelStack" TargetType="{x:Type StackPanel}" >
         <Setter Property="Visibility" Value="Collapsed" />
         <Style.Triggers>

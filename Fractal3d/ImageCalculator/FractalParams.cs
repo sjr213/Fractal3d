@@ -17,7 +17,9 @@ public enum ShaderType
     [Description("Crane Pixel")]
     CranePixel,
     [Description("Crane Raymarch")]
-    CraneRaymarch
+    CraneRaymarch,
+    [Description("Shadertoy Shader")]
+    ShadertoyShader
 }
 
 [Serializable]

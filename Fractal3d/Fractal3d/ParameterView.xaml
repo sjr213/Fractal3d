@@ -373,7 +373,8 @@
                     </TextBox>
                 </StackPanel>
                 <CheckBox VerticalContentAlignment="Center" VerticalAlignment="Center"
-                  IsChecked="{Binding RenderShadows}" Style="{StaticResource ShadowsCheckBox}">Shadows</CheckBox>
+                  IsChecked="{Binding RenderShadows}" Visibility="{Binding IsCraneShader, Converter={StaticResource BoolToVisibilityConverterShowOnTrue}, 
+                    UpdateSourceTrigger=PropertyChanged}">Shadows</CheckBox>
             </StackPanel>
 
             <StackPanel Grid.Row="16" Margin="2,5" Orientation="Horizontal" Style="{StaticResource CranePixelStack}">

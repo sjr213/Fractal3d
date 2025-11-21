@@ -43,7 +43,7 @@ public class LightingVm : ViewModelBase
         UpdateLightIndices();
         SelectedReflectionType = _fractalParams.Lights[SelectedLightIndex - 1].ReflectionType;
         UseNormalComponent = _fractalParams.Lights[SelectedLightIndex - 1].UseNormalComponent;
-        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
+        UpdateIsCraneShader();
 
         _addLightCommand = new RelayCommand(_ => AddLight(), _ => true);
         _deleteLightCommand = new RelayCommand(_ => DeleteLight(), _ => CanDeleteLight());
@@ -86,7 +86,7 @@ public class LightingVm : ViewModelBase
         SelectedReflectionType = light.ReflectionType;
         SelectedLightType = light.LightType;
         UseNormalComponent = light.UseNormalComponent;
-        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
+        UpdateIsCraneShader();
     }
 
     public float NormalDistance
@@ -478,7 +478,7 @@ public class LightingVm : ViewModelBase
             NormalDistance = _fractalParams.NormalDistance;
             AmbientPower = _fractalParams.AmbientPower;
             SelectedLightComboMode = _fractalParams.LightComboMode;
-            IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
+            UpdateIsCraneShader();
             _onParamsChanged(_fractalParams);
         }
         catch (Exception ex)
@@ -490,7 +490,12 @@ public class LightingVm : ViewModelBase
     public void SetFractalParams(FractalParams fractalParams)
     {
         _fractalParams = fractalParams;
-        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
+        UpdateIsCraneShader();
+    }
+
+    private void UpdateIsCraneShader()
+    {
+        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader;
     }
 
 }

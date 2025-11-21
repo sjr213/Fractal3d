@@ -38,7 +38,7 @@ public class ParameterVm : ViewModelBase
 
         AllowedShaderTypes = new ObservableCollection<ShaderType>
         {
-            ShaderType.FractalShader, ShaderType.CraneShader, ShaderType.CranePixel, ShaderType.CraneRaymarch, ShaderType.ShapeShader
+            ShaderType.FractalShader, ShaderType.CraneShader, ShaderType.CranePixel, ShaderType.CraneRaymarch, ShaderType.ShapeShader, ShaderType.ShadertoyShader
         };  
 
         AllowedSceneTypes = new List<ShaderSceneType>
@@ -701,7 +701,8 @@ public class ParameterVm : ViewModelBase
 
     private void UpdateQuatEquationAndShaderSceneTypeVisibility()
     {
-        QuatEquationVisibility = SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || SelectedShaderType == ShaderType.CraneRaymarch ?
+        QuatEquationVisibility = SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || 
+            SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.ShadertoyShader ?
             Visibility.Visible : Visibility.Collapsed;
 
         ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader ? Visibility.Visible : Visibility.Collapsed;
@@ -709,12 +710,13 @@ public class ParameterVm : ViewModelBase
         RayTraceFieldVisibility = SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.ShapeShader ?
             Visibility.Visible : Visibility.Collapsed;
 
-        EscapeThresholdVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || SelectedShaderType == ShaderType.CraneRaymarch ?
+        EscapeThresholdVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel ||
+            SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.ShadertoyShader ?
             Visibility.Visible : Visibility.Collapsed;
 
-        NonCraneShaderVisibility = SelectedShaderType == ShaderType.CraneShader ? Visibility.Collapsed : Visibility.Visible;
+        NonCraneShaderVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.ShadertoyShader ? Visibility.Collapsed : Visibility.Visible;
 
-        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader;
+        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader;
 
         UpdateAllowedQuatEquations();
     }

@@ -19,7 +19,8 @@ public class FractalResultVm : ViewModelBase
         _number = number;
         if (_fractalResult != null && _fractalResult.Params != null)
         {
-            NonCraneShaderVisibility = _fractalResult.Params.ShaderType == ShaderType.CraneShader ? Visibility.Collapsed : Visibility.Visible;
+            NonCraneShaderVisibility = _fractalResult.Params.ShaderType == ShaderType.CraneShader || _fractalResult.Params.ShaderType == ShaderType.ShadertoyShader ? 
+                Visibility.Collapsed : Visibility.Visible;
         }
     }
 
@@ -48,6 +49,9 @@ public class FractalResultVm : ViewModelBase
 
             if(_fractalResult.Params.ShaderType == ShaderType.CranePixel)
                 return "Crane Pixel";
+
+            if(_fractalResult.Params.ShaderType == ShaderType.ShadertoyShader)
+                return "Shadertoy Shader";
 
             var val = _fractalResult.Params.QuatEquation;
             return ((QuaternionEquationType)val).GetDescription();
