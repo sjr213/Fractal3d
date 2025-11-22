@@ -10,6 +10,7 @@ public class FractalResultVm : ViewModelBase
 {
     private readonly FractalResult _fractalResult;
     private Visibility _nonCraneShaderVisibility = Visibility.Collapsed;
+    private Visibility _equationVisibility = Visibility.Collapsed;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public FractalResultVm(FractalResult fractalResult, int number)
@@ -21,6 +22,7 @@ public class FractalResultVm : ViewModelBase
         {
             NonCraneShaderVisibility = _fractalResult.Params.ShaderType == ShaderType.CraneShader || _fractalResult.Params.ShaderType == ShaderType.ShadertoyShader ? 
                 Visibility.Collapsed : Visibility.Visible;
+            EquationVisibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 
@@ -34,6 +36,16 @@ public class FractalResultVm : ViewModelBase
 
     public string Title => "Image " + Number;
 
+    public string ShaderName
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+            return _fractalResult.Params.ShaderType.GetDescription();
+        }
+    }
+
     public string EquationType
     {
         get
@@ -42,16 +54,7 @@ public class FractalResultVm : ViewModelBase
                 return string.Empty;
 
             if (_fractalResult.Params.ShaderType == ShaderType.ShapeShader)
-                return "Shape Shader";
-
-            if(_fractalResult.Params.ShaderType == ShaderType.CraneShader)
-                return "Crane Shader";
-
-            if(_fractalResult.Params.ShaderType == ShaderType.CranePixel)
-                return "Crane Pixel";
-
-            if(_fractalResult.Params.ShaderType == ShaderType.ShadertoyShader)
-                return "Shadertoy Shader";
+                return string.Empty;
 
             var val = _fractalResult.Params.QuatEquation;
             return ((QuaternionEquationType)val).GetDescription();
@@ -266,6 +269,12 @@ public class FractalResultVm : ViewModelBase
     {
         get => _nonCraneShaderVisibility;
         set => SetProperty(ref _nonCraneShaderVisibility, value);
+    }
+
+    public Visibility EquationVisibility
+    {
+        get => _equationVisibility;
+        set => SetProperty(ref _equationVisibility, value);
     }
 
     public FractalResult Result => _fractalResult;
