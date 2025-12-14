@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Numerics;
 using System.Reactive.Subjects;
 using static ImageCalculator.QuatMath2;
+using static ImageCalculator.QuatMathShadertoy;
 
 namespace ImageCalculator;
 
@@ -17,8 +18,9 @@ public class ParallelShadertoyFactory : IDisposable
     public IObservable<double> Progress => _progressSubject;
     bool _isDisposed;
 
-    private CalculationIntersectionDelegate _nextCycle = IterateIntersectionSquared;
-    private NormEstimateDelegate _normEstimate = NormEstimateSquared;
+    private MapDelegate _nextCycle = MapSq;
+
+    // private NormEstimateDelegate _normEstimate = NormEstimateSquared;
 
     public void Dispose()
     {
@@ -97,30 +99,13 @@ public class ParallelShadertoyFactory : IDisposable
                 var transformedDir = TransformationCalculator.Transform(transformMatrix, direction);
                 transformedPt = IntersectSphere(transformedPt, transformedDir, fractalParams.Bailout);
 
-                var distance = IntersectQJulia(ref transformedPt, transformedDir, fractalParams, _nextCycle);
+                var distance = IntersectQJuliaST(ref transformedPt, transformedDir, fractalParams, _nextCycle);
 
                 if (distance < fractalParams.MinRayDistance)
                 {
-                    Vector3 normal = _normEstimate(transformedPt, fractalParams.C4, fractalParams.Iterations, fractalParams.NormalDistance);
+                    Vector3 normal = CalcNormal3(transformedPt, fractalParams.C4);
                     Vector3 partialColor = GetPhongLightsExpanded(transformedLights, fractalParams.LightComboMode, transformedDir, transformedPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
-
-                    if (fractalParams.RenderShadows)
-                    {
-                        // The shadow ray will start at the intersection point and go towards the point light.
-                        // We initially move the ray origin a little bit along this direction so we don't mistakenly 
-                        // find an intersection with the same point again.
-                        Vector3 L = Vector3.Normalize(transformedLights[0].Position - transformedPt);
-                        transformedPt += L * fractalParams.MinRayDistance * 2.0f;
-                        var dist = IntersectQJulia(ref transformedPt, L, fractalParams, _nextCycle);
-
-                        // Again, if our estimate of the distance to the set is small, we say there was a hit.
-                        // In this case it means that the point is in a shadow and should be given a darker shade.
-                        if (dist < fractalParams.MinRayDistance)
-                        {
-                            activeColor = ShadeColor(activeColor, 0.4f);
-                        }
-                    }
                 }
 
                 raw.SetColor(x, y, activeColor);
@@ -191,8 +176,7 @@ public class ParallelShadertoyFactory : IDisposable
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
 
-        _nextCycle = GetCalculationDelegate(fractalParams.QuatEquation);
-        _normEstimate = GetNormEstimateDelegate(fractalParams.QuatEquation);
+        _nextCycle = GetMapDelegate(fractalParams.QuatEquation);
 
         _progressSubject.OnNext(startProgress);
 
