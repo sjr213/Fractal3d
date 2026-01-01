@@ -282,7 +282,7 @@
                 </TextBox>
             </StackPanel>
             <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal" >
-                <StackPanel Orientation="Horizontal" Margin="0,0,20,0" Visibility="{Binding RayTraceFieldVisibility}">
+                <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Min Ray Distance" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
