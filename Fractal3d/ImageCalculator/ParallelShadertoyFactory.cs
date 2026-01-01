@@ -103,7 +103,7 @@ public class ParallelShadertoyFactory : IDisposable
 
                 if (distance < fractalParams.MinRayDistance)
                 {
-                    Vector3 normal = CalcNormal3(transformedPt, fractalParams.C4);
+                    Vector3 normal = CalcNormal3(transformedPt, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
                     Vector3 partialColor = GetPhongLightsExpanded(transformedLights, fractalParams.LightComboMode, transformedDir, transformedPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
                 }

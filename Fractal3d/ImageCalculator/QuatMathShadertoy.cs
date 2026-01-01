@@ -65,9 +65,8 @@ namespace ImageCalculator
         }
 
 
-        public static Vector3 CalcNormal3(Vector3 p, Vector4 c)
+        public static Vector3 CalcNormal3(Vector3 p, Vector4 c, int maxIterations, float escapeThreshold)
         {
-            const int numIterations = 11;
             Vector4 z = new Vector4(p.X, p.Y, p.Z, 0.0f);
 
             // identity derivative
@@ -75,7 +74,7 @@ namespace ImageCalculator
             Vector4 J1 = new Vector4(0, 1, 0, 0);
             Vector4 J2 = new Vector4(0, 0, 1, 0);
 
-            for (int i = 0; i < numIterations; i++)
+            for (int i = 0; i < maxIterations; i++)
             {
                 Vector4 cz = qconj(z);
 
@@ -87,7 +86,7 @@ namespace ImageCalculator
                 // z -> z2 + c
                 z = qsqr(z) + c;
 
-                if (qlength2(z) > 4.0) break;
+                if (qlength2(z) > escapeThreshold) break;
             }
 
             Vector3 v = new Vector3(Vector4.Dot(J0, z),
@@ -103,7 +102,6 @@ namespace ImageCalculator
             Vector4 z4 = new Vector4(z, 0.0f);
             float md2 = 1.0f;
             float mz2 = Vector4.Dot(z4, z4);
-            float n = 1.0f;
 
             for(int i = 0; i < maxIterations; i++)
             {
@@ -114,7 +112,6 @@ namespace ImageCalculator
                 {
                     break;
                 }
-                n += 1.0f;
             }
 
             return (float) (0.25 *  Math.Sqrt(mz2/md2) * Math.Log(mz2));
@@ -143,7 +140,7 @@ namespace ImageCalculator
         {
             float res = 1.0f;
             float t = 0.001f;
-            for(int i = 0; i < 64; i++)
+            for(int i = 0; i < fractalParams.MaxRaySteps; i++)
             {
                 float h = mapDelegate(startPt + direction * t, fractalParams.C4, fractalParams.Iterations, fractalParams.EscapeThreshold);
                 res = Math.Min(res, 64.0f * h / t);
