@@ -118,23 +118,6 @@ public class Parallel_IFS_Factory : IDisposable
                     Vector3 normal = IfsMath.NormEstimateSierpinski(transformedPt, fractalParams.Iterations, fractalParams.NormalDistance, fractalParams.Bailout, transMat1, transMat2);
                     Vector3 partialColor = GetPhongLightsExpanded(transformedLights, fractalParams.LightComboMode, transformedDir, transformedPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
-
-                    if (fractalParams.RenderShadows)
-                    {
-                        // The shadow ray will start at the intersection point and go towards the point light.
-                        // We initially move the ray origin a little bit along this direction so we don't mistakenly 
-                        // find an intersection with the same point again.
-                        Vector3 L = Vector3.Normalize(transformedLights[0].Position - transformedPt);
-                        transformedPt += L * fractalParams.MinRayDistance * 2.0f;
-                        var dist = IfsMath.IntersectSierpinski(ref transformedPt, transformedDir, fractalParams, transMat1, transMat2); 
-
-                        // Again, if our estimate of the distance to the set is small, we say there was a hit.
-                        // In this case it means that the point is in a shadow and should be given a darker shade.
-                        if (dist < fractalParams.MinRayDistance)
-                        {
-                            activeColor = ShadeColor(activeColor, 0.4f);
-                        }
-                    }
                 }
 
                 raw.SetColor(x, y, activeColor);

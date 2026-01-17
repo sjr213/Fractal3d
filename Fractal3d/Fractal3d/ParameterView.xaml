@@ -231,7 +231,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
-            <StackPanel Grid.Row="7" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
+            <StackPanel Grid.Row="7" Margin="2,5" Orientation="Horizontal" Visibility="{Binding ConstantC_Visibility}">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Constant C" />
                 </StackPanel>
