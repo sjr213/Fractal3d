@@ -1,8 +1,4 @@
-﻿using System.Drawing.Drawing2D;
-using System.Numerics;
-using System.Runtime.Intrinsics;
-using System.Security.Cryptography.X509Certificates;
-
+﻿using System.Numerics;
 namespace ImageCalculator;
 
 public static class TransformationCalculator

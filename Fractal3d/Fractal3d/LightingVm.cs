@@ -495,7 +495,8 @@ public class LightingVm : ViewModelBase
 
     private void UpdateIsCraneShader()
     {
-        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader;
+        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader ||
+            _fractalParams.ShaderType == ShaderType.IFSShader;
     }
 
 }

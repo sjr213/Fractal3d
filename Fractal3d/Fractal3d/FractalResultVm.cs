@@ -20,7 +20,8 @@ public class FractalResultVm : ViewModelBase
         _number = number;
         if (_fractalResult != null && _fractalResult.Params != null)
         {
-            NonCraneShaderVisibility = _fractalResult.Params.ShaderType == ShaderType.CraneShader || _fractalResult.Params.ShaderType == ShaderType.ShadertoyShader ? 
+            NonCraneShaderVisibility = _fractalResult.Params.ShaderType == ShaderType.CraneShader || _fractalResult.Params.ShaderType == ShaderType.ShadertoyShader ||
+                _fractalResult.Params.ShaderType == ShaderType.IFSShader ?
                 Visibility.Collapsed : Visibility.Visible;
             EquationVisibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader ? Visibility.Collapsed : Visibility.Visible;
         }

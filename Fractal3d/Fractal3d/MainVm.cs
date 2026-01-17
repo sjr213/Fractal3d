@@ -42,6 +42,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     private readonly ParallelCranePixelShaderFactory _cranePixelFactory = new();
     private readonly ParallelCraneRayMarchFactory _craneRayMarchFactory = new();
     private readonly ParallelShadertoyFactory _shadertoyFactory = new();
+    private readonly Parallel_IFS_Factory _IFS_Factory = new();
     private FractalParams _fractalParams = new(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(NumberOfColors) };
     private FractalResult? _fractalResult;
     private bool _isDisposed;
@@ -51,6 +52,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     private readonly IDisposable? _progressCranePixelSubject;
     private readonly IDisposable? _progressCraneRaymarchSubject;
     private readonly IDisposable? _progressShadertoySubject;
+    private readonly IDisposable? _progressIFSSubject;
     private CancellationTokenSource _cancelSource = new();
     private int _fractalNumber = 1;
     private bool _isDirty;
@@ -115,6 +117,9 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
             _progressShadertoySubject = _shadertoyFactory.Progress.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(progress => PercentProgress = progress);
+
+            _progressIFSSubject = _IFS_Factory.Progress.ObserveOn(SynchronizationContext.Current)
+                .Subscribe(progress => PercentProgress = progress);
         }
 
         var fileCmd = new AsyncCommand(() => OpenFileFromStartUp(fileName), () => true, OnOpenFileError);
@@ -147,12 +152,14 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             _progressShaderSubject?.Dispose();
             _progressCraneRaymarchSubject?.Dispose();
             _progressShadertoySubject?.Dispose();
+            _progressIFSSubject?.Dispose();
             _shaderFactory.Dispose();
             _fractalParallelFactory.Dispose();
             _craneShaderFactory.Dispose();
             _cranePixelFactory.Dispose();
             _craneRayMarchFactory.Dispose();
             _shadertoyFactory.Dispose();
+            _IFS_Factory.Dispose();
             _movieVmObserver.Dispose();
         }
 
@@ -844,6 +851,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
                         fractalResult = await _craneRayMarchFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
                     else if (_fractalParams.ShaderType == ShaderType.ShadertoyShader)
                         fractalResult = await _shadertoyFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
+                    else if(_fractalParams.ShaderType == ShaderType.IFSShader)
+                        fractalResult = await _IFS_Factory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
                     else
                         fractalResult = await _fractalParallelFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
 
@@ -893,6 +902,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
                     _fractalResult = await _craneRayMarchFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
                 else if (_fractalParams.ShaderType == ShaderType.ShadertoyShader)
                     _fractalResult = await _shadertoyFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
+                else if(_fractalParams.ShaderType == ShaderType.IFSShader)
+                    _fractalResult = await _IFS_Factory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
                 else
                     _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
             }
