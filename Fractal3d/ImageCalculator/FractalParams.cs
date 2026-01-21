@@ -152,6 +152,10 @@ public class FractalParams : ICloneable
         return new List<Light>() { light1, light2, light3 };
     }
 
+    public float IfsScale { get; set; } = 2.0f;
+    public TransformationParams IfsTransform1 = new TransformationParams();
+    public TransformationParams IfsTransform2 = new TransformationParams();
+
     public object Clone()
     {
         var copy = (FractalParams)MemberwiseClone();
@@ -161,6 +165,8 @@ public class FractalParams : ICloneable
         copy.ColorInfo = (DisplayInfo)ColorInfo.Clone();
         copy.Palette = (Palette)Palette.Clone();
         copy.TransformParams = (TransformationParams)TransformParams.Clone();
+        copy.IfsTransform1 = (TransformationParams)IfsTransform1.Clone();
+        copy.IfsTransform2 = (TransformationParams)IfsTransform2.Clone();
         return copy;
     }
 }

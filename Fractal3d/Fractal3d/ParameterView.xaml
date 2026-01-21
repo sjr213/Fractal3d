@@ -254,18 +254,30 @@
             </StackPanel>
             <Separator Grid.Row="8"/>
             <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
-                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Bailout" />
-                <TextBox Style="{StaticResource TextBoxInError}" >
-                    <TextBox.Text>
-                        <Binding Path="Bailout" 
+                <StackPanel  Margin="0,0,20,0" Orientation="Horizontal" >
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Bailout" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="Bailout" 
                                  UpdateSourceTrigger="LostFocus" >
-                            <Binding.ValidationRules>
-                                <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinBailout}" 
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinBailout}" 
                                                                 Max="{x:Static local:ParameterConstants.MaxBailout}"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding IfsVisibility}">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="IFS Scale" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="IfsScale" 
+                                 UpdateSourceTrigger="LostFocus" >
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Iterations" />

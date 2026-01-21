@@ -22,6 +22,7 @@ public class ParameterVm : ViewModelBase
     private Visibility _rayTraceFieldVisibility = Visibility.Collapsed;
     private Visibility _escapeThresholdVisibility = Visibility.Collapsed;
     private Visibility _lightingOnZeroIndexVisibility = Visibility.Collapsed;
+    private Visibility _ifsVisibility = Visibility.Collapsed;
     private ObservableCollection<ShaderType> _allowedShaderTypes;
     private List<ShaderSceneType> _allowedSceneType;
     private bool _isCraneShader = false;
@@ -451,6 +452,16 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public Visibility IfsVisibility
+    {
+        get => _ifsVisibility;
+        set
+        {
+            _ifsVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
     public bool AimToOrigin
     {
         get => _fractalParams.AimToOrigin;
@@ -735,6 +746,8 @@ public class ParameterVm : ViewModelBase
         ConstantC_Visibility = SelectedShaderType == ShaderType.ShapeShader || SelectedShaderType == ShaderType.IFSShader ?
             Visibility.Collapsed : Visibility.Visible;
 
+        IfsVisibility = SelectedShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+
         UpdateAllowedQuatEquations();
     }
 
@@ -770,6 +783,17 @@ public class ParameterVm : ViewModelBase
             if (value == _fractalParams.QuatEquation)
                 return;
             _fractalParams.QuatEquation = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public float IfsScale
+    {
+        get => _fractalParams.IfsScale;
+        set
+        {
+            _fractalParams.IfsScale = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }

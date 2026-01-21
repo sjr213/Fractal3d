@@ -193,9 +193,8 @@ namespace ImageCalculator
             return q;
         }
 
-        public static float Sierpinski3_alt3(Vector3 q, float bailout, int iterations, Matrix4x4 mat1, Matrix4x4 mat2)
+        public static float Sierpinski3_alt3(Vector3 q, float bailout, int iterations, Matrix4x4 mat1, Matrix4x4 mat2, float scale)
         {
-            float scale = 2f;
             var a1 = new Vector3(1, 1, 1);
             var a2 = new Vector3(-1, -1, 1);
             var a3 = new Vector3(1, -1, -1);
@@ -237,9 +236,8 @@ namespace ImageCalculator
             return q.Length() * (float)Math.Pow(scale, -n);
         }
 
-        public static Vector3 Sierpinski3_alt3_vector(Vector3 q, float bailout, int iterations, Matrix4x4 mat1, Matrix4x4 mat2)
+        public static Vector3 Sierpinski3_alt3_vector(Vector3 q, float bailout, int iterations, Matrix4x4 mat1, Matrix4x4 mat2, float scale)
         {
-            float scale = 2f;
             var a1 = new Vector3(1, 1, 1);
             var a2 = new Vector3(-1, -1, 1);
             var a3 = new Vector3(1, -1, -1);
@@ -281,13 +279,13 @@ namespace ImageCalculator
             return q;
         }
 
-        public static float IntersectSierpinski(ref Vector3 startPt, Vector3 direction, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        public static float IntersectSierpinski(ref Vector3 startPt, Vector3 direction, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2, float scale)
         {
             float dist = 0;
 
             for (int i = 0; i < fractalParams.MaxRaySteps; i++)
             {
-                dist = Sierpinski3_alt3(startPt, fractalParams.Bailout, fractalParams.Iterations, mat1, mat2);
+                dist = Sierpinski3_alt3(startPt, fractalParams.Bailout, fractalParams.Iterations, mat1, mat2, scale);
                 dist /= fractalParams.StepDivisor;
 
                 startPt += direction * dist;
@@ -304,7 +302,7 @@ namespace ImageCalculator
             return dist;
         }
 
-        public static Vector3 NormEstimateSierpinski(Vector3 p, int maxIterations, float distance, float bailout, Matrix4x4 mat1, Matrix4x4 mat2)
+        public static Vector3 NormEstimateSierpinski(Vector3 p, int maxIterations, float distance, float bailout, Matrix4x4 mat1, Matrix4x4 mat2, float scale)
         {
             Vector3 gx1 = new Vector3(p.X - distance, p.Y, p.Z);
             Vector3 gx2 = new Vector3(p.X + distance, p.Y, p.Z);
@@ -315,12 +313,12 @@ namespace ImageCalculator
 
             for (int i = 0; i < maxIterations; i++)
             {
-                gx1 = Sierpinski3_alt3_vector(gx1, bailout, maxIterations, mat1, mat2);
-                gx2 = Sierpinski3_alt3_vector(gx2, bailout, maxIterations, mat1, mat2);
-                gy1 = Sierpinski3_alt3_vector(gy1, bailout, maxIterations, mat1, mat2);
-                gy2 = Sierpinski3_alt3_vector(gy2, bailout, maxIterations, mat1, mat2);
-                gz1 = Sierpinski3_alt3_vector(gz1, bailout, maxIterations, mat1, mat2);
-                gz2 = Sierpinski3_alt3_vector(gz2, bailout, maxIterations, mat1, mat2);
+                gx1 = Sierpinski3_alt3_vector(gx1, bailout, maxIterations, mat1, mat2, scale);
+                gx2 = Sierpinski3_alt3_vector(gx2, bailout, maxIterations, mat1, mat2, scale);
+                gy1 = Sierpinski3_alt3_vector(gy1, bailout, maxIterations, mat1, mat2, scale);
+                gy2 = Sierpinski3_alt3_vector(gy2, bailout, maxIterations, mat1, mat2, scale);
+                gz1 = Sierpinski3_alt3_vector(gz1, bailout, maxIterations, mat1, mat2, scale);
+                gz2 = Sierpinski3_alt3_vector(gz2, bailout, maxIterations, mat1, mat2, scale);
             }
 
             var gradX = gx2.Length() - gx1.Length();

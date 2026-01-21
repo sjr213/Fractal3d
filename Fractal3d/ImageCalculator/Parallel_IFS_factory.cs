@@ -16,18 +16,10 @@ public class Parallel_IFS_Factory : IDisposable
 
     public IObservable<double> Progress => _progressSubject;
     bool _isDisposed;
-    private TransformationParams _transParams1;
-    private TransformationParams _transParams2;
 
     public Parallel_IFS_Factory()
     {
         _isDisposed = false;
-        _transParams1 = new TransformationParams();
-        _transParams1.RotateX  = 45.0f;
-        _transParams1.RotateY  = 30.0f;
-        _transParams2 = new TransformationParams();
-        _transParams2.RotateY  = -60.0f;
-        _transParams2.RotateZ  = 15.0f;
     }
 
     public void Dispose()
@@ -86,8 +78,8 @@ public class Parallel_IFS_Factory : IDisposable
         var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
         var transformedLights = LightUtil.TransformLights(fractalParams.Lights, transformMatrix);
 
-        var transMat1 = TransformationCalculator.CreateInvertedTransformationMatrix(_transParams1);
-        var transMat2 = TransformationCalculator.CreateInvertedTransformationMatrix(_transParams2);
+        var transMat1 = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.IfsTransform1);
+        var transMat2 = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.IfsTransform2);
 
         for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
         {
@@ -110,12 +102,13 @@ public class Parallel_IFS_Factory : IDisposable
                 var transformedDir = TransformationCalculator.Transform(transformMatrix, direction);
                // transformedPt = IntersectSphere(transformedPt, transformedDir, fractalParams.Bailout);
 
-                var distance = IfsMath.IntersectSierpinski(ref transformedPt, transformedDir, fractalParams, transMat1, transMat2);
+                var distance = IfsMath.IntersectSierpinski(ref transformedPt, transformedDir, fractalParams, transMat1, transMat2, fractalParams.IfsScale);
 
                 if (distance < fractalParams.MinRayDistance)
                 {
                     // NormEstimateSierpinski(Vector3 p, int maxIterations, float distance, float bailout)
-                    Vector3 normal = IfsMath.NormEstimateSierpinski(transformedPt, fractalParams.Iterations, fractalParams.NormalDistance, fractalParams.Bailout, transMat1, transMat2);
+                    Vector3 normal = IfsMath.NormEstimateSierpinski(transformedPt, fractalParams.Iterations, fractalParams.NormalDistance, 
+                        fractalParams.Bailout, transMat1, transMat2, fractalParams.IfsScale);
                     Vector3 partialColor = GetPhongLightsExpanded(transformedLights, fractalParams.LightComboMode, transformedDir, transformedPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
                 }
