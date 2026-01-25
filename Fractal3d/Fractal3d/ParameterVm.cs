@@ -54,6 +54,8 @@ public class ParameterVm : ViewModelBase
         SelectedSceneType = _fractalParams.SceneType;
         AimToOrigin = _fractalParams.AimToOrigin;
         UpdateQuatEquationAndShaderSceneTypeVisibility();
+        Transform1 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform1, _onParamsChanged);
+        Transform2 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform2, _onParamsChanged);
     }
 
 #endregion
@@ -715,6 +717,8 @@ public class ParameterVm : ViewModelBase
 
             SelectedQuatEquationType = _fractalParams.QuatEquation;
             SelectedSceneType = _fractalParams.SceneType;
+            Transform1 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform1, _onParamsChanged);
+            Transform2 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform2, _onParamsChanged);
         }
     }
 
@@ -798,6 +802,21 @@ public class ParameterVm : ViewModelBase
             _onParamsChanged(_fractalParams);
         }
     }
+
+    private TransformVm2 _transformVm1;
+    public TransformVm2 Transform1
+    {
+        get => _transformVm1;
+        set => SetProperty(ref _transformVm1, value);
+    }
+
+    private TransformVm2 _transformVm2;
+    public TransformVm2 Transform2
+    {
+        get => _transformVm2;
+        set => SetProperty(ref _transformVm2, value);
+    }
+
 
     #endregion
 }

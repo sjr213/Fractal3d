@@ -37,6 +37,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" Margin="2" >
@@ -518,6 +519,27 @@
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
+
+            <TabControl Grid.Row="19" Visibility="{Binding IfsVisibility}">
+                <TabItem Header="Transform 1" DataContext="{Binding }">
+                    <ContentPresenter Content="{Binding Transform1}">
+                        <ContentPresenter.Resources>
+                            <DataTemplate DataType="{x:Type local:TransformVm2}" >
+                                <local:TransformViewHorizontal/>
+                            </DataTemplate>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
+                </TabItem>
+                <TabItem Header="Transform 2" DataContext="{Binding }">
+                    <ContentPresenter Content="{Binding Transform2}">
+                        <ContentPresenter.Resources>
+                            <DataTemplate DataType="{x:Type local:TransformVm2}" >
+                                <local:TransformViewHorizontal/>
+                            </DataTemplate>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
+                </TabItem>
+            </TabControl>
         </Grid>
     </Border>
 </UserControl>
