@@ -4,6 +4,7 @@ using FractureCommonLib;
 using System.ComponentModel;
 using System.Drawing;
 using System.Numerics;
+using System.Text.Json.Serialization;
 
 [Serializable]
 public enum ShaderType
@@ -37,6 +38,15 @@ public enum QuaternionEquationType
     Q_CubedZZ2,
     [Description("Quat Cubed Z2Z")]
     Q_CubedZ2Z,
+}
+
+[Serializable]
+public enum IfsEquationType
+{
+    [Description("Standard")]
+    Standard,
+    [Description("Center Stretch")]
+    CenterStretch
 }
 
 [Serializable]
@@ -155,6 +165,8 @@ public class FractalParams : ICloneable
     public float IfsScale { get; set; } = 2.0f;
     public TransformationParams IfsTransform1 = new TransformationParams();
     public TransformationParams IfsTransform2 = new TransformationParams();
+    public IfsEquationType IfsEquation { get; set; } = IfsEquationType.Standard;
+    public Vector3 IfsC { get; set; } = new Vector3(1.0f, 1.0f, 1.0f);
 
     public object Clone()
     {

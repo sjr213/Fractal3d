@@ -25,6 +25,7 @@ public class ParameterVm : ViewModelBase
     private Visibility _ifsVisibility = Visibility.Collapsed;
     private ObservableCollection<ShaderType> _allowedShaderTypes;
     private List<ShaderSceneType> _allowedSceneType;
+    private ObservableCollection<IfsEquationType> _allowedIfsEquationTypes;
     private bool _isCraneShader = false;
     #endregion
 
@@ -56,6 +57,11 @@ public class ParameterVm : ViewModelBase
         UpdateQuatEquationAndShaderSceneTypeVisibility();
         Transform1 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform1, _onParamsChanged);
         Transform2 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform2, _onParamsChanged);
+        SelectedIfsEquationType = _fractalParams.IfsEquation;
+        AllowedIfsEquationTypes = new ObservableCollection<IfsEquationType>
+        {
+            IfsEquationType.Standard, IfsEquationType.CenterStretch
+        };
     }
 
 #endregion
@@ -719,6 +725,7 @@ public class ParameterVm : ViewModelBase
             SelectedSceneType = _fractalParams.SceneType;
             Transform1 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform1, _onParamsChanged);
             Transform2 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform2, _onParamsChanged);
+            SelectedIfsEquationType = _fractalParams.IfsEquation;
         }
     }
 
@@ -792,6 +799,25 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public ObservableCollection<IfsEquationType> AllowedIfsEquationTypes
+    {
+        get => _allowedIfsEquationTypes;
+        set => SetProperty(ref _allowedIfsEquationTypes, value);
+    }
+
+    public IfsEquationType SelectedIfsEquationType
+    {
+        get => _fractalParams.IfsEquation;
+        set
+        {
+            if (value == _fractalParams.IfsEquation)
+                return;
+            _fractalParams.IfsEquation = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
     public float IfsScale
     {
         get => _fractalParams.IfsScale;
@@ -817,6 +843,50 @@ public class ParameterVm : ViewModelBase
         set => SetProperty(ref _transformVm2, value);
     }
 
+    public float IfsCx
+    {
+        get => _fractalParams.IfsC.X;
+        set
+        {
+            if (Math.Abs(value - _fractalParams.IfsC.X) < ParameterConstants.FloatTolerance)
+                return;
+            var ifsC = _fractalParams.IfsC;
+            ifsC.X = value;
+            _fractalParams.IfsC = ifsC;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public float IfsCy
+    {
+        get => _fractalParams.IfsC.Y;
+        set
+        {
+            if (Math.Abs(value - _fractalParams.IfsC.Y) < ParameterConstants.FloatTolerance)
+                return;
+            var ifsC = _fractalParams.IfsC;
+            ifsC.Y = value;
+            _fractalParams.IfsC = ifsC;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public float IfsCz
+    {
+        get => _fractalParams.IfsC.Z;
+        set
+        {
+            if (Math.Abs(value - _fractalParams.IfsC.Z) < ParameterConstants.FloatTolerance)
+                return;
+            var ifsC = _fractalParams.IfsC;
+            ifsC.Z = value;
+            _fractalParams.IfsC = ifsC;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
 
     #endregion
 }

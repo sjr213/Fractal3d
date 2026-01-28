@@ -15,9 +15,10 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Width="420" Height="600" Style="{StaticResource BorderStyle}">
+    <Border Width="420" Height="630" Style="{StaticResource BorderStyle}">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
@@ -201,14 +202,26 @@
             </StackPanel>
             <Separator Grid.Row="4"/>
             <StackPanel Grid.Row="5" Margin="2,5" Orientation="Horizontal" >
-                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Shader Type" />
-                <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedShaderTypes}" SelectedItem="{Binding SelectedShaderType}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Shader Type" />
+                    <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedShaderTypes}" SelectedItem="{Binding SelectedShaderType}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Margin="20, 2,2,2" Orientation="Horizontal" Visibility="{Binding IfsVisibility}">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="IFS Equation Type" />
+                    <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedIfsEquationTypes}" SelectedItem="{Binding SelectedIfsEquationType}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal" Visibility="{Binding QuatEquationVisibility}">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Quaterion Equation Type" />
@@ -253,8 +266,27 @@
                     <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cz}" />
                 </StackPanel>
             </StackPanel>
-            <Separator Grid.Row="8"/>
-            <StackPanel Grid.Row="9" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
+
+            <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IfsVisibility}">
+                <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="IFS C" />
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X:" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCx}" />
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y:" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCy}" />
+                </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z:" />
+                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCz}" />
+                </StackPanel>
+            </StackPanel>
+            
+            <Separator Grid.Row="9"/>
+            <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
                 <StackPanel  Margin="0,0,20,0" Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Bailout" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -280,7 +312,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
+            <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Iterations" />
                 <TextBox Style="{StaticResource TextBoxInError}" >
                     <TextBox.Text>
@@ -294,7 +326,7 @@
                     </TextBox.Text>
                 </TextBox>
             </StackPanel>
-            <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal" >
+            <StackPanel Grid.Row="12" Margin="2,5" Orientation="Horizontal" >
                 <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Min Ray Distance" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -324,7 +356,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="12" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="13" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Distance" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -354,7 +386,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="13" Margin="2, 5" Orientation="Horizontal" Visibility="{Binding RayTraceFieldVisibility}">
+            <StackPanel Grid.Row="14" Margin="2, 5" Orientation="Horizontal" Visibility="{Binding RayTraceFieldVisibility}">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Step Divisor" />
                 <TextBox Style="{StaticResource TextBoxInError}" MaxWidth="80">
                     <TextBox.Text>
@@ -369,8 +401,8 @@
                 </TextBox>
             </StackPanel>
 
-            <Separator Grid.Row="14"/>
-            <StackPanel Grid.Row="15" Margin="2,5,2,2" Orientation="Horizontal" Visibility="{Binding EscapeThresholdVisibility}">
+            <Separator Grid.Row="15"/>
+            <StackPanel Grid.Row="16" Margin="2,5,2,2" Orientation="Horizontal" Visibility="{Binding EscapeThresholdVisibility}">
                 <StackPanel Orientation="Horizontal" Margin="0,0,20,0" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Escape Threshold" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -390,7 +422,7 @@
                     UpdateSourceTrigger=PropertyChanged}">Shadows</CheckBox>
             </StackPanel>
 
-            <StackPanel Grid.Row="16" Margin="2,5" Orientation="Horizontal" Style="{StaticResource CranePixelStack}">
+            <StackPanel Grid.Row="17" Margin="2,5" Orientation="Horizontal" Style="{StaticResource CranePixelStack}">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Color Base" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -422,7 +454,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Row="17" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}"
+            <StackPanel Grid.Row="18" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}"
                         Visibility="{Binding IsCraneShader, Converter={StaticResource BoolToVisibilityConverterShowOnTrue}, UpdateSourceTrigger=PropertyChanged}">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Background" />
@@ -485,7 +517,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Row="18" Margin="2, 5" Orientation="Vertical" Visibility="{Binding NonCraneShaderVisibility}">
+            <StackPanel Grid.Row="19" Margin="2, 5" Orientation="Vertical" Visibility="{Binding NonCraneShaderVisibility}">
                 <CheckBox Margin="5,0,5,5" Padding="2" VerticalContentAlignment="Center"
                   IsChecked="{Binding LightingOnZeroIndex}">Lighting on zero index</CheckBox>
                 <StackPanel Margin="2" Orientation="Horizontal" >
@@ -520,7 +552,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <TabControl Grid.Row="19" Visibility="{Binding IfsVisibility}">
+            <TabControl Grid.Row="20" Visibility="{Binding IfsVisibility}" Height="200">
                 <TabItem Header="Transform 1" DataContext="{Binding }">
                     <ContentPresenter Content="{Binding Transform1}">
                         <ContentPresenter.Resources>
