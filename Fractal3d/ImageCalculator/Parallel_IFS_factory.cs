@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
 using System.Reactive.Subjects;
+using static ImageCalculator.IfsMath;
 using static ImageCalculator.QuatMath2;
 
 namespace ImageCalculator;
@@ -16,6 +17,9 @@ public class Parallel_IFS_Factory : IDisposable
 
     public IObservable<double> Progress => _progressSubject;
     bool _isDisposed;
+
+    private SierpinskiDelegate _nextCycle = Sierpinski3_alt3;
+    private SierpinskiVectorDelegate _normEstimate = Sierpinski3_alt3_vector;
 
     public Parallel_IFS_Factory()
     {
@@ -49,13 +53,31 @@ public class Parallel_IFS_Factory : IDisposable
         return Color.FromArgb(a, (int)(c.X * 255), (int)(c.Y * 255), (int)(c.Z * 255));
     }
 
-    private static Color ShadeColor(Color color, float shade)
+    public static SierpinskiDelegate GetCalculationDelegate
+    (IfsEquationType equationType)
     {
-        var r = (int)(color.R * shade);
-        var g = (int)(color.G * shade);
-        var b = (int)(color.B * shade);
+        switch (equationType)
+        {
+            case IfsEquationType.Standard:
+                return Sierpinski3_alt3;
+            case IfsEquationType.CenterStretch:
+                return Sierpinski3_alt3;
+            default:
+                throw new ArgumentException("Unknown Quaternion equation");
+        }
+    }
 
-        return Color.FromArgb(color.A, r, g, b);
+    public static SierpinskiVectorDelegate GetNormEstimateDelegate(IfsEquationType equationType)
+    {
+        switch (equationType)
+        {
+            case IfsEquationType.Standard:
+                return Sierpinski3_alt3_vector;
+            case IfsEquationType.CenterStretch:
+                return Sierpinski3_alt3_vector;        
+            default:
+                throw new ArgumentException("Unknown Quaternion equation");
+        }
     }
 
     private void CalculateImageNew(ColorContainer raw, FractalParams fractalParams, double progress, CancellationToken cancelToken)
@@ -102,13 +124,11 @@ public class Parallel_IFS_Factory : IDisposable
                 var transformedDir = TransformationCalculator.Transform(transformMatrix, direction);
                // transformedPt = IntersectSphere(transformedPt, transformedDir, fractalParams.Bailout);
 
-                var distance = IfsMath.IntersectSierpinski(ref transformedPt, transformedDir, fractalParams, transMat1, transMat2, fractalParams.IfsScale);
+                var distance = IfsMath.IntersectSierpinski(ref transformedPt, transformedDir, fractalParams, transMat1, transMat2, _nextCycle);
 
                 if (distance < fractalParams.MinRayDistance)
                 {
-                    // NormEstimateSierpinski(Vector3 p, int maxIterations, float distance, float bailout)
-                    Vector3 normal = IfsMath.NormEstimateSierpinski(transformedPt, fractalParams.Iterations, fractalParams.NormalDistance, 
-                        fractalParams.Bailout, transMat1, transMat2, fractalParams.IfsScale);
+                    Vector3 normal = IfsMath.NormEstimateSierpinski(transformedPt, fractalParams, transMat1, transMat2, _normEstimate);
                     Vector3 partialColor = GetPhongLightsExpanded(transformedLights, fractalParams.LightComboMode, transformedDir, transformedPt, normal);
                     activeColor = ConvertVectorToColor(partialColor, 255);
                 }
@@ -180,6 +200,9 @@ public class Parallel_IFS_Factory : IDisposable
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
+
+        _nextCycle = GetCalculationDelegate(fractalParams.IfsEquation);
+        _normEstimate = GetNormEstimateDelegate(fractalParams.IfsEquation);
 
         _progressSubject.OnNext(startProgress);
 
