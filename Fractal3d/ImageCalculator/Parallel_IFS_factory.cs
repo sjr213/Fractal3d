@@ -61,7 +61,11 @@ public class Parallel_IFS_Factory : IDisposable
             case IfsEquationType.Standard:
                 return Sierpinski3_alt3;
             case IfsEquationType.CenterStretch:
-                return Sierpinski3_alt3;
+                return Sierpinski3_center_stretch;
+            case IfsEquationType.Test1:
+                return Test1;
+            case IfsEquationType.Test2:
+                return Test2;
             default:
                 throw new ArgumentException("Unknown Quaternion equation");
         }
@@ -74,7 +78,11 @@ public class Parallel_IFS_Factory : IDisposable
             case IfsEquationType.Standard:
                 return Sierpinski3_alt3_vector;
             case IfsEquationType.CenterStretch:
-                return Sierpinski3_alt3_vector;        
+                return Sierpinski3_center_stretch_vector;  
+            case IfsEquationType.Test1:
+                return Test1_vector;
+            case IfsEquationType.Test2:
+                return Test2_vector;
             default:
                 throw new ArgumentException("Unknown Quaternion equation");
         }

@@ -198,6 +198,7 @@ namespace ImageCalculator
 
         public static float Sierpinski3_alt3(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
         {
+            float scale = fractalParams.IfsScale;
             var a1 = new Vector3(1, 1, 1);
             var a2 = new Vector3(-1, -1, 1);
             var a3 = new Vector3(1, -1, -1);
@@ -232,15 +233,16 @@ namespace ImageCalculator
                     dist = d;
                 }
                 q = TransformationCalculator.Transform(mat2, q);
-                q = fractalParams.IfsScale * q - c * (fractalParams.IfsScale - 1);
+                q = scale * q - c * (scale - 1);
                 n++;
                 r = q.LengthSquared();
             }
-            return q.Length() * (float)Math.Pow(fractalParams.IfsScale, -n);
+            return q.Length() * (float)Math.Pow(scale, -n);
         }
 
         public static Vector3 Sierpinski3_alt3_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
         {
+            float scale = fractalParams.IfsScale;
             var a1 = new Vector3(1, 1, 1);
             var a2 = new Vector3(-1, -1, 1);
             var a3 = new Vector3(1, -1, -1);
@@ -275,10 +277,242 @@ namespace ImageCalculator
                     dist = d;
                 }
                 q = TransformationCalculator.Transform(mat2, q);
-                q = fractalParams.IfsScale * q - c * (fractalParams.IfsScale - 1);
+                q = scale * q - c * (scale - 1);
                 n++;
                 r = q.LengthSquared();
             }
+            return q;
+        }
+
+        public static float Sierpinski3_center_stretch(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var a1 = new Vector3(1, 1, 1);
+            var a2 = new Vector3(-1, -1, 1);
+            var a3 = new Vector3(1, -1, -1);
+            var a4 = new Vector3(-1, 1, -1);
+            var c = new Vector3();
+            var center = fractalParams.IfsC;
+            int n = 0;
+            float dist = 0.0f;
+            float d = 0;
+            var r = q.LengthSquared();
+
+            while (n < fractalParams.Iterations && r < fractalParams.Bailout)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                c = a1;
+                dist = (q - a1).Length();
+                d = (q - a2).Length();
+                if (d < dist)
+                {
+                    c = a2;
+                    dist = d;
+                }
+                d = (q - a3).Length();
+                if (d < dist)
+                {
+                    c = a3;
+                    dist = d;
+                }
+                d = (q - a4).Length();
+                if (d < dist)
+                {
+                    c = a4;
+                    dist = d;
+                }
+                q = TransformationCalculator.Transform(mat2, q);
+
+                /*
+                      x=scale*x-CX*(scale-1);
+                      y=scale*y-CY*(scale-1);
+                      z=scale*z-CZ*(scale-1);
+                */
+                q = scale * q - center * (scale - 1);
+                n++;
+                r = q.LengthSquared();
+            }
+            return q.Length() * (float)Math.Pow(scale, -n);
+        }
+
+        public static Vector3 Sierpinski3_center_stretch_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var a1 = new Vector3(1, 1, 1);
+            var a2 = new Vector3(-1, -1, 1);
+            var a3 = new Vector3(1, -1, -1);
+            var a4 = new Vector3(-1, 1, -1);
+            var c = new Vector3();
+            var center = fractalParams.IfsC;
+            int n = 0;
+            float dist = 0.0f;
+            float d = 0;
+            var r = q.LengthSquared();
+
+            while (n < fractalParams.Iterations && r < fractalParams.Bailout)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                c = a1;
+                dist = (q - a1).Length();
+                d = (q - a2).Length();
+                if (d < dist)
+                {
+                    c = a2;
+                    dist = d;
+                }
+                d = (q - a3).Length();
+                if (d < dist)
+                {
+                    c = a3;
+                    dist = d;
+                }
+                d = (q - a4).Length();
+                if (d < dist)
+                {
+                    c = a4;
+                    dist = d;
+                }
+                q = TransformationCalculator.Transform(mat2, q);
+                q = scale * q - center * (scale - 1);
+                n++;
+                r = q.LengthSquared();
+            }
+            return q;
+        }
+
+        public static float Test1(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var a1 = new Vector3(1, 1, 1);
+            var a2 = new Vector3(-1, -1, 1);
+            var a3 = new Vector3(1, -1, -1);
+            var a4 = new Vector3(-1, 1, -1);
+            var c = new Vector3();
+            int n = 0;
+            float dist = 0.0f;
+            float d = 0;
+
+            while (n < fractalParams.Iterations)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                c = a1;
+                dist = (q - a1).Length();
+                d = (q - a2).Length();
+                if (d < dist)
+                {
+                    c = a2;
+                    dist = d;
+                }
+                d = (q - a3).Length();
+                if (d < dist)
+                {
+                    c = a3;
+                    dist = d;
+                }
+                d = (q - a4).Length();
+                if (d < dist)
+                {
+                    c = a4;
+                    dist = d;
+                }
+                q = TransformationCalculator.Transform(mat2, q);
+                q = scale * q - c * (scale - 1);
+                n++;
+
+            }
+            return q.Length() * (float)Math.Pow(scale, -n);
+        }
+
+        public static Vector3 Test1_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var a1 = new Vector3(1, 1, 1);
+            var a2 = new Vector3(-1, -1, 1);
+            var a3 = new Vector3(1, -1, -1);
+            var a4 = new Vector3(-1, 1, -1);
+            var c = new Vector3();
+            int n = 0;
+            float dist = 0.0f;
+            float d = 0;
+
+            while (n < fractalParams.Iterations)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                c = a1;
+                dist = (q - a1).Length();
+                d = (q - a2).Length();
+                if (d < dist)
+                {
+                    c = a2;
+                    dist = d;
+                }
+                d = (q - a3).Length();
+                if (d < dist)
+                {
+                    c = a3;
+                    dist = d;
+                }
+                d = (q - a4).Length();
+                if (d < dist)
+                {
+                    c = a4;
+                    dist = d;
+                }
+                q = TransformationCalculator.Transform(mat2, q);
+                q = scale * q - c * (scale - 1);
+                n++;
+
+            }
+            return q;
+        }
+
+        public static float Test2(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var r = q.LengthSquared();
+            float x1 = q.X;
+            float y1 = q.Y;
+            float z1 = q.Z;
+            int i = 0;
+            for (; i < fractalParams.Iterations && r < fractalParams.Bailout; i++)
+            {
+                //Folding... These are some of the symmetry planes of the tetrahedron
+                if (q.X + q.Y < 0) { x1 = -q.Y; q.Y = -q.X; q.X = x1; }
+                if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
+                if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
+
+                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
+                q.X = scale * q.X - (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - (scale - 1);
+                q.Z = scale * q.Z - (scale - 1);
+                r = q.LengthSquared();
+            }
+            // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+            return (float)((Math.Sqrt(r)) * Math.Pow(scale, -i));//the estimated distance
+        }
+
+        public static Vector3 Test2_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var r = q.LengthSquared();
+            float x1 = q.X;
+            float y1 = q.Y;
+            float z1 = q.Z;
+            int i = 0;
+            for (; i < fractalParams.Iterations && r < fractalParams.Bailout; i++)
+            {
+                //Folding... These are some of the symmetry planes of the tetrahedron
+                if (q.X + q.Y < 0) { x1 = -q.Y; q.Y = -q.X; q.X = x1; }
+                if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
+                if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
+
+                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
+                q.X = scale * q.X - (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - (scale - 1);
+                q.Z = scale * q.Z - (scale - 1);
+                r = q.LengthSquared();
+            }
+            // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
             return q;
         }
 

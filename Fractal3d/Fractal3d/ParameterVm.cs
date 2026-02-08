@@ -60,7 +60,7 @@ public class ParameterVm : ViewModelBase
         SelectedIfsEquationType = _fractalParams.IfsEquation;
         AllowedIfsEquationTypes = new ObservableCollection<IfsEquationType>
         {
-            IfsEquationType.Standard, IfsEquationType.CenterStretch
+            IfsEquationType.Standard, IfsEquationType.CenterStretch, IfsEquationType.Test1, IfsEquationType.Test2
         };
     }
 

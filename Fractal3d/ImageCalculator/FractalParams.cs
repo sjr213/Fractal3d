@@ -46,7 +46,11 @@ public enum IfsEquationType
     [Description("Standard")]
     Standard,
     [Description("Center Stretch")]
-    CenterStretch
+    CenterStretch,
+    [Description("Test 1")]
+    Test1,
+    [Description("Test 2")]
+    Test2
 }
 
 [Serializable]
