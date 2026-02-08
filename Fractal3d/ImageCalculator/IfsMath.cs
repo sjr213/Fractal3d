@@ -476,11 +476,13 @@ namespace ImageCalculator
             int i = 0;
             for (; i < fractalParams.Iterations && r < fractalParams.Bailout; i++)
             {
+                q = TransformationCalculator.Transform(mat1, q);
                 //Folding... These are some of the symmetry planes of the tetrahedron
                 if (q.X + q.Y < 0) { x1 = -q.Y; q.Y = -q.X; q.X = x1; }
                 if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
                 if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
 
+                q = TransformationCalculator.Transform(mat2, q);
                 //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
                 q.X = scale * q.X - (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
                 q.Y = scale * q.Y - (scale - 1);
@@ -488,7 +490,7 @@ namespace ImageCalculator
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
-            return (float)((Math.Sqrt(r)) * Math.Pow(scale, -i));//the estimated distance
+            return (float)((Math.Sqrt(r)-2.0) * Math.Pow(scale, -i));//the estimated distance
         }
 
         public static Vector3 Test2_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
@@ -501,10 +503,13 @@ namespace ImageCalculator
             int i = 0;
             for (; i < fractalParams.Iterations && r < fractalParams.Bailout; i++)
             {
+                q = TransformationCalculator.Transform(mat1, q);
                 //Folding... These are some of the symmetry planes of the tetrahedron
                 if (q.X + q.Y < 0) { x1 = -q.Y; q.Y = -q.X; q.X = x1; }
                 if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
                 if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
+
+                q = TransformationCalculator.Transform(mat2, q);
 
                 //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
                 q.X = scale * q.X - (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
