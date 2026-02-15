@@ -1,4 +1,6 @@
-﻿namespace Fractal3d;
+﻿using System.Numerics;
+
+namespace Fractal3d;
 
 public static class ParameterConstants
 {
@@ -69,5 +71,7 @@ public static class ParameterConstants
 
     public const float MinDistanceStretch = 0.0f;
     public const float MaxDistanceStretch = 1.0f;
+
+    public static Vector3 DefaultIfsC = new Vector3(1.0f, 1.0f,1.0f);
 }
 

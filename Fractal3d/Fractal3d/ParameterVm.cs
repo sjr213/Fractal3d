@@ -7,7 +7,9 @@ using ImageCalculator;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Numerics;
 using System.Windows;
+using System.Windows.Input;
 
 public class ParameterVm : ViewModelBase
 {
@@ -27,6 +29,8 @@ public class ParameterVm : ViewModelBase
     private List<ShaderSceneType> _allowedSceneType;
     private ObservableCollection<IfsEquationType> _allowedIfsEquationTypes;
     private bool _isCraneShader = false;
+    private readonly RelayCommand _normalizeIfsC_Command;
+    public ICommand NormalizeIfsCCommand => _normalizeIfsC_Command;
     #endregion
 
     #region construction
@@ -60,8 +64,9 @@ public class ParameterVm : ViewModelBase
         SelectedIfsEquationType = _fractalParams.IfsEquation;
         AllowedIfsEquationTypes = new ObservableCollection<IfsEquationType>
         {
-            IfsEquationType.Standard, IfsEquationType.CenterStretch, IfsEquationType.Test1, IfsEquationType.Test2
+            IfsEquationType.Standard, IfsEquationType.StandardNoBailout, IfsEquationType.Knighty, IfsEquationType.KnightyNoBailout, IfsEquationType.Test
         };
+        _normalizeIfsC_Command = new RelayCommand(_ => NormalizeIfsC());
     }
 
 #endregion
@@ -886,6 +891,20 @@ public class ParameterVm : ViewModelBase
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }
+    }
+
+    private void NormalizeIfsC()
+    {
+        const float rad3 = 1.73205080757f;
+        var ifsC = _fractalParams.IfsC;
+        var norm = rad3 * Vector3.Normalize(ifsC);
+        if(float.IsNaN(norm.X) || float.IsNaN(norm.Y) || float.IsNaN(norm.Z))
+            norm = ParameterConstants.DefaultIfsC;
+        _fractalParams.IfsC = norm;
+        OnPropertyChanged(nameof(IfsCx));
+        OnPropertyChanged(nameof(IfsCy));
+        OnPropertyChanged(nameof(IfsCz));
+        _onParamsChanged(_fractalParams);
     }
 
     #endregion

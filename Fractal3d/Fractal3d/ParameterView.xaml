@@ -283,8 +283,10 @@
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z:" />
                     <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCz}" />
                 </StackPanel>
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <Button Margin="10,2,2,2" Padding="2" Command="{Binding NormalizeIfsCCommand}">Normalize</Button>
+                </StackPanel>
             </StackPanel>
-            
             <Separator Grid.Row="9"/>
             <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
                 <StackPanel  Margin="0,0,20,0" Orientation="Horizontal" >

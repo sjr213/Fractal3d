@@ -196,6 +196,8 @@ namespace ImageCalculator
             return q;
         }
 
+        // Based on Mandelbulb websites/Distance Estimated 3D Fractals (III) Folding Space%20 Syntopia.htm
+        // but with the addition of transformations before the folding and stretching steps. The transformations can be used to create different variations of the Sierpinski gasket.
         public static float Sierpinski3_alt3(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
         {
             float scale = fractalParams.IfsScale;
@@ -284,6 +286,8 @@ namespace ImageCalculator
             return q;
         }
 
+        // Sierpinski3_alt3 but with the addition of a center point for the stretching step.
+        // So form is from Mandelbulb websites but extras from www.fractalforums.com/sierpinski-gasket/kaleidoscopic
         public static float Sierpinski3_center_stretch(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
         {
             float scale = fractalParams.IfsScale;
@@ -322,13 +326,8 @@ namespace ImageCalculator
                     dist = d;
                 }
                 q = TransformationCalculator.Transform(mat2, q);
-
-                /*
-                      x=scale*x-CX*(scale-1);
-                      y=scale*y-CY*(scale-1);
-                      z=scale*z-CZ*(scale-1);
-                */
-                q = scale * q - center * (scale - 1);
+                var centerStretch = c * center;
+                q = scale * q - centerStretch * (scale - 1);
                 n++;
                 r = q.LengthSquared();
             }
@@ -373,14 +372,17 @@ namespace ImageCalculator
                     dist = d;
                 }
                 q = TransformationCalculator.Transform(mat2, q);
-                q = scale * q - center * (scale - 1);
+                var centerStretch = c * center;
+                q = scale * q - centerStretch * (scale - 1);
                 n++;
                 r = q.LengthSquared();
             }
             return q;
         }
 
-        public static float Test1(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        // Sierpinski3_alt3 but with the addition of a center point for the stretching step.
+        // So form is from Mandelbulb websites but extras from www.fractalforums.com/sierpinski-gasket/kaleidoscopic
+        public static float Sierpinski3_center_stretch_no_bailout(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
         {
             float scale = fractalParams.IfsScale;
             var a1 = new Vector3(1, 1, 1);
@@ -388,9 +390,11 @@ namespace ImageCalculator
             var a3 = new Vector3(1, -1, -1);
             var a4 = new Vector3(-1, 1, -1);
             var c = new Vector3();
+            var center = fractalParams.IfsC;
             int n = 0;
             float dist = 0.0f;
             float d = 0;
+            var r = q.LengthSquared();
 
             while (n < fractalParams.Iterations)
             {
@@ -416,14 +420,15 @@ namespace ImageCalculator
                     dist = d;
                 }
                 q = TransformationCalculator.Transform(mat2, q);
-                q = scale * q - c * (scale - 1);
+                var centerStretch = c * center;
+                q = scale * q - centerStretch * (scale - 1);
                 n++;
-
+                r = q.LengthSquared();
             }
             return q.Length() * (float)Math.Pow(scale, -n);
         }
 
-        public static Vector3 Test1_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        public static Vector3 Sierpinski3_center_stretch_no_bailout_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
         {
             float scale = fractalParams.IfsScale;
             var a1 = new Vector3(1, 1, 1);
@@ -431,9 +436,11 @@ namespace ImageCalculator
             var a3 = new Vector3(1, -1, -1);
             var a4 = new Vector3(-1, 1, -1);
             var c = new Vector3();
+            var center = fractalParams.IfsC;
             int n = 0;
             float dist = 0.0f;
             float d = 0;
+            var r = q.LengthSquared();
 
             while (n < fractalParams.Iterations)
             {
@@ -459,16 +466,19 @@ namespace ImageCalculator
                     dist = d;
                 }
                 q = TransformationCalculator.Transform(mat2, q);
-                q = scale * q - c * (scale - 1);
+                var centerStretch = c * center;
+                q = scale * q - centerStretch * (scale - 1);
                 n++;
-
+                r = q.LengthSquared();
             }
             return q;
         }
 
-        public static float Test2(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        // https://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/?PHPSESSID=1daa670e46af931712e2c96a11f5002e
+        public static float Knighty(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
         {
             float scale = fractalParams.IfsScale;
+            var center = fractalParams.IfsC;
             var r = q.LengthSquared();
             float x1 = q.X;
             float y1 = q.Y;
@@ -484,24 +494,26 @@ namespace ImageCalculator
 
                 q = TransformationCalculator.Transform(mat2, q);
                 //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
-                q.X = scale * q.X - (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
-                q.Y = scale * q.Y - (scale - 1);
-                q.Z = scale * q.Z - (scale - 1);
+                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - center.Y * (scale - 1);
+                q.Z = scale * q.Z - center.Z * (scale - 1);
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
             return (float)((Math.Sqrt(r)-2.0) * Math.Pow(scale, -i));//the estimated distance
         }
 
-        public static Vector3 Test2_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        // https://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/?PHPSESSID=1daa670e46af931712e2c96a11f5002e
+        public static Vector3 Knighty_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
         {
             float scale = fractalParams.IfsScale;
+            var center = fractalParams.IfsC;
             var r = q.LengthSquared();
             float x1 = q.X;
             float y1 = q.Y;
             float z1 = q.Z;
             int i = 0;
-            for (; i < fractalParams.Iterations && r < fractalParams.Bailout; i++)
+            for (; i < fractalParams.Iterations  && r < fractalParams.Bailout; i++)
             {
                 q = TransformationCalculator.Transform(mat1, q);
                 //Folding... These are some of the symmetry planes of the tetrahedron
@@ -512,9 +524,69 @@ namespace ImageCalculator
                 q = TransformationCalculator.Transform(mat2, q);
 
                 //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
-                q.X = scale * q.X - (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
-                q.Y = scale * q.Y - (scale - 1);
-                q.Z = scale * q.Z - (scale - 1);
+                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - center.Y * (scale - 1);
+                q.Z = scale * q.Z - center.Z * (scale - 1);
+                r = q.LengthSquared();
+            }
+            // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+            return q;
+        }
+
+
+        // https://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/?PHPSESSID=1daa670e46af931712e2c96a11f5002e
+        public static float Knighty_no_bailout(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var center = fractalParams.IfsC;
+            var r = q.LengthSquared();
+            float x1 = q.X;
+            float y1 = q.Y;
+            float z1 = q.Z;
+            int i = 0;
+            for (; i < fractalParams.Iterations; i++)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                //Folding... These are some of the symmetry planes of the tetrahedron
+                if (q.X + q.Y < 0) { x1 = -q.Y; q.Y = -q.X; q.X = x1; }
+                if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
+                if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
+
+                q = TransformationCalculator.Transform(mat2, q);
+                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
+                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - center.Y * (scale - 1);
+                q.Z = scale * q.Z - center.Z * (scale - 1);
+                r = q.LengthSquared();
+            }
+            // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+            return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+        }
+
+        // https://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/?PHPSESSID=1daa670e46af931712e2c96a11f5002e
+        public static Vector3 Knighty_no_bailout_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var center = fractalParams.IfsC;
+            var r = q.LengthSquared();
+            float x1 = q.X;
+            float y1 = q.Y;
+            float z1 = q.Z;
+            int i = 0;
+            for (; i < fractalParams.Iterations; i++)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                //Folding... These are some of the symmetry planes of the tetrahedron
+                if (q.X + q.Y < 0) { x1 = -q.Y; q.Y = -q.X; q.X = x1; }
+                if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
+                if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
+
+                q = TransformationCalculator.Transform(mat2, q);
+
+                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
+                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - center.Y * (scale - 1);
+                q.Z = scale * q.Z - center.Z * (scale - 1);
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance

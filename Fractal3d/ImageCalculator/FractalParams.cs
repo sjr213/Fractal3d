@@ -4,7 +4,6 @@ using FractureCommonLib;
 using System.ComponentModel;
 using System.Drawing;
 using System.Numerics;
-using System.Text.Json.Serialization;
 
 [Serializable]
 public enum ShaderType
@@ -45,12 +44,14 @@ public enum IfsEquationType
 {
     [Description("Standard")]
     Standard,
-    [Description("Center Stretch")]
-    CenterStretch,
-    [Description("Test 1")]
-    Test1,
-    [Description("Test 2")]
-    Test2
+    [Description("Standard no bailout")]
+    StandardNoBailout,
+    [Description("Knighty")]
+    Knighty,
+    [Description("Knighty no bailout")]
+    KnightyNoBailout,
+    [Description("Test")]
+    Test
 }
 
 [Serializable]
