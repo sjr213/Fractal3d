@@ -25,6 +25,7 @@ public class ParameterVm : ViewModelBase
     private Visibility _escapeThresholdVisibility = Visibility.Collapsed;
     private Visibility _lightingOnZeroIndexVisibility = Visibility.Collapsed;
     private Visibility _ifsVisibility = Visibility.Collapsed;
+    private Visibility _backgroundVisibility = Visibility.Collapsed;
     private ObservableCollection<ShaderType> _allowedShaderTypes;
     private List<ShaderSceneType> _allowedSceneType;
     private ObservableCollection<IfsEquationType> _allowedIfsEquationTypes;
@@ -475,6 +476,16 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public Visibility BackgroundVisibility
+        {
+            get => _backgroundVisibility;
+            set
+            {
+                _backgroundVisibility = value;
+                OnPropertyChanged();
+            }
+    }
+
     public bool AimToOrigin
     {
         get => _fractalParams.AimToOrigin;
@@ -763,6 +774,9 @@ public class ParameterVm : ViewModelBase
             Visibility.Collapsed : Visibility.Visible;
 
         IfsVisibility = SelectedShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+
+        BackgroundVisibility = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader ||
+            _fractalParams.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
 
         UpdateAllowedQuatEquations();
     }

@@ -15,7 +15,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Width="420" Height="630" Style="{StaticResource BorderStyle}">
+    <Border Width="420" Height="640" Style="{StaticResource BorderStyle}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -196,8 +196,8 @@
                 </StackPanel>
             </Grid >
 
-            <StackPanel Grid.Row="3" Margin="2,5" Orientation="Horizontal">
-                <CheckBox Margin="5" Padding="2" VerticalContentAlignment="Center"
+            <StackPanel Grid.Row="3" Margin="2" Orientation="Horizontal">
+                <CheckBox Margin="5,2" Padding="2" VerticalContentAlignment="Center"
                   IsChecked="{Binding AimToOrigin}">Aim to origin</CheckBox>
             </StackPanel>
             <Separator Grid.Row="4"/>
@@ -457,7 +457,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="18" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}"
-                        Visibility="{Binding IsCraneShader, Converter={StaticResource BoolToVisibilityConverterShowOnTrue}, UpdateSourceTrigger=PropertyChanged}">
+                        Visibility="{Binding BackgroundVisibility}">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Background" />
                 </StackPanel>
