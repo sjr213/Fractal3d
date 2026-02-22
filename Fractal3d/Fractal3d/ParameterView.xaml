@@ -267,7 +267,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IfsVisibility}">
+            <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IfsCenterVisibility}">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="IFS C" />
                 </StackPanel>
@@ -289,7 +289,7 @@
             </StackPanel>
             <Separator Grid.Row="9"/>
             <StackPanel Grid.Row="10" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
-                <StackPanel  Margin="0,0,20,0" Orientation="Horizontal" >
+                <StackPanel  Margin="0,0,20,0" Orientation="Horizontal" Visibility="{Binding IfsBailoutVisibility}">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Bailout" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>

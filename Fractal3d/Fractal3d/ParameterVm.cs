@@ -14,7 +14,7 @@ using System.Windows.Input;
 public class ParameterVm : ViewModelBase
 {
 
- #region fields
+#region fields
     private readonly FractalParams _fractalParams;
     private readonly Action<FractalParams> _onParamsChanged;
     private ObservableCollection<QuaternionEquationType> _allowedQuatEquations;
@@ -26,15 +26,19 @@ public class ParameterVm : ViewModelBase
     private Visibility _lightingOnZeroIndexVisibility = Visibility.Collapsed;
     private Visibility _ifsVisibility = Visibility.Collapsed;
     private Visibility _backgroundVisibility = Visibility.Collapsed;
+    private Visibility _ifsBailoutVisibility = Visibility.Collapsed;
+    private Visibility _ifsCenterVisibility = Visibility.Collapsed;
     private ObservableCollection<ShaderType> _allowedShaderTypes;
     private List<ShaderSceneType> _allowedSceneType;
     private ObservableCollection<IfsEquationType> _allowedIfsEquationTypes;
     private bool _isCraneShader = false;
+    private TransformVm2 _transformVm1;
+    private TransformVm2 _transformVm2;
     private readonly RelayCommand _normalizeIfsC_Command;
     public ICommand NormalizeIfsCCommand => _normalizeIfsC_Command;
-    #endregion
+#endregion
 
-    #region construction
+#region construction
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public ParameterVm(FractalParams fractalParams, Action<FractalParams> paramsChanged)
@@ -406,86 +410,6 @@ public class ParameterVm : ViewModelBase
         set => SetProperty(ref _allowedQuatEquations, value);
     }
 
-    public Visibility QuatEquationVisibility
-    {
-        get => _quatEquationVisibility;
-        set
-        {
-            _quatEquationVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public Visibility ConstantC_Visibility
-    {
-        get => _constC_Visibility;
-        set
-        {
-            _constC_Visibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public Visibility ShaderSceneTypeVisibility
-    {
-        get => _shaderSceneTypeVisibility;
-        set
-        {
-            _shaderSceneTypeVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public Visibility RayTraceFieldVisibility
-    {
-        get => _rayTraceFieldVisibility;
-        set
-        {
-            _rayTraceFieldVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public Visibility EscapeThresholdVisibility
-    {
-        get => _escapeThresholdVisibility;
-        set
-        {
-            _escapeThresholdVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public Visibility NonCraneShaderVisibility
-    {
-        get => _lightingOnZeroIndexVisibility;
-        set
-        {
-            _lightingOnZeroIndexVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public Visibility IfsVisibility
-    {
-        get => _ifsVisibility;
-        set
-        {
-            _ifsVisibility = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public Visibility BackgroundVisibility
-        {
-            get => _backgroundVisibility;
-            set
-            {
-                _backgroundVisibility = value;
-                OnPropertyChanged();
-            }
-    }
-
     public bool AimToOrigin
     {
         get => _fractalParams.AimToOrigin;
@@ -711,100 +635,6 @@ public class ParameterVm : ViewModelBase
         }
     }
 
-    #endregion
-
-    #region handlers
-
-    public void ExecuteIsVisibleChangedCommand(DependencyPropertyChangedEventArgs e)
-    {
-        if (e.NewValue != null && (bool)e.NewValue)
-        {
-            ImageWidth = _fractalParams.ImageSize.Width;
-            ImageHeight = _fractalParams.ImageSize.Height;
-            DisplayWidth = _fractalParams.ImageSize.Width;
-            DisplayHeight = _fractalParams.ImageSize.Height;
-            FromX = _fractalParams.FromX;
-            ToX = _fractalParams.ToX;
-            FromY = _fractalParams.FromY;
-            ToY = _fractalParams.ToY;
-            FromZ = _fractalParams.FromZ;
-            ToZ = _fractalParams.ToZ;
-            Bailout = _fractalParams.Bailout;
-            Iterations = _fractalParams.Iterations;
-            MaxRaySteps = _fractalParams.MaxRaySteps;
-            MinRayDistance = _fractalParams.MinRayDistance;
-            Distance = _fractalParams.Distance;
-            MaxDistance = _fractalParams.MaxDistance;
-            StepDivisor = _fractalParams.StepDivisor;
-
-            SelectedQuatEquationType = _fractalParams.QuatEquation;
-            SelectedSceneType = _fractalParams.SceneType;
-            Transform1 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform1, _onParamsChanged);
-            Transform2 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform2, _onParamsChanged);
-            SelectedIfsEquationType = _fractalParams.IfsEquation;
-        }
-    }
-
-    #endregion
-
-    #region methods
-
-    private void UpdateQuatEquationAndShaderSceneTypeVisibility()
-    {
-        QuatEquationVisibility = SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || 
-            SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.ShadertoyShader ?
-            Visibility.Visible : Visibility.Collapsed;
-
-        ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader ? Visibility.Visible : Visibility.Collapsed;
-
-        RayTraceFieldVisibility = SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.FractalShader || 
-            SelectedShaderType == ShaderType.ShapeShader || _fractalParams.ShaderType == ShaderType.IFSShader ?
-            Visibility.Visible : Visibility.Collapsed;
-
-        EscapeThresholdVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel ||
-            SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.ShadertoyShader ?
-            Visibility.Visible : Visibility.Collapsed;
-
-        NonCraneShaderVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.ShadertoyShader 
-            || SelectedShaderType == ShaderType.IFSShader ? Visibility.Collapsed : Visibility.Visible;
-
-        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader;
-
-        ConstantC_Visibility = SelectedShaderType == ShaderType.ShapeShader || SelectedShaderType == ShaderType.IFSShader ?
-            Visibility.Collapsed : Visibility.Visible;
-
-        IfsVisibility = SelectedShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
-
-        BackgroundVisibility = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader ||
-            _fractalParams.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
-
-        UpdateAllowedQuatEquations();
-    }
-
-    private void UpdateAllowedQuatEquations()
-    {
-        if (SelectedShaderType == ShaderType.FractalShader)
-        {
-            AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
-            {
-                QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_InglesCubed
-            };
-
-            if (SelectedQuatEquationType == QuaternionEquationType.Q_CubedZZ2 || SelectedQuatEquationType == QuaternionEquationType.Q_CubedZ2Z)
-                SelectedQuatEquationType = QuaternionEquationType.Q_Squared;
-        }
-        else
-        {
-            AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
-            {
-                QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_CubedZZ2, QuaternionEquationType.Q_CubedZ2Z
-            };
-
-            if (SelectedQuatEquationType == QuaternionEquationType.Q_InglesCubed)
-                SelectedQuatEquationType = QuaternionEquationType.Q_Squared;
-        }
-    }
-
     public QuaternionEquationType SelectedQuatEquationType
     {
         get => _fractalParams.QuatEquation;
@@ -833,6 +663,7 @@ public class ParameterVm : ViewModelBase
                 return;
             _fractalParams.IfsEquation = value;
             OnPropertyChanged();
+            UpdateQuatEquationAndShaderSceneTypeVisibility();
             _onParamsChanged(_fractalParams);
         }
     }
@@ -848,14 +679,12 @@ public class ParameterVm : ViewModelBase
         }
     }
 
-    private TransformVm2 _transformVm1;
     public TransformVm2 Transform1
     {
         get => _transformVm1;
         set => SetProperty(ref _transformVm1, value);
     }
 
-    private TransformVm2 _transformVm2;
     public TransformVm2 Transform2
     {
         get => _transformVm2;
@@ -907,12 +736,145 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public Visibility QuatEquationVisibility
+    {
+        get => _quatEquationVisibility;
+        set
+        {
+            _quatEquationVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility ConstantC_Visibility
+    {
+        get => _constC_Visibility;
+        set
+        {
+            _constC_Visibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility ShaderSceneTypeVisibility
+    {
+        get => _shaderSceneTypeVisibility;
+        set
+        {
+            _shaderSceneTypeVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility RayTraceFieldVisibility
+    {
+        get => _rayTraceFieldVisibility;
+        set
+        {
+            _rayTraceFieldVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility EscapeThresholdVisibility
+    {
+        get => _escapeThresholdVisibility;
+        set
+        {
+            _escapeThresholdVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility NonCraneShaderVisibility
+    {
+        get => _lightingOnZeroIndexVisibility;
+        set
+        {
+            _lightingOnZeroIndexVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility IfsVisibility
+    {
+        get => _ifsVisibility;
+        set
+        {
+            _ifsVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility IfsBailoutVisibility
+    {
+        get => _ifsBailoutVisibility;
+        set
+        {
+            _ifsBailoutVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility IfsCenterVisibility
+    {
+        get => _ifsCenterVisibility;
+        set
+        {
+            _ifsCenterVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility BackgroundVisibility
+    {
+        get => _backgroundVisibility;
+        set
+        {
+            _backgroundVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+#endregion
+
+#region handlers
+
+    public void ExecuteIsVisibleChangedCommand(DependencyPropertyChangedEventArgs e)
+    {
+        if (e.NewValue != null && (bool)e.NewValue)
+        {
+            ImageWidth = _fractalParams.ImageSize.Width;
+            ImageHeight = _fractalParams.ImageSize.Height;
+            DisplayWidth = _fractalParams.ImageSize.Width;
+            DisplayHeight = _fractalParams.ImageSize.Height;
+            FromX = _fractalParams.FromX;
+            ToX = _fractalParams.ToX;
+            FromY = _fractalParams.FromY;
+            ToY = _fractalParams.ToY;
+            FromZ = _fractalParams.FromZ;
+            ToZ = _fractalParams.ToZ;
+            Bailout = _fractalParams.Bailout;
+            Iterations = _fractalParams.Iterations;
+            MaxRaySteps = _fractalParams.MaxRaySteps;
+            MinRayDistance = _fractalParams.MinRayDistance;
+            Distance = _fractalParams.Distance;
+            MaxDistance = _fractalParams.MaxDistance;
+            StepDivisor = _fractalParams.StepDivisor;
+
+            SelectedQuatEquationType = _fractalParams.QuatEquation;
+            SelectedSceneType = _fractalParams.SceneType;
+            Transform1 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform1, _onParamsChanged);
+            Transform2 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform2, _onParamsChanged);
+            SelectedIfsEquationType = _fractalParams.IfsEquation;
+        }
+    }
+
     private void NormalizeIfsC()
     {
         const float rad3 = 1.73205080757f;
         var ifsC = _fractalParams.IfsC;
         var norm = rad3 * Vector3.Normalize(ifsC);
-        if(float.IsNaN(norm.X) || float.IsNaN(norm.Y) || float.IsNaN(norm.Z))
+        if (float.IsNaN(norm.X) || float.IsNaN(norm.Y) || float.IsNaN(norm.Z))
             norm = ParameterConstants.DefaultIfsC;
         _fractalParams.IfsC = norm;
         OnPropertyChanged(nameof(IfsCx));
@@ -921,5 +883,72 @@ public class ParameterVm : ViewModelBase
         _onParamsChanged(_fractalParams);
     }
 
-    #endregion
+#endregion
+
+#region methods
+
+    private void UpdateQuatEquationAndShaderSceneTypeVisibility()
+    {
+        QuatEquationVisibility = SelectedShaderType == ShaderType.FractalShader || SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel || 
+            SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.ShadertoyShader ?
+            Visibility.Visible : Visibility.Collapsed;
+
+        ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader ? Visibility.Visible : Visibility.Collapsed;
+
+        RayTraceFieldVisibility = SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.FractalShader || 
+            SelectedShaderType == ShaderType.ShapeShader || _fractalParams.ShaderType == ShaderType.IFSShader ?
+            Visibility.Visible : Visibility.Collapsed;
+
+        EscapeThresholdVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel ||
+            SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.ShadertoyShader ?
+            Visibility.Visible : Visibility.Collapsed;
+
+        NonCraneShaderVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.ShadertoyShader 
+            || SelectedShaderType == ShaderType.IFSShader ? Visibility.Collapsed : Visibility.Visible;
+
+        IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader;
+
+        ConstantC_Visibility = SelectedShaderType == ShaderType.ShapeShader || SelectedShaderType == ShaderType.IFSShader ?
+            Visibility.Collapsed : Visibility.Visible;
+
+        IfsVisibility = SelectedShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+
+        IfsBailoutVisibility = SelectedShaderType == ShaderType.IFSShader && 
+            (_fractalParams.IfsEquation == IfsEquationType.StandardNoBailout || _fractalParams.IfsEquation == IfsEquationType.KnightyNoBailout) ?
+            Visibility.Collapsed : Visibility.Visible;
+
+        IfsCenterVisibility = SelectedShaderType == ShaderType.IFSShader &&
+            _fractalParams.IfsEquation != IfsEquationType.Test ? Visibility.Visible : Visibility.Collapsed;
+
+        BackgroundVisibility = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader ||
+            _fractalParams.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+
+        UpdateAllowedQuatEquations();
+    }
+
+    private void UpdateAllowedQuatEquations()
+    {
+        if (SelectedShaderType == ShaderType.FractalShader)
+        {
+            AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
+            {
+                QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_InglesCubed
+            };
+
+            if (SelectedQuatEquationType == QuaternionEquationType.Q_CubedZZ2 || SelectedQuatEquationType == QuaternionEquationType.Q_CubedZ2Z)
+                SelectedQuatEquationType = QuaternionEquationType.Q_Squared;
+        }
+        else
+        {
+            AllowedQuatEquations = new ObservableCollection<QuaternionEquationType>
+            {
+                QuaternionEquationType.Q_Squared, QuaternionEquationType.Q_Cubed, QuaternionEquationType.Q_CubedZZ2, QuaternionEquationType.Q_CubedZ2Z
+            };
+
+            if (SelectedQuatEquationType == QuaternionEquationType.Q_InglesCubed)
+                SelectedQuatEquationType = QuaternionEquationType.Q_Squared;
+        }
+    }
+
+#endregion
 }
