@@ -23,17 +23,14 @@ public class MovieParamCalculatorTests
 
         var result1 =
             MovieParamCalculator.CalculateAngle(movieParams.FromAngleX, movieParams.ToAngleX, false, movieParams, 1);
-        Assert.IsNotNull(result1);
         Assert.AreEqual(0, result1, AngleError);
 
         var result2 =
             MovieParamCalculator.CalculateAngle(movieParams.FromAngleX, movieParams.ToAngleX, false, movieParams, 2);
-        Assert.IsNotNull(result2);
         Assert.AreEqual(20, result2, AngleError);
 
         var result3 =
             MovieParamCalculator.CalculateAngle(movieParams.FromAngleX, movieParams.ToAngleX, false, movieParams, 10);
-        Assert.IsNotNull(result1);
         Assert.AreEqual(180, result3, AngleError);
     }
 
@@ -49,17 +46,14 @@ public class MovieParamCalculatorTests
 
         var result1 =
             MovieParamCalculator.CalculateAngle(movieParams.FromAngleX, movieParams.ToAngleX, true, movieParams, 1);
-        Assert.IsNotNull(result1);
         Assert.AreEqual(0, result1, AngleError);
 
         var result2 =
             MovieParamCalculator.CalculateAngle(movieParams.FromAngleX, movieParams.ToAngleX, true, movieParams, 2);
-        Assert.IsNotNull(result2);
         Assert.AreEqual(36, result2, AngleError);
 
         var result3 =
             MovieParamCalculator.CalculateAngle(movieParams.FromAngleX, movieParams.ToAngleX, true, movieParams, 10);
-        Assert.IsNotNull(result1);
         Assert.AreEqual(324, result3, AngleError);
     }
 
