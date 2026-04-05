@@ -112,7 +112,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Row="0" Grid.Column="0"  Orientation="Horizontal" Margin="2" HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="From X" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
+                    <TextBox Style="{StaticResource TextBoxInError}"  basicWpfLibrary:TextBoxFocusBehavior.ClearOnFocus="True">
                         <TextBox.Text>
                             <Binding Path="FromX"
                                      UpdateSourceTrigger="LostFocus" >
@@ -126,7 +126,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="2" HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="From Y" />
-                    <TextBox Style="{StaticResource TextBoxInError}">
+                    <TextBox Style="{StaticResource TextBoxInError}" basicWpfLibrary:TextBoxFocusBehavior.ClearOnFocus="True">
                         <TextBox.Text>
                             <Binding Path="FromY" 
                                      UpdateSourceTrigger="LostFocus" >
@@ -140,7 +140,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="2"  Orientation="Horizontal" Margin="2" HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="From Z" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
+                    <TextBox Style="{StaticResource TextBoxInError}" basicWpfLibrary:TextBoxFocusBehavior.ClearOnFocus="True">
                         <TextBox.Text>
                             <Binding Path="FromZ" 
                                      UpdateSourceTrigger="LostFocus" >
@@ -154,7 +154,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="2" HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="To X" />
-                    <TextBox Style="{StaticResource TextBoxInError}">
+                    <TextBox Style="{StaticResource TextBoxInError}" basicWpfLibrary:TextBoxFocusBehavior.ClearOnFocus="True">
                         <TextBox.Text>
                             <Binding Path="ToX" 
                                      UpdateSourceTrigger="LostFocus" >
@@ -168,7 +168,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="2" HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="To Y" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
+                    <TextBox Style="{StaticResource TextBoxInError}" basicWpfLibrary:TextBoxFocusBehavior.ClearOnFocus="True">
                         <TextBox.Text>
                             <Binding Path="ToY" 
                                      UpdateSourceTrigger="LostFocus" >
@@ -182,7 +182,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="2" HorizontalAlignment="Right">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="To Z" />
-                    <TextBox Style="{StaticResource TextBoxInError}" >
+                    <TextBox Style="{StaticResource TextBoxInError}" basicWpfLibrary:TextBoxFocusBehavior.ClearOnFocus="True">
                         <TextBox.Text>
                             <Binding Path="ToZ" 
                                      UpdateSourceTrigger="LostFocus" >

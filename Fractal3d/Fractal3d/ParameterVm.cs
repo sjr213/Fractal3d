@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Numerics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 public class ParameterVm : ViewModelBase
@@ -883,9 +884,9 @@ public class ParameterVm : ViewModelBase
         _onParamsChanged(_fractalParams);
     }
 
-#endregion
+    #endregion
 
-#region methods
+    #region methods
 
     private void UpdateQuatEquationAndShaderSceneTypeVisibility()
     {
