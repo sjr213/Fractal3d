@@ -57,8 +57,16 @@ public class FractalResultVm : ViewModelBase
             if (_fractalResult.Params.ShaderType == ShaderType.ShapeShader)
                 return string.Empty;
 
-            var val = _fractalResult.Params.QuatEquation;
-            return ((QuaternionEquationType)val).GetDescription();
+            if (_fractalResult.Params.ShaderType == ShaderType.IFSShader)
+            {
+                var val = _fractalResult.Params.IfsEquation;
+                return ((IfsEquationType)val).GetDescription();
+            }
+            else
+            {
+                var val = _fractalResult.Params.QuatEquation;
+                return ((QuaternionEquationType)val).GetDescription();
+            }
         }
     }
 
