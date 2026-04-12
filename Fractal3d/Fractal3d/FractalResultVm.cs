@@ -9,7 +9,7 @@ using System.Windows;
 public class FractalResultVm : ViewModelBase
 {
     private readonly FractalResult _fractalResult;
-    private Visibility _nonCraneShaderVisibility = Visibility.Collapsed;
+    private Visibility _paletteVisibility = Visibility.Collapsed;
     private Visibility _equationVisibility = Visibility.Collapsed;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
@@ -20,9 +20,8 @@ public class FractalResultVm : ViewModelBase
         _number = number;
         if (_fractalResult != null && _fractalResult.Params != null)
         {
-            NonCraneShaderVisibility = _fractalResult.Params.ShaderType == ShaderType.CraneShader || _fractalResult.Params.ShaderType == ShaderType.ShadertoyShader ||
-                _fractalResult.Params.ShaderType == ShaderType.IFSShader ?
-                Visibility.Collapsed : Visibility.Visible;
+            PaletteVisibility = ShaderTypeUtils.UsesPalette(_fractalResult.Params.ShaderType) ?
+                Visibility.Visible : Visibility.Collapsed;
             EquationVisibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader ? Visibility.Collapsed : Visibility.Visible;
         }
     }
@@ -274,10 +273,10 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
-    public Visibility NonCraneShaderVisibility
+    public Visibility PaletteVisibility
     {
-        get => _nonCraneShaderVisibility;
-        set => SetProperty(ref _nonCraneShaderVisibility, value);
+        get => _paletteVisibility;
+        set => SetProperty(ref _paletteVisibility, value);
     }
 
     public Visibility EquationVisibility

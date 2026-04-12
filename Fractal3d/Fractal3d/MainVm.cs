@@ -271,6 +271,13 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         set => SetProperty(ref _progressVisibility, value);
     }
 
+    private Visibility _paletteVisibility = Visibility.Visible;
+    public Visibility PaletteVisibility
+    {
+        get => _paletteVisibility;
+        set => SetProperty(ref _paletteVisibility, value);
+    }
+
     private double _percentProgress;
     public double PercentProgress
     {
@@ -435,7 +442,9 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
         _fractalParams = fractalParams;
         ClearFractalRange();
         ImageViewModel.SetFractalParams(_fractalParams);
-        if(LightingViewModel != null)
+
+        PaletteVisibility = ShaderTypeUtils.UsesPalette(_fractalParams.ShaderType) ? Visibility.Visible : Visibility.Collapsed;
+        if (LightingViewModel != null)
             LightingViewModel.SetFractalParams(_fractalParams);
 
         if (SelectedViewMode == ViewModes.Temp)

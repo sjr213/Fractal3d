@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace Fractal3d;
 
-namespace Fractal3d;
-
+using System.Collections.Generic;
 using BasicWpfLibrary;
 using ImageCalculator;
 using System;
@@ -9,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Numerics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 public class ParameterVm : ViewModelBase

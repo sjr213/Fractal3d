@@ -155,7 +155,7 @@
         <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource BorderBlackNarrowStyle}" >
             <TabControl >
 
-                <TabItem Header="Palettes" DataContext="{Binding }">
+                <TabItem Header="Palettes" DataContext="{Binding }" Visibility="{Binding PaletteVisibility}">
                     <ContentPresenter Content="{Binding PaletteViewModel}">
                         <ContentPresenter.Resources>
                             <DataTemplate DataType="{x:Type local:PaletteVm}" >
@@ -236,14 +236,16 @@
             </TabControl>
         </Border>
 
-        <ContentPresenter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding PaletteViewModel}"
+        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  Visibility="{Binding PaletteVisibility}" Style="{StaticResource BorderBlackNarrowStyle}" >
+            <ContentPresenter Content="{Binding PaletteViewModel}"
                           Height="300">
-            <ContentPresenter.Resources>
-                <DataTemplate DataType="{x:Type local:PaletteVm}" >
-                    <local:PaletteView/>
-                </DataTemplate>
-            </ContentPresenter.Resources>
-        </ContentPresenter>
+                <ContentPresenter.Resources>
+                    <DataTemplate DataType="{x:Type local:PaletteVm}">
+                        <local:PaletteView />
+                    </DataTemplate>
+                </ContentPresenter.Resources>
+            </ContentPresenter>
+        </Border>
 
     </Grid>
 </Window>

@@ -191,8 +191,10 @@
                                Visibility="{Binding EquationVisibility}">Equation</TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
                                Visibility="{Binding EquationVisibility}" Text="{Binding Path=EquationType }"/>
-                    <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Palette</TextBlock>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=PaletteName }"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}"
+                               Visibility="{Binding PaletteVisibility}">Palette</TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}"
+                               Visibility="{Binding PaletteVisibility}" Text="{Binding Path=PaletteName }"/>
                     <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Constant</TextBlock>
                     <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=ConstantC }"/>
                     <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Bailout</TextBlock>
@@ -218,11 +220,11 @@
                     <TextBlock Grid.Row="14" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Aim to Origin</TextBlock>
                     <TextBlock Grid.Row="14" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=AimToOrigin }"/>
                     <TextBlock Grid.Row="15" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" 
-                               Visibility="{Binding NonCraneShaderVisibility}">Lighting on Zero Index</TextBlock>
+                               Visibility="{Binding PaletteVisibility}">Lighting on Zero Index</TextBlock>
                     <TextBlock Grid.Row="15" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
-                               Visibility="{Binding NonCraneShaderVisibility}" Text="{Binding Path=LightingOnZeroIndex }"/>
+                               Visibility="{Binding PaletteVisibility}" Text="{Binding Path=LightingOnZeroIndex }"/>
                     <TextBlock Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SmallTextBlockStyle}"
-                               Visibility="{Binding NonCraneShaderVisibility}" Text="{Binding Path=StretchDistanceRangeText}"/>
+                               Visibility="{Binding PaletteVisibility}" Text="{Binding Path=StretchDistanceRangeText}"/>
                 </Grid>
             </Expander>
         </Border>
