@@ -11,6 +11,8 @@ public class FractalResultVm : ViewModelBase
     private readonly FractalResult _fractalResult;
     private Visibility _paletteVisibility = Visibility.Collapsed;
     private Visibility _equationVisibility = Visibility.Collapsed;
+    private Visibility _constantC_Visibility = Visibility.Collapsed;
+    private Visibility _ifsC_Visibility = Visibility.Collapsed;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public FractalResultVm(FractalResult fractalResult, int number)
@@ -23,6 +25,9 @@ public class FractalResultVm : ViewModelBase
             PaletteVisibility = ShaderTypeUtils.UsesPalette(_fractalResult.Params.ShaderType) ?
                 Visibility.Visible : Visibility.Collapsed;
             EquationVisibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader ? Visibility.Collapsed : Visibility.Visible;
+            ConstantC_Visibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader || _fractalResult.Params.ShaderType == ShaderType.IFSShader ? 
+                Visibility.Collapsed : Visibility.Visible;
+            IfsC_Visibility = _fractalResult.Params.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 
@@ -129,6 +134,32 @@ public class FractalResultVm : ViewModelBase
 
             //return $"{c.W,6:N3}, {c.X,6:N3}, {c.Y,6:N3}, {c.Z,6:N3}";
             return GetConstantC_String(c);
+        }
+    }
+
+    private string GetIfsC_String(Vector3 c)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(TruncateFloatStringOnRight(c.X));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(c.Y));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(c.Z));
+
+        return sb.ToString();
+    }
+
+    public string IfsC
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+
+            var c = _fractalResult.Params.IfsC;
+
+            //return $"{c.W,6:N3}, {c.X,6:N3}, {c.Y,6:N3}, {c.Z,6:N3}";
+            return GetIfsC_String(c);
         }
     }
 
@@ -283,6 +314,18 @@ public class FractalResultVm : ViewModelBase
     {
         get => _equationVisibility;
         set => SetProperty(ref _equationVisibility, value);
+    }
+
+    public Visibility ConstantC_Visibility
+    {
+        get => _constantC_Visibility;
+        set => SetProperty(ref _constantC_Visibility, value);
+    }
+
+    public Visibility IfsC_Visibility
+    {
+        get => _ifsC_Visibility;
+        set => SetProperty(ref _ifsC_Visibility, value);
     }
 
     public FractalResult Result => _fractalResult;
