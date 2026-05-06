@@ -331,6 +331,7 @@ namespace ImageCalculator
                 n++;
                 r = q.LengthSquared();
             }
+          //  return 1.0f - (float)(n / (float)fractalParams.Iterations);
             return q.Length() * (float)Math.Pow(scale, -n);
         }
 
@@ -492,7 +493,15 @@ namespace ImageCalculator
                 if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
                 if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
 
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 q = TransformationCalculator.Transform(mat2, q);
+
                 //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
                 q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
                 q.Y = scale * q.Y - center.Y * (scale - 1);
@@ -521,6 +530,13 @@ namespace ImageCalculator
                 if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
                 if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
 
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 q = TransformationCalculator.Transform(mat2, q);
 
                 //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
@@ -533,6 +549,130 @@ namespace ImageCalculator
             return q;
         }
 
+        // https://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/?PHPSESSID=1daa670e46af931712e2c96a11f5002e
+        public static float Knighty2ndHalfTet(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var center = fractalParams.IfsC;
+            var r = q.LengthSquared();
+            float x1 = q.X;
+            float y1 = q.Y;
+            float z1 = q.Z;
+            int i = 0;
+            for (; i < fractalParams.Iterations && r < fractalParams.Bailout; i++)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                //Folding... These are some of the symmetry planes of the tetrahedron
+                if (q.X - q.Y < 0) { x1 = q.Y; q.Y = q.X; q.X = x1; }
+                if (q.X - q.Z < 0) { x1 = q.Z; q.Z = q.X; q.X = x1; }
+                if (q.Y - q.Z < 0) { y1 = q.Z; q.Z = q.Y; q.Y = y1; }
+
+                q = TransformationCalculator.Transform(mat2, q);
+                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
+                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - center.Y * (scale - 1);
+                q.Z = scale * q.Z - center.Z * (scale - 1);
+                r = q.LengthSquared();
+            }
+            // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+            return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+        }
+
+        // https://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/?PHPSESSID=1daa670e46af931712e2c96a11f5002e
+        public static Vector3 Knighty2ndHalfTet_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var center = fractalParams.IfsC;
+            var r = q.LengthSquared();
+            float x1 = q.X;
+            float y1 = q.Y;
+            float z1 = q.Z;
+            int i = 0;
+            for (; i < fractalParams.Iterations && r < fractalParams.Bailout; i++)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                //Folding... These are some of the symmetry planes of the tetrahedron
+                if (q.X - q.Y < 0) { x1 = q.Y; q.Y = q.X; q.X = x1; }
+                if (q.X - q.Z < 0) { x1 = q.Z; q.Z = q.X; q.X = x1; }
+                if (q.Y - q.Z < 0) { y1 = q.Z; q.Z = q.Y; q.Y = y1; }
+
+                q = TransformationCalculator.Transform(mat2, q);
+
+                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
+                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - center.Y * (scale - 1);
+                q.Z = scale * q.Z - center.Z * (scale - 1);
+                r = q.LengthSquared();
+            }
+            // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+            return q;
+        }
+
+
+        // https://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/?PHPSESSID=1daa670e46af931712e2c96a11f5002e
+        public static float KnightyFullTet(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var center = fractalParams.IfsC;
+            var r = q.LengthSquared();
+            float x1 = q.X;
+            float y1 = q.Y;
+            float z1 = q.Z;
+            int i = 0;
+            for (; i < fractalParams.Iterations && r < fractalParams.Bailout; i++)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                //Folding... These are some of the symmetry planes of the tetrahedron
+                if (q.X - q.Y < 0) { x1 = q.Y; q.Y = q.X; q.X = x1; }
+                if (q.X - q.Z < 0) { x1 = q.Z; q.Z = q.X; q.X = x1; }
+                if (q.Y - q.Z < 0) { y1 = q.Z; q.Z = q.Y; q.Y = y1; }
+                if (q.X + q.Y < 0) { x1 = -q.Y; q.Y = -q.X; q.X = x1; }
+                if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
+                if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
+
+                q = TransformationCalculator.Transform(mat2, q);
+                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
+                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - center.Y * (scale - 1);
+                q.Z = scale * q.Z - center.Z * (scale - 1);
+                r = q.LengthSquared();
+            }
+            // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+            return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+        }
+
+        // https://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/?PHPSESSID=1daa670e46af931712e2c96a11f5002e
+        public static Vector3 KnightyFullTet_vector(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)
+        {
+            float scale = fractalParams.IfsScale;
+            var center = fractalParams.IfsC;
+            var r = q.LengthSquared();
+            float x1 = q.X;
+            float y1 = q.Y;
+            float z1 = q.Z;
+            int i = 0;
+            for (; i < fractalParams.Iterations && r < fractalParams.Bailout; i++)
+            {
+                q = TransformationCalculator.Transform(mat1, q);
+                //Folding... These are some of the symmetry planes of the tetrahedron
+                if (q.X - q.Y < 0) { x1 = q.Y; q.Y = q.X; q.X = x1; }
+                if (q.X - q.Z < 0) { x1 = q.Z; q.Z = q.X; q.X = x1; }
+                if (q.Y - q.Z < 0) { y1 = q.Z; q.Z = q.Y; q.Y = y1; }
+                if (q.X + q.Y < 0) { x1 = -q.Y; q.Y = -q.X; q.X = x1; }
+                if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
+                if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
+
+                q = TransformationCalculator.Transform(mat2, q);
+
+                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
+                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - center.Y * (scale - 1);
+                q.Z = scale * q.Z - center.Z * (scale - 1);
+                r = q.LengthSquared();
+            }
+            // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
+            return q;
+        }
 
         // https://www.fractalforums.com/sierpinski-gasket/kaleidoscopic-(escape-time-ifs)/?PHPSESSID=1daa670e46af931712e2c96a11f5002e
         public static float Knighty_no_bailout(Vector3 q, FractalParams fractalParams, Matrix4x4 mat1, Matrix4x4 mat2)

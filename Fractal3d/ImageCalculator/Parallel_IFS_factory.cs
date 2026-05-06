@@ -66,6 +66,10 @@ public class Parallel_IFS_Factory : IDisposable
                 return Knighty;
             case IfsEquationType.KnightyNoBailout:
                 return Knighty_no_bailout;
+            case IfsEquationType.Knighty2ndTetrahedral:
+                return Knighty2ndHalfTet;
+            case IfsEquationType.KnightyFullTetrahedral:
+                return KnightyFullTet;
             case IfsEquationType.Test:
                 return Sierpinski3_alt3;
             default:
@@ -85,6 +89,10 @@ public class Parallel_IFS_Factory : IDisposable
                 return Knighty_vector;
             case IfsEquationType.KnightyNoBailout:
                 return Knighty_no_bailout_vector;
+            case IfsEquationType.Knighty2ndTetrahedral:
+                return Knighty2ndHalfTet_vector;
+            case IfsEquationType.KnightyFullTetrahedral:
+                return KnightyFullTet_vector;
             case IfsEquationType.Test:
                 return Sierpinski3_alt3_vector;
             default:

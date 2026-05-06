@@ -68,7 +68,8 @@ public class ParameterVm : ViewModelBase
         SelectedIfsEquationType = _fractalParams.IfsEquation;
         AllowedIfsEquationTypes = new ObservableCollection<IfsEquationType>
         {
-            IfsEquationType.Standard, IfsEquationType.StandardNoBailout, IfsEquationType.Knighty, IfsEquationType.KnightyNoBailout, IfsEquationType.Test
+            IfsEquationType.Standard, IfsEquationType.StandardNoBailout, IfsEquationType.Knighty, IfsEquationType.KnightyNoBailout, 
+            IfsEquationType.Knighty2ndTetrahedral, IfsEquationType.KnightyFullTetrahedral, IfsEquationType.Test
         };
         _normalizeIfsC_Command = new RelayCommand(_ => NormalizeIfsC());
     }
@@ -673,6 +674,19 @@ public class ParameterVm : ViewModelBase
         set
         {
             _fractalParams.IfsScale = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
+    public bool IfsAbs
+    {
+        get => _fractalParams.IfsAbs;
+        set
+        {
+            if (value == _fractalParams.IfsAbs)
+                return;
+            _fractalParams.IfsAbs = value;
             OnPropertyChanged();
             _onParamsChanged(_fractalParams);
         }

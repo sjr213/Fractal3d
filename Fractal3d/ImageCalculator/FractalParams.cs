@@ -33,6 +33,10 @@ public enum IfsEquationType
     Knighty,
     [Description("Knighty no bailout")]
     KnightyNoBailout,
+    [Description("Knighty 2nd Tetrahedral")]
+    Knighty2ndTetrahedral,
+    [Description("Knighty Full Tetrahedral")]
+    KnightyFullTetrahedral,
     [Description("Test")]
     Test
 }
@@ -155,6 +159,8 @@ public class FractalParams : ICloneable
     public TransformationParams IfsTransform2 = new TransformationParams();
     public IfsEquationType IfsEquation { get; set; } = IfsEquationType.Standard;
     public Vector3 IfsC { get; set; } = new Vector3(1.0f, 1.0f, 1.0f);
+
+    public bool IfsAbs { get; set; } = false;
 
     public object Clone()
     {
