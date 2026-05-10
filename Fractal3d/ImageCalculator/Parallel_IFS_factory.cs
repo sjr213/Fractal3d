@@ -123,6 +123,7 @@ public class Parallel_IFS_Factory : IDisposable
         var transMat1 = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.IfsTransform1);
         var transMat2 = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.IfsTransform2);
 
+        var fractionalProgress = progress / (raw.ToWidth - raw.FromWidth + 1);
         for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
         {
             for (var y = 0; y < size.Height; ++y)
@@ -158,13 +159,13 @@ public class Parallel_IFS_Factory : IDisposable
 
             if (cancelToken.IsCancellationRequested)
                 return;
-        }
 
-        lock (_lockObject)
-        {
-            _totalProgress += progress;
+            lock (_lockObject)
+            {
+                _totalProgress += fractionalProgress;
+                _progressSubject.OnNext(_totalProgress);
+            }      
         }
-        _progressSubject.OnNext(_totalProgress);
     }
 
     private static IList<ColorContainer> CreateContainers(Size size, Color background, int numberOfContainers)
