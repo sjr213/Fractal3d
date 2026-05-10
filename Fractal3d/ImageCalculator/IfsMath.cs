@@ -237,6 +237,14 @@ namespace ImageCalculator
                 q = TransformationCalculator.Transform(mat2, q);
                 q = scale * q - c * (scale - 1);
                 n++;
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             return q.Length() * (float)Math.Pow(scale, -n);
@@ -281,6 +289,14 @@ namespace ImageCalculator
                 q = TransformationCalculator.Transform(mat2, q);
                 q = scale * q - c * (scale - 1);
                 n++;
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             return q;
@@ -325,10 +341,19 @@ namespace ImageCalculator
                     c = a4;
                     dist = d;
                 }
+
                 q = TransformationCalculator.Transform(mat2, q);
                 var centerStretch = c * center;
                 q = scale * q - centerStretch * (scale - 1);
                 n++;
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
           //  return 1.0f - (float)(n / (float)fractalParams.Iterations);
@@ -372,10 +397,19 @@ namespace ImageCalculator
                     c = a4;
                     dist = d;
                 }
+
                 q = TransformationCalculator.Transform(mat2, q);
                 var centerStretch = c * center;
                 q = scale * q - centerStretch * (scale - 1);
                 n++;
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             return q;
@@ -424,6 +458,14 @@ namespace ImageCalculator
                 var centerStretch = c * center;
                 q = scale * q - centerStretch * (scale - 1);
                 n++;
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             return q.Length() * (float)Math.Pow(scale, -n);
@@ -470,6 +512,14 @@ namespace ImageCalculator
                 var centerStretch = c * center;
                 q = scale * q - centerStretch * (scale - 1);
                 n++;
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             return q;
@@ -493,12 +543,6 @@ namespace ImageCalculator
                 if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
                 if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
 
-                if (fractalParams.IfsAbs)
-                {
-                    q.X = Math.Abs(q.X);
-                    q.Y = Math.Abs(q.Y);
-                    q.Z = Math.Abs(q.Z);
-                }
 
                 q = TransformationCalculator.Transform(mat2, q);
 
@@ -506,6 +550,14 @@ namespace ImageCalculator
                 q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
                 q.Y = scale * q.Y - center.Y * (scale - 1);
                 q.Z = scale * q.Z - center.Z * (scale - 1);
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
@@ -530,6 +582,13 @@ namespace ImageCalculator
                 if (q.X + q.Z < 0) { x1 = -q.Z; q.Z = -q.X; q.X = x1; }
                 if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
 
+                q = TransformationCalculator.Transform(mat2, q);
+
+                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
+                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
+                q.Y = scale * q.Y - center.Y * (scale - 1);
+                q.Z = scale * q.Z - center.Z * (scale - 1);
+
                 if (fractalParams.IfsAbs)
                 {
                     q.X = Math.Abs(q.X);
@@ -537,12 +596,6 @@ namespace ImageCalculator
                     q.Z = Math.Abs(q.Z);
                 }
 
-                q = TransformationCalculator.Transform(mat2, q);
-
-                //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
-                q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
-                q.Y = scale * q.Y - center.Y * (scale - 1);
-                q.Z = scale * q.Z - center.Z * (scale - 1);
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
@@ -572,6 +625,14 @@ namespace ImageCalculator
                 q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
                 q.Y = scale * q.Y - center.Y * (scale - 1);
                 q.Z = scale * q.Z - center.Z * (scale - 1);
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
@@ -597,11 +658,18 @@ namespace ImageCalculator
                 if (q.Y - q.Z < 0) { y1 = q.Z; q.Z = q.Y; q.Y = y1; }
 
                 q = TransformationCalculator.Transform(mat2, q);
-
                 //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
                 q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
                 q.Y = scale * q.Y - center.Y * (scale - 1);
                 q.Z = scale * q.Z - center.Z * (scale - 1);
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
@@ -635,6 +703,14 @@ namespace ImageCalculator
                 q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
                 q.Y = scale * q.Y - center.Y * (scale - 1);
                 q.Z = scale * q.Z - center.Z * (scale - 1);
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
@@ -663,11 +739,18 @@ namespace ImageCalculator
                 if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
 
                 q = TransformationCalculator.Transform(mat2, q);
-
                 //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
                 q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
                 q.Y = scale * q.Y - center.Y * (scale - 1);
                 q.Z = scale * q.Z - center.Z * (scale - 1);
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
@@ -697,6 +780,14 @@ namespace ImageCalculator
                 q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
                 q.Y = scale * q.Y - center.Y * (scale - 1);
                 q.Z = scale * q.Z - center.Z * (scale - 1);
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
@@ -722,11 +813,18 @@ namespace ImageCalculator
                 if (q.Y + q.Z < 0) { y1 = -q.Z; q.Z = -q.Y; q.Y = y1; }
 
                 q = TransformationCalculator.Transform(mat2, q);
-
                 //Stretche about the point [1,1,1]*(scale-1)/scale; The "(scale-1)/scale" is here in order to keep the size of the fractal constant wrt scale
                 q.X = scale * q.X - center.X * (scale - 1);//equivalent to: x=scale*(x-cx); where cx=(scale-1)/scale;
                 q.Y = scale * q.Y - center.Y * (scale - 1);
                 q.Z = scale * q.Z - center.Z * (scale - 1);
+
+                if (fractalParams.IfsAbs)
+                {
+                    q.X = Math.Abs(q.X);
+                    q.Y = Math.Abs(q.Y);
+                    q.Z = Math.Abs(q.Z);
+                }
+
                 r = q.LengthSquared();
             }
             // return (float)((Math.Sqrt(r) - 2.0) * Math.Pow(scale, -i));//the estimated distance
