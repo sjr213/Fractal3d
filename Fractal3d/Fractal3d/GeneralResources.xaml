@@ -181,6 +181,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -214,23 +215,19 @@
                     <TextBlock Grid.Row="8" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=RangeZ }"/>
                     <TextBlock Grid.Row="9" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Iterations</TextBlock>
                     <TextBlock Grid.Row="9" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=Iterations }"/>
-                    <TextBlock Grid.Row="10" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Min Ray Dist.</TextBlock>
-                    <TextBlock Grid.Row="10" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MinRayDistance }"/>
-                    <TextBlock Grid.Row="11" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Max Steps</TextBlock>
-                    <TextBlock Grid.Row="11" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MaxRaySteps }"/>
-                    <TextBlock Grid.Row="12" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Distance</TextBlock>
-                    <TextBlock Grid.Row="12" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=Distance }"/>
-                    <TextBlock Grid.Row="13" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Max Distance</TextBlock>
-                    <TextBlock Grid.Row="13" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MaxDistance }"/>
-                    <TextBlock Grid.Row="14" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Step Divisor</TextBlock>
-                    <TextBlock Grid.Row="14" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=StepDivisor }"/>
-                    <TextBlock Grid.Row="15" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Aim to Origin</TextBlock>
-                    <TextBlock Grid.Row="15" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=AimToOrigin }"/>
-                    <TextBlock Grid.Row="16" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" 
+                    <TextBlock Grid.Row="10" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MinRayDistance }"/>
+                    <TextBlock Grid.Row="10" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MaxRaySteps }"/>
+                    <TextBlock Grid.Row="11" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=Distance }"/>
+                    <TextBlock Grid.Row="11" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MaxDistance }"/>
+                    <TextBlock Grid.Row="12" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Step Divisor</TextBlock>
+                    <TextBlock Grid.Row="12" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=StepDivisor }"/>
+                    <TextBlock Grid.Row="13" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Aim to Origin</TextBlock>
+                    <TextBlock Grid.Row="13" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=AimToOrigin }"/>
+                    <TextBlock Grid.Row="14" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" 
                                Visibility="{Binding PaletteVisibility}">Lighting on Zero Index</TextBlock>
-                    <TextBlock Grid.Row="16" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
+                    <TextBlock Grid.Row="14" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
                                Visibility="{Binding PaletteVisibility}" Text="{Binding Path=LightingOnZeroIndex }"/>
-                    <TextBlock Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SmallTextBlockStyle}"
+                    <TextBlock Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SmallTextBlockStyle}"
                                Visibility="{Binding PaletteVisibility}" Text="{Binding Path=StretchDistanceRangeText}"/>
                 </Grid>
             </Expander>

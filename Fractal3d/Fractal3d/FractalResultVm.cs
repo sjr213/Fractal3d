@@ -225,18 +225,19 @@ public class FractalResultVm : ViewModelBase
             if (_fractalResult.Params == null)
                 return string.Empty;
 
-            return TruncateFloatStringOnRight(_fractalResult.Params.MinRayDistance);
+            return "Min Ray: " + TruncateFloatStringOnRight(_fractalResult.Params.MinRayDistance);
         }
     }
 
-    public int MaxRaySteps
+    public string MaxRaySteps
     {
         get
         {
             if (_fractalResult.Params == null)
-                return 0;
+                return string.Empty;
 
-            return _fractalResult.Params.MaxRaySteps;
+
+            return $"Max Steps: {_fractalResult.Params.MaxRaySteps}";
         }
     }
 
@@ -247,7 +248,7 @@ public class FractalResultVm : ViewModelBase
             if (_fractalResult.Params == null)
                 return string.Empty;
 
-            return TruncateFloatStringOnRight(_fractalResult.Params.Distance);
+            return "Dist: " + TruncateFloatStringOnRight(_fractalResult.Params.Distance);
         }
     }
 
@@ -258,7 +259,7 @@ public class FractalResultVm : ViewModelBase
             if (_fractalResult.Params == null)
                 return string.Empty;
 
-            return TruncateFloatStringOnRight(_fractalResult.Params.MaxDistance);
+            return "Max Dist: " + TruncateFloatStringOnRight(_fractalResult.Params.MaxDistance);
         }
     }
 
