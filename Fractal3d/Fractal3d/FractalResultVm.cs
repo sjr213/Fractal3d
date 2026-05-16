@@ -13,6 +13,7 @@ public class FractalResultVm : ViewModelBase
     private Visibility _equationVisibility = Visibility.Collapsed;
     private Visibility _constantC_Visibility = Visibility.Collapsed;
     private Visibility _ifsC_Visibility = Visibility.Collapsed;
+    private Visibility _ifsGeneral_Visibility = Visibility.Collapsed;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public FractalResultVm(FractalResult fractalResult, int number)
@@ -27,7 +28,8 @@ public class FractalResultVm : ViewModelBase
             EquationVisibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader ? Visibility.Collapsed : Visibility.Visible;
             ConstantC_Visibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader || _fractalResult.Params.ShaderType == ShaderType.IFSShader ? 
                 Visibility.Collapsed : Visibility.Visible;
-            IfsC_Visibility = _fractalResult.Params.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+            IfsC_Visibility = _fractalResult.Params.ShaderType == ShaderType.IFSShader && _fractalResult.Params.IfsEquation != IfsEquationType.Test ? Visibility.Visible : Visibility.Collapsed;
+            IfsGeneral_Visibility = _fractalResult.Params.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 
@@ -85,7 +87,7 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
-    public string TruncateFloatStringOnRight(float val)
+    public static string TruncateFloatStringOnRight(float val)
     {
         var str = val.ToString("F4");
         if (str.IndexOf('.', 0) > -1)
@@ -97,7 +99,7 @@ public class FractalResultVm : ViewModelBase
         return str.TrimEnd(charsToTrim);
     }
 
-    public string GetConstantC_String(Vector4 c)
+    public static string GetConstantC_String(Vector4 c)
     {
         StringBuilder sb = new StringBuilder();
         sb.Append(TruncateFloatStringOnRight(c.W));
@@ -305,6 +307,59 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
+    public string IfsScale
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+
+            return "Ifs Scale: " + TruncateFloatStringOnRight(_fractalResult.Params.IfsScale);
+        }
+    }
+
+    public string IfsAbs
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+            return "Ifs Abs: " + (_fractalResult.Params.IfsAbs ? "Yes" : "No");
+        }
+    }
+
+    private static string GetRot_String(TransformationParams tp)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(TruncateFloatStringOnRight(tp.RotateX));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(tp.RotateY));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(tp.RotateZ));
+
+        return sb.ToString();
+    }
+
+    public string IfsRot1
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+            return "Ifs Rot1: " + GetRot_String(_fractalResult.Params.IfsTransform1);
+        }
+    }
+
+    public string IfsRot2
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+            return "Ifs Rot2: " + GetRot_String(_fractalResult.Params.IfsTransform2);
+        }
+    }
+
     public Visibility PaletteVisibility
     {
         get => _paletteVisibility;
@@ -327,6 +382,12 @@ public class FractalResultVm : ViewModelBase
     {
         get => _ifsC_Visibility;
         set => SetProperty(ref _ifsC_Visibility, value);
+    }
+
+    public Visibility IfsGeneral_Visibility
+    {
+        get => _ifsGeneral_Visibility;
+        set => SetProperty(ref _ifsGeneral_Visibility, value);
     }
 
     public FractalResult Result => _fractalResult;
