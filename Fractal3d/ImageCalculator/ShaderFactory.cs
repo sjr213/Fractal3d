@@ -3,6 +3,8 @@
 using FractureCommonLib;
 using System.Numerics;
 using System.Reactive.Subjects;
+using Windows.Media.AppBroadcasting;
+using Windows.UI.StartScreen;
 
 public class ShaderFactory : IDisposable
 {
@@ -55,6 +57,19 @@ public class ShaderFactory : IDisposable
         return (Vector3.Max(q, Vector3.Zero)).Length() + Math.Min(Math.Max(Math.Max(q.Y, q.Z), q.X), 0.0f);
     }
 
+    public static Vector3 MaxVec(Vector3 a, float b)
+    {
+        return new Vector3(Math.Max(a.X, b), Math.Max(a.Y, b), Math.Max(a.Z, b));
+    }
+
+    public static float EstimateDistanceBox2(Vector3 p)
+    {
+        var b = new Vector3(0.5f, 0.25f, 0.1f);
+        Vector3 q = Vector3.Abs(p) - b;
+        var l = MaxVec(q, 0.0f).Length();
+        return (l + (float) Math.Min(Math.Max(q.X, Math.Max(q.Y, q.Z)), 0.0));
+    }
+
     public static float EstimateDistanceTorus(Vector3 p)
     {
         Vector2 t = new Vector2(0.25f, 0.05f);
@@ -63,13 +78,12 @@ public class ShaderFactory : IDisposable
         return q.Length() - t.Y;
     }
 
-    private Tuple<bool, float> RayMarch(Vector3 startPt, Vector3 direction, Matrix4x4 transformMatrix, out Vector3 pt)
+    private bool RayMarch(Vector3 startPt, Vector3 direction, Matrix4x4 transformMatrix, out Vector3 pt)
     {
         float totalDistance = 0.0f;
         int steps;
         bool hit = false;
 
-        float lastDistance = float.MaxValue;
         pt = startPt;
 
         for (steps = 0; steps < _fractalParams.MaxRaySteps; steps++)
@@ -77,32 +91,29 @@ public class ShaderFactory : IDisposable
             pt = totalDistance * direction + startPt;
             var transformedPt = TransformationCalculator.Transform(transformMatrix, pt);
             float distance = _distanceEstimator(transformedPt);
-            totalDistance += distance / _fractalParams.StepDivisor;
+            
             if (distance < _fractalParams.MinRayDistance)
             {
                 hit = true;
                 break;
             }
 
-            if (distance > lastDistance)        // Can have option to block distance increases
-                break;
-
             if (totalDistance > _fractalParams.MaxDistance)
                 break;
 
-            lastDistance = distance;
+            totalDistance += distance;
         }
 
-        return new Tuple<bool, float>(hit, 1.0f - ((float)steps) / _fractalParams.MaxRaySteps);
+        return hit;
     }
 
 
-    private void CalculateImageNew(RawLightedImage raw, FractalParams fractalParams, double startProgress, double sumProgress, CancellationToken cancelToken)
+    private void CalculateImageNew(RawLightedImage raw, double startProgress, double sumProgress, CancellationToken cancelToken)
     {
         _progressSubject.OnNext(startProgress);
 
-        var size = fractalParams.ImageSize;
-        var palette = fractalParams.Palette;
+        var size = _fractalParams.ImageSize;
+        var palette = _fractalParams.Palette;
         
          
         float left = Math.Min(_fractalParams.FromX, _fractalParams.ToX);
@@ -118,7 +129,7 @@ public class ShaderFactory : IDisposable
 
         var viewPos = new Vector3(0, 0, fromZ);
 
-        var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(fractalParams.TransformParams);
+        var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(_fractalParams.TransformParams);
         var transformedLights = LightUtil.TransformLights(_fractalParams.Lights, transformMatrix);
         var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
 
@@ -133,26 +144,16 @@ public class ShaderFactory : IDisposable
 
                 var to = (_fractalParams.AimToOrigin) ? new Vector3(0.0f, 0.0f, toZ) : new Vector3(fx, fy, toZ);
 
-                var startPt = from + fractalParams.Distance * to;
+                var startPt = from + _fractalParams.Distance * to;
 
                 var direction = to - from;
 
-                var tuple = RayMarch(startPt, direction, transformMatrix, out var outPt);
-                bool hit = tuple.Item1;
-                float distance = tuple.Item2;
-
-                distance = (distance - fractalParams.MinStretchDistance) / (fractalParams.MaxStretchDistance - fractalParams.MinStretchDistance);
-
-                if (distance < 0.0f)
-                    distance = 0.0f;
-
-                if (distance > 1.0f)
-                    distance = 1.0f;
+                var hit = RayMarch(startPt, direction, transformMatrix, out var outPt);
 
                 var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
-                var normal = NormalCalculator.CalculateNormal(_distanceEstimator, fractalParams.NormalDistance, transformedPt);
+                var normal = NormalCalculator.CalculateNormal(_distanceEstimator, _fractalParams.NormalDistance, transformedPt);
 
-                var lighting = (hit) ? LightUtil.GetPointLight(transformedLights, fractalParams.LightComboMode, transformedPt, transViewPos, normal) : 
+                var lighting = (hit) ? LightUtil.GetPointLight(transformedLights, _fractalParams.LightComboMode, transformedPt, transViewPos, normal) : 
                     new Lighting();
 
                 var depth = (hit) ? (palette.NumberOfColors - 1) : 0;
@@ -179,7 +180,7 @@ public class ShaderFactory : IDisposable
             case ShaderSceneType.Sphere:
                 return EstimateDistanceSphere;
             case ShaderSceneType.Box:
-                return EstimateDistanceBox;
+                return EstimateDistanceBox2;
             case ShaderSceneType.Torus:
                 return EstimateDistanceTorus;
             default:
@@ -199,7 +200,7 @@ public class ShaderFactory : IDisposable
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
 
-        await Task.Run(() => CalculateImageNew(raw, fractalParams, startProgress, sumProgress, cancelToken), cancelToken);
+        await Task.Run(() => CalculateImageNew(raw, startProgress, sumProgress, cancelToken), cancelToken);
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
