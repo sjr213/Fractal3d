@@ -205,22 +205,28 @@
                                Visibility="{Binding IfsC_Visibility}">IFS C</TextBlock>
                     <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
                                Visibility="{Binding IfsC_Visibility}" Text="{Binding Path=IfsC }"/>
-                    <TextBlock Grid.Row="5" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Bailout</TextBlock>
-                    <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=Bailout }"/>
+                    <TextBlock Grid.Row="5" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}"
+                               Visibility="{Binding BailoutVisibility}" >Bailout</TextBlock>
+                    <TextBlock Grid.Row="5" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
+                               Visibility="{Binding BailoutVisibility}" Text="{Binding Path=Bailout }"/>
                     <TextBlock Grid.Row="6" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">X Range</TextBlock>
                     <TextBlock Grid.Row="6" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=RangeX }"/>
                     <TextBlock Grid.Row="7" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Y Range</TextBlock>
                     <TextBlock Grid.Row="7" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=RangeY }"/>
                     <TextBlock Grid.Row="8" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Z Range</TextBlock>
                     <TextBlock Grid.Row="8" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=RangeZ }"/>
-                    <TextBlock Grid.Row="9" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Iterations</TextBlock>
-                    <TextBlock Grid.Row="9" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=Iterations }"/>
+                    <TextBlock Grid.Row="9" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}"
+                               Visibility="{Binding EquationVisibility}">Iterations</TextBlock>
+                    <TextBlock Grid.Row="9" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
+                               Visibility="{Binding EquationVisibility}" Text="{Binding Path=Iterations }"/>
                     <TextBlock Grid.Row="10" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MinRayDistance }"/>
                     <TextBlock Grid.Row="10" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MaxRaySteps }"/>
                     <TextBlock Grid.Row="11" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=Distance }"/>
                     <TextBlock Grid.Row="11" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=MaxDistance }"/>
-                    <TextBlock Grid.Row="12" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Step Divisor</TextBlock>
-                    <TextBlock Grid.Row="12" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=StepDivisor }"/>
+                    <TextBlock Grid.Row="12" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}"
+                               Visibility="{Binding StepDivisorVisibility}">Step Divisor</TextBlock>
+                    <TextBlock Grid.Row="12" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
+                               Visibility="{Binding StepDivisorVisibility}" Text="{Binding Path=StepDivisor }"/>
                     <TextBlock Grid.Row="13" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}">Aim to Origin</TextBlock>
                     <TextBlock Grid.Row="13" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Text="{Binding Path=AimToOrigin }"/>
                     <TextBlock Grid.Row="14" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" 

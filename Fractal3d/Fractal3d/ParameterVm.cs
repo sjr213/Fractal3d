@@ -909,8 +909,7 @@ public class ParameterVm : ViewModelBase
         ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader ? Visibility.Visible : Visibility.Collapsed;
 
         RayTraceFieldVisibility = SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.FractalShader || 
-            SelectedShaderType == ShaderType.ShapeShader || _fractalParams.ShaderType == ShaderType.IFSShader ?
-            Visibility.Visible : Visibility.Collapsed;
+            _fractalParams.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
 
         EscapeThresholdVisibility = SelectedShaderType == ShaderType.CraneShader || SelectedShaderType == ShaderType.CranePixel ||
             SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.ShadertoyShader ?

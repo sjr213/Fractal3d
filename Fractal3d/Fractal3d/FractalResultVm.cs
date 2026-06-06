@@ -14,6 +14,8 @@ public class FractalResultVm : ViewModelBase
     private Visibility _constantC_Visibility = Visibility.Collapsed;
     private Visibility _ifsC_Visibility = Visibility.Collapsed;
     private Visibility _ifsGeneral_Visibility = Visibility.Collapsed;
+    private Visibility _StepDivisorVisibility = Visibility.Collapsed;
+    private Visibility _bailoutVisibility = Visibility.Collapsed;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public FractalResultVm(FractalResult fractalResult, int number)
@@ -30,6 +32,12 @@ public class FractalResultVm : ViewModelBase
                 Visibility.Collapsed : Visibility.Visible;
             IfsC_Visibility = _fractalResult.Params.ShaderType == ShaderType.IFSShader && _fractalResult.Params.IfsEquation != IfsEquationType.Test ? Visibility.Visible : Visibility.Collapsed;
             IfsGeneral_Visibility = _fractalResult.Params.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+            StepDivisorVisibility = _fractalResult.Params.ShaderType == ShaderType.CraneRaymarch || _fractalResult.Params.ShaderType == ShaderType.FractalShader ||
+                _fractalResult.Params.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+
+            BailoutVisibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader ||
+                (_fractalResult.Params.ShaderType == ShaderType.IFSShader && (_fractalResult.Params.IfsEquation == IfsEquationType.StandardNoBailout || _fractalResult.Params.IfsEquation == IfsEquationType.KnightyNoBailout)) ?
+                Visibility.Collapsed : Visibility.Visible;
         }
     }
 
@@ -388,6 +396,18 @@ public class FractalResultVm : ViewModelBase
     {
         get => _ifsGeneral_Visibility;
         set => SetProperty(ref _ifsGeneral_Visibility, value);
+    }
+
+    public Visibility StepDivisorVisibility
+    {
+        get => _StepDivisorVisibility;
+        set => SetProperty(ref _StepDivisorVisibility, value);
+    }
+
+    public Visibility BailoutVisibility
+    {
+        get => _bailoutVisibility;
+        set => SetProperty(ref _bailoutVisibility, value);
     }
 
     public FractalResult Result => _fractalResult;
