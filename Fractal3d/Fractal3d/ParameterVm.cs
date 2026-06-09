@@ -55,7 +55,7 @@ public class ParameterVm : ViewModelBase
 
         AllowedSceneTypes = new List<ShaderSceneType>
         {
-            ShaderSceneType.Sphere, ShaderSceneType.Box, ShaderSceneType.Torus
+            ShaderSceneType.Sphere, ShaderSceneType.Box, ShaderSceneType.Torus, ShaderSceneType.Capsule
         };
 
         SelectedShaderType = _fractalParams.ShaderType;

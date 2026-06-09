@@ -1,10 +1,9 @@
 ﻿namespace ImageCalculator;
 
+//using ABI.System.Numerics;
 using FractureCommonLib;
 using System.Numerics;
 using System.Reactive.Subjects;
-using Windows.Media.AppBroadcasting;
-using Windows.UI.StartScreen;
 
 public class ShaderFactory : IDisposable
 {
@@ -76,6 +75,23 @@ public class ShaderFactory : IDisposable
         Vector2 pxz = new Vector2(p.X, p.Z);
         Vector2 q = new Vector2(pxz.Length() - t.X, p.Y);
         return q.Length() - t.Y;
+    }
+
+    public static float EstimateDistanceCapsule(Vector3 p)
+    {
+        Vector3 a = new Vector3(-0.25f, 0.25f, 0.1f);
+        Vector3 b = new Vector3(0.25f, -0.25f, -0.1f);
+        float r = 0.1f;
+        return sdCapsule(p, a, b, r);
+    }
+
+    // Capsule / Line
+    public static float sdCapsule(Vector3 p, Vector3 a, Vector3 b, float r)
+    {
+        Vector3 pa = p - a;
+        Vector3 ba = b - a;
+        float h = (float)Math.Clamp(Vector3.Dot(pa, ba) / Vector3.Dot(ba, ba), 0.0, 1.0);
+        return (pa - ba * h).Length() - r;
     }
 
     private bool RayMarch(Vector3 startPt, Vector3 direction, Matrix4x4 transformMatrix, out Vector3 pt)
@@ -183,6 +199,8 @@ public class ShaderFactory : IDisposable
                 return EstimateDistanceBox2;
             case ShaderSceneType.Torus:
                 return EstimateDistanceTorus;
+            case ShaderSceneType.Capsule:
+                return EstimateDistanceCapsule;
             default:
                 throw new ArgumentException("Unknown Scene Type");
         }
