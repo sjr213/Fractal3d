@@ -264,6 +264,8 @@
                 Converter={StaticResource BoolToVisibilityConverterShowOnTrue}, UpdateSourceTrigger=PropertyChanged}">
                 <CheckBox Margin="5" Padding="2" VerticalContentAlignment="Center"
                   IsChecked="{Binding UseNormalComponent}">Normal Component</CheckBox>
+                <CheckBox Margin="25,5,5,5" Padding="2" VerticalContentAlignment="Center"
+                 IsChecked="{Binding DiffuseCorrection}">Correct Diffuse</CheckBox>
             </StackPanel>
             <StackPanel Grid.Row="11" Margin="2,20, 2, 2" Orientation="Horizontal">
                 <Button Margin="2" Padding="2" Command="{Binding ExportCommand}">Export</Button>

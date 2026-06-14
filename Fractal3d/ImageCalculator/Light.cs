@@ -35,7 +35,12 @@ public class Light : ICloneable
     public float Shininess = 16.0f;
 
     // Only used for ParallelCraneShaderFactory
-    public bool UseNormalComponent { get; set; } = true;    
+    public bool UseNormalComponent { get; set; } = true;
+
+    // Only applies when UseNormalComponent is true, which is only used for CraneShader, ShadertoyShader and IFShader.
+    // There was an error in the original code where the diffuse power was added instead of multiplied.
+    // Many images were made like this and to reproduce them, this flag is set to false.
+    public bool DiffuseCorrection { get; set; } = false;
 
     public object Clone()
     {

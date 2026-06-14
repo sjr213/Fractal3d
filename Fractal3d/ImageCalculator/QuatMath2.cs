@@ -459,8 +459,13 @@ public static class QuatMath2
         float NdotL = Vector3.Dot(N, L);            // find cosine of the angle between light and normal
         Vector3 R = L - 2 * NdotL * N;              // reflected vector
 
-        if(light.UseNormalComponent)
-            diffuse += Vector3.Abs(N) * light.DiffusePower;           // Add some of the normal to the color to make it more interesting
+        if (light.UseNormalComponent)
+        {
+            if(light.DiffuseCorrection)
+                diffuse *= Vector3.Abs(N) * light.DiffusePower;       // The correct approach is to multiply the diffuse color by the normal component    
+            else
+                diffuse += Vector3.Abs(N) * light.DiffusePower;      // But originally there was an error that added and this was used to make many images     
+        }
         else
             diffuse *= light.DiffusePower;
 

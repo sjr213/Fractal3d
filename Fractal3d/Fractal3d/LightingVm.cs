@@ -407,6 +407,18 @@ public class LightingVm : ViewModelBase
         }
     }
 
+    public bool DiffuseCorrection
+    {
+        get => CurrentLight().DiffuseCorrection;
+        set
+        {
+            var light = CurrentLight();
+            light.DiffuseCorrection = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
     private bool _isCraneShader = false;
     public bool IsCraneShader
     {
