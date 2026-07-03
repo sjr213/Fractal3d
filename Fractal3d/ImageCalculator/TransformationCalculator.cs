@@ -10,6 +10,14 @@ public static class TransformationCalculator
         return fDegrees * (Pi / 180.0f);
     }
 
+    public static Matrix4x4 CreateRotationMatrix(float rotX, float rotY, float rotZ)
+    {
+        var rotXMatrix = Matrix4x4.CreateRotationX(ConvertToRadians(rotX));
+        var rotYMatrix = Matrix4x4.CreateRotationY(ConvertToRadians(rotY));
+        var rotZMatrix = Matrix4x4.CreateRotationZ(ConvertToRadians(rotZ));
+        return rotXMatrix * rotYMatrix * rotZMatrix;
+    }
+
     public static Matrix4x4 CreateTransformationMatrix(TransformationParams transParams)
     {
         var translation = Matrix4x4.CreateTranslation(transParams.TranslateX, transParams.TranslateY, transParams.TranslateZ);

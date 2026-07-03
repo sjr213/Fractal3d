@@ -51,7 +51,9 @@ public enum ShaderSceneType
     [Description("Torus")]
     Torus,
     [Description("Capsule")]
-    Capsule
+    Capsule,
+    [Description("Composite")]
+    Composite
 }
 
 [Serializable]

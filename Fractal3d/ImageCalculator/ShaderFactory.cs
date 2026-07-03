@@ -4,6 +4,21 @@
 using FractureCommonLib;
 using System.Numerics;
 using System.Reactive.Subjects;
+using Windows.ApplicationModel.Search.Core;
+
+public static class MatrixProvider
+{
+    public static Matrix4x4 GetLeftMatrix()
+    {
+        return TransformationCalculator.CreateRotationMatrix(0, 0, -30.0f);
+    }
+
+    public static Matrix4x4 GetRightMatrix()
+    {
+        return TransformationCalculator.CreateRotationMatrix(0, 0, 30.0f);
+    }
+
+}
 
 public class ShaderFactory : IDisposable
 {
@@ -41,13 +56,6 @@ public class ShaderFactory : IDisposable
         return p.Length() - 0.4f;
     }
 
-    /*
-        float sdBox( vec3 p, vec3 b )
-        {
-            vec3 q = abs(p) - b;
-            return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
-        }
-     */
     public static float EstimateDistanceBox(Vector3 p)
     {
         p -= new Vector3(1f, 0.25f, 0.1f);  // this moves the box to the right
@@ -83,6 +91,107 @@ public class ShaderFactory : IDisposable
         Vector3 b = new Vector3(0.25f, -0.25f, -0.1f);
         float r = 0.1f;
         return sdCapsule(p, a, b, r);
+    }
+
+    public static Vector3 RotateEnd(Vector3 start, Vector3 end, float angle)
+    {
+        var cos = (float)Math.Cos(angle*Math.PI/180.0);
+        var sin = (float)Math.Sin(angle*Math.PI/180.0);
+
+        var x = start.X + (end.X - start.X) * cos - (end.Y - start.Y) * sin;
+        var y = start.Y + (end.X - start.X) * sin + (end.Y - start.Y) * cos;
+
+        return new Vector3(x, y, end.Z);
+    }
+
+    public static Vector3 RotateEnd2(Vector3 start, Vector3 end, Matrix4x4 mat)
+    {
+        var dif = end - start;
+        var inter = TransformationCalculator.Transform(mat, dif);
+        return inter + start;
+    }
+
+    record struct PointPair(Vector3 Start, Vector3 End);
+
+    public static float EstimateDistanceCompositeOld(Vector3 p)
+    {
+        var start = new Vector3(0.0f, 0.9f, 0.0f);
+        var end = new Vector3(0.0f, 0.2f, 0.0f);
+        float r = 0.1f;
+
+        var pts = new List<PointPair>
+        {
+            new PointPair(start, end)
+        };
+        var height = (start - end).Length();
+        float distance = float.MaxValue;
+        var leftMatrix = MatrixProvider.GetLeftMatrix();
+        var rightMatrix = MatrixProvider.GetRightMatrix();
+
+        for (int i = 0; i < 4; i++)
+        {
+            height = height *= 0.7f;
+            var pts2 = new List<PointPair>();
+
+            foreach (var pt in pts.ToList())
+            {
+                distance = Math.Min(distance, sdCapsule(p, pt.Start, pt.End, r));
+                var start2 = pt.End;
+                var end2 = pt.End;
+                end2.Y -= height;
+                var left = RotateEnd2(start2, end2, leftMatrix);
+                var right = RotateEnd2(start2, end2, rightMatrix);
+
+                pts2.Add(new PointPair(start2, left));
+                pts2.Add(new PointPair(start2, right));
+            }
+            height *= 0.7f;
+            pts = pts2;
+        }
+        return distance;
+    }
+
+    private static Vector3 GetNewEnd(Vector3 start, Vector3 end, Matrix4x4 mat, float relativeLength)
+    {
+        var v = (end - start) * relativeLength;
+        var newEnd = end + v;
+        return RotateEnd2(end, newEnd, mat);
+    }
+
+    public static float EstimateDistanceComposite(Vector3 p)
+    {
+        var start = new Vector3(0.0f, 0.9f, 0.0f);
+        var end = new Vector3(0.0f, 0.2f, 0.0f);
+        float r = 0.1f;
+        float attenuation = 1.05f;
+
+        var pts = new List<PointPair>
+        {
+            new PointPair(start, end)
+        };
+        var length = (end-start).Length();
+        float distance = float.MaxValue;
+        var leftMatrix = MatrixProvider.GetLeftMatrix();
+        var rightMatrix = MatrixProvider.GetRightMatrix();
+
+        for (int i = 0; i < 4; i++)
+        {
+            length = length *= attenuation;
+            var pts2 = new List<PointPair>();
+
+            foreach (var pt in pts.ToList())
+            {
+                distance = Math.Min(distance, sdCapsule(p, pt.Start, pt.End, r));
+                
+                var left = GetNewEnd(pt.Start, pt.End, leftMatrix, length);
+                var right = GetNewEnd(pt.Start, pt.End, rightMatrix, length);   
+
+                pts2.Add(new PointPair(pt.End, left));
+                pts2.Add(new PointPair(pt.End, right));
+            }
+            pts = pts2;
+        }
+        return distance;
     }
 
     // Capsule / Line
@@ -201,6 +310,8 @@ public class ShaderFactory : IDisposable
                 return EstimateDistanceTorus;
             case ShaderSceneType.Capsule:
                 return EstimateDistanceCapsule;
+            case ShaderSceneType.Composite:
+                return EstimateDistanceComposite;
             default:
                 throw new ArgumentException("Unknown Scene Type");
         }
