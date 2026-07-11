@@ -166,6 +166,10 @@ public class FractalParams : ICloneable
 
     public bool IfsAbs { get; set; } = false;
 
+    public float LSystemRadius { get; set; } = 0.1f;
+
+    public List<LSystemBranch> LSystemBranches { get; set; } = new List<LSystemBranch>();
+
     public object Clone()
     {
         var copy = (FractalParams)MemberwiseClone();
@@ -177,6 +181,9 @@ public class FractalParams : ICloneable
         copy.TransformParams = (TransformationParams)TransformParams.Clone();
         copy.IfsTransform1 = (TransformationParams)IfsTransform1.Clone();
         copy.IfsTransform2 = (TransformationParams)IfsTransform2.Clone();
+        copy.LSystemBranches = new List<LSystemBranch>();
+        foreach (var branch in LSystemBranches)
+            copy.LSystemBranches.Add((LSystemBranch)branch.Clone());
         return copy;
     }
 }

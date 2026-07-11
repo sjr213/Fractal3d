@@ -295,8 +295,8 @@
             </StackPanel>
             
             <Separator Grid.Row="10"/>
-            <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
-                <StackPanel  Margin="0,0,20,0" Orientation="Horizontal" Visibility="{Binding IfsBailoutVisibility}">
+            <StackPanel Grid.Row="11" Margin="2,5" Orientation="Horizontal">
+                <StackPanel  Margin="0,0,20,0" Orientation="Horizontal" Visibility="{Binding BailoutVisibility}">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Bailout" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
@@ -321,7 +321,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="12" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}">
+            <StackPanel Grid.Row="12" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IterationVisibility}">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Iterations" />
                 <TextBox Style="{StaticResource TextBoxInError}" >
                     <TextBox.Text>
@@ -463,8 +463,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Row="19" Margin="2,5" Orientation="Horizontal" Style="{StaticResource FractalStack}"
-                        Visibility="{Binding BackgroundVisibility}">
+            <StackPanel Grid.Row="19" Margin="2,5" Orientation="Horizontal" Visibility="{Binding BackgroundVisibility}">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Background" />
                 </StackPanel>

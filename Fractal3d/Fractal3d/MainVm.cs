@@ -37,6 +37,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     private const int NumberOfColors = 1000;
 
     private readonly ShaderFactory _shaderFactory = new();
+    private readonly LsystemShaderFactory _lsystemShaderFactory = new();
     private readonly ParallelFractalFactory _fractalParallelFactory = new();
     private readonly ParallelCraneShaderFactory _craneShaderFactory = new();
     private readonly ParallelCranePixelShaderFactory _cranePixelFactory = new();
@@ -862,6 +863,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
                         fractalResult = await _shadertoyFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
                     else if(_fractalParams.ShaderType == ShaderType.IFSShader)
                         fractalResult = await _IFS_Factory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
+                    else if(_fractalParams.ShaderType == ShaderType.LSystemShader)
+                        fractalResult = await _lsystemShaderFactory.CreateShaderAsync(fractalParams, startProgress, sumProgress, cancelToken);
                     else
                         fractalResult = await _fractalParallelFactory.CreateFractalAsync(fractalParams, startProgress, sumProgress, cancelToken);
 
@@ -913,6 +916,8 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
                     _fractalResult = await _shadertoyFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
                 else if(_fractalParams.ShaderType == ShaderType.IFSShader)
                     _fractalResult = await _IFS_Factory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
+                else if (_fractalParams.ShaderType == ShaderType.LSystemShader)
+                    _fractalResult = await _lsystemShaderFactory.CreateShaderAsync(_fractalParams, 0, 100, cancelToken);    
                 else
                     _fractalResult = await _fractalParallelFactory.CreateFractalAsync(_fractalParams, 0, 100, cancelToken);
             }

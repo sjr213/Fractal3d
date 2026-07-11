@@ -85,15 +85,6 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="FractalStack" TargetType="{x:Type StackPanel}" >
-        <Setter Property="Visibility" Value="Visible" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding SelectedShaderType}" Value="ShapeShader">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
     <Style x:Key="CranePixelStack" TargetType="{x:Type StackPanel}" >
         <Setter Property="Visibility" Value="Collapsed" />
         <Style.Triggers>

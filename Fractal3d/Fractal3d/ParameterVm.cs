@@ -25,8 +25,9 @@ public class ParameterVm : ViewModelBase
     private Visibility _lightingOnZeroIndexVisibility = Visibility.Collapsed;
     private Visibility _ifsVisibility = Visibility.Collapsed;
     private Visibility _backgroundVisibility = Visibility.Collapsed;
-    private Visibility _ifsBailoutVisibility = Visibility.Collapsed;
+    private Visibility _bailoutVisibility = Visibility.Collapsed;
     private Visibility _ifsCenterVisibility = Visibility.Collapsed;
+    private Visibility _iterationVisibility = Visibility.Collapsed;
     private ObservableCollection<ShaderType> _allowedShaderTypes;
     private List<ShaderSceneType> _allowedSceneType;
     private ObservableCollection<IfsEquationType> _allowedIfsEquationTypes;
@@ -49,7 +50,7 @@ public class ParameterVm : ViewModelBase
 
         AllowedShaderTypes = new ObservableCollection<ShaderType>
         {
-            ShaderType.FractalShader, ShaderType.CraneShader, ShaderType.CranePixel, ShaderType.CraneRaymarch, ShaderType.ShapeShader, 
+            ShaderType.FractalShader, ShaderType.CraneShader, ShaderType.CranePixel, ShaderType.CraneRaymarch, ShaderType.ShapeShader, ShaderType.LSystemShader,
             ShaderType.ShadertoyShader, ShaderType.IFSShader
         };  
 
@@ -819,12 +820,22 @@ public class ParameterVm : ViewModelBase
         }
     }
 
-    public Visibility IfsBailoutVisibility
+    public Visibility BailoutVisibility
     {
-        get => _ifsBailoutVisibility;
+        get => _bailoutVisibility;
         set
         {
-            _ifsBailoutVisibility = value;
+            _bailoutVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility IterationVisibility
+    {
+        get => _iterationVisibility;
+        set
+        {
+            _iterationVisibility = value;
             OnPropertyChanged();
         }
     }
@@ -906,7 +917,8 @@ public class ParameterVm : ViewModelBase
             SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.ShadertoyShader ?
             Visibility.Visible : Visibility.Collapsed;
 
-        ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader ? Visibility.Visible : Visibility.Collapsed;
+        // need to update later
+        ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader || SelectedShaderType == ShaderType.LSystemShader ? Visibility.Visible : Visibility.Collapsed;
 
         RayTraceFieldVisibility = SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.FractalShader || 
             _fractalParams.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
@@ -920,14 +932,16 @@ public class ParameterVm : ViewModelBase
 
         IsCraneShader = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader;
 
-        ConstantC_Visibility = SelectedShaderType == ShaderType.ShapeShader || SelectedShaderType == ShaderType.IFSShader ?
+        ConstantC_Visibility = SelectedShaderType == ShaderType.ShapeShader || SelectedShaderType == ShaderType.IFSShader || SelectedShaderType == ShaderType.LSystemShader ?
             Visibility.Collapsed : Visibility.Visible;
 
         IfsVisibility = SelectedShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
 
-        IfsBailoutVisibility = SelectedShaderType == ShaderType.IFSShader && 
-            (_fractalParams.IfsEquation == IfsEquationType.StandardNoBailout || _fractalParams.IfsEquation == IfsEquationType.KnightyNoBailout) ?
+        BailoutVisibility = SelectedShaderType == ShaderType.ShapeShader || SelectedShaderType == ShaderType.LSystemShader || (SelectedShaderType == ShaderType.IFSShader && 
+            (_fractalParams.IfsEquation == IfsEquationType.StandardNoBailout || _fractalParams.IfsEquation == IfsEquationType.KnightyNoBailout)) ?
             Visibility.Collapsed : Visibility.Visible;
+
+        IterationVisibility = SelectedShaderType == ShaderType.ShapeShader ? Visibility.Collapsed : Visibility.Visible;
 
         IfsCenterVisibility = SelectedShaderType == ShaderType.IFSShader &&
             _fractalParams.IfsEquation != IfsEquationType.Test ? Visibility.Visible : Visibility.Collapsed;

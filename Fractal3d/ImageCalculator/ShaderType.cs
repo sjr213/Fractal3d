@@ -18,7 +18,9 @@ namespace ImageCalculator
         [Description("Shadertoy Shader")]
         ShadertoyShader,
         [Description("IFS Shader")]
-        IFSShader
+        IFSShader,
+        [Description("L-system Shader")]
+        LSystemShader
     }
 
     public static class ShaderTypeUtils
@@ -26,7 +28,7 @@ namespace ImageCalculator
         public static bool UsesPalette(ShaderType shaderType)
         {
             if (shaderType == ShaderType.FractalShader || shaderType == ShaderType.CranePixel || 
-                shaderType == ShaderType.CraneRaymarch || shaderType == ShaderType.ShapeShader)
+                shaderType == ShaderType.CraneRaymarch || shaderType == ShaderType.ShapeShader || shaderType == ShaderType.LSystemShader)
                 return true;
 
             return false;
