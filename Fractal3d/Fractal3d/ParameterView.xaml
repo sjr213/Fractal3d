@@ -40,6 +40,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" Margin="2" >
@@ -321,19 +322,35 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="12" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IterationVisibility}">
-                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Iterations" />
-                <TextBox Style="{StaticResource TextBoxInError}" >
-                    <TextBox.Text>
-                        <Binding Path="Iterations" 
+            <StackPanel Grid.Row="12" Margin="2,5" Orientation="Horizontal" >
+                <StackPanel Margin="0,0,20,0" Orientation="Horizontal" Visibility="{Binding IterationVisibility}">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Iterations" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="Iterations" 
                                  UpdateSourceTrigger="LostFocus" >
-                            <Binding.ValidationRules>
-                                <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinIterations}" 
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:IntRangeRule Min="{x:Static local:ParameterConstants.MinIterations}" 
                                                                 Max="{x:Static local:ParameterConstants.MaxIterations}"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding LSystemVisibility}">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="L-system Radius" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="LSystemRadius" 
+                                 UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinLSystemRadius}" 
+                                                                Max="{x:Static local:ParameterConstants.MaxLSystemRadius}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="13" Margin="2,5" Orientation="Horizontal" >
                 <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
@@ -560,26 +577,91 @@
                 </StackPanel>
             </StackPanel>
 
-            <TabControl Grid.Row="21" Visibility="{Binding IfsVisibility}" Height="200">
-                <TabItem Header="Transform 1" DataContext="{Binding }">
-                    <ContentPresenter Content="{Binding Transform1}">
-                        <ContentPresenter.Resources>
-                            <DataTemplate DataType="{x:Type local:TransformVm2}" >
-                                <local:TransformViewHorizontal/>
-                            </DataTemplate>
-                        </ContentPresenter.Resources>
-                    </ContentPresenter>
-                </TabItem>
-                <TabItem Header="Transform 2" DataContext="{Binding }">
-                    <ContentPresenter Content="{Binding Transform2}">
-                        <ContentPresenter.Resources>
-                            <DataTemplate DataType="{x:Type local:TransformVm2}" >
-                                <local:TransformViewHorizontal/>
-                            </DataTemplate>
-                        </ContentPresenter.Resources>
-                    </ContentPresenter>
-                </TabItem>
-            </TabControl>
+            <StackPanel Grid.Row="21" Orientation="Vertical">
+
+                <TabControl  Visibility="{Binding IfsVisibility}" Height="200">
+                    <TabItem Header="Transform 1" DataContext="{Binding }">
+                        <ContentPresenter Content="{Binding Transform1}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:TransformVm2}" >
+                                    <local:TransformViewHorizontal/>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </TabItem>
+                    <TabItem Header="Transform 2" DataContext="{Binding }">
+                        <ContentPresenter Content="{Binding Transform2}">
+                            <ContentPresenter.Resources>
+                                <DataTemplate DataType="{x:Type local:TransformVm2}" >
+                                    <local:TransformViewHorizontal/>
+                                </DataTemplate>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </TabItem>
+                </TabControl>
+            </StackPanel>
+
+            <Grid Grid.Row="22" Margin="2,5" Grid.IsSharedSizeScope="True" Visibility="{Binding LSystemVisibility}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Header Row -->
+                    <RowDefinition Height="*"/>
+                    <!-- Items Rows -->
+                </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource HeaderTextBlockStyle}" Text="L-system Branches" />
+                        <Button Margin="5,2" Padding="2" MinWidth="30" Command="{Binding AddBranchCommand}">Add</Button>
+                    </StackPanel>
+
+                    <Border Grid.Row="1" Background="#F0F0F0" Padding="2" BorderBrush="#CCCCCC" BorderThickness="0,0,0,1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <!-- Column widths adjust dynamically, shared across all grids in this scope -->
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Pos"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Attenuation"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="AngleX"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="AngleY"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="AngleZ"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Position" FontWeight="Bold" Margin="8,2"/>
+                            <TextBlock Grid.Column="1" Text="Attenuation" FontWeight="Bold" Margin="8,2"/>
+                            <TextBlock Grid.Column="2" Text="Angle X" FontWeight="Bold" Margin="8,2"/>
+                            <TextBlock Grid.Column="3" Text="Angle Y" FontWeight="Bold" Margin="8,2"/>
+                            <TextBlock Grid.Column="4" Text="Angle Z" FontWeight="Bold" Margin="8,2"/>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding LSystemBranches}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="2" BorderBrush="#EAEAEA" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Pos"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="Attenuation"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="AngleX"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="AngleY"/>
+                                                <ColumnDefinition Width="Auto" SharedSizeGroup="AngleZ"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox Grid.Column="0" Text="{Binding RelativePositionX}" Margin="8,2"/>
+                                            <TextBox Grid.Column="1" Text="{Binding Attenuation}" Margin="8,2"/>
+                                            <TextBox Grid.Column="2" Text="{Binding AngleXDegrees}" Margin="8,2"/>
+                                            <TextBox Grid.Column="3" Text="{Binding AngleYDegrees}" Margin="8,2"/>
+                                            <TextBox Grid.Column="4" Text="{Binding AngleZDegrees}" Margin="8,2"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+            </Grid>
+
         </Grid>
     </Border>
 </UserControl>

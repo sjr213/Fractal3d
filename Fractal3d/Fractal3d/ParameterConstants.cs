@@ -72,6 +72,9 @@ public static class ParameterConstants
     public const float MinDistanceStretch = 0.0f;
     public const float MaxDistanceStretch = 1.0f;
 
+    public const float MinLSystemRadius = 0.0001f;
+    public const float MaxLSystemRadius = 10.0f;
+
     public static Vector3 DefaultIfsC = new Vector3(1.0f, 1.0f,1.0f);
 }
 

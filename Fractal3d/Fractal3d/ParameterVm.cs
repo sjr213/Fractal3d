@@ -28,17 +28,20 @@ public class ParameterVm : ViewModelBase
     private Visibility _bailoutVisibility = Visibility.Collapsed;
     private Visibility _ifsCenterVisibility = Visibility.Collapsed;
     private Visibility _iterationVisibility = Visibility.Collapsed;
+    private Visibility _lSystemVisibility = Visibility.Collapsed;
     private ObservableCollection<ShaderType> _allowedShaderTypes;
     private List<ShaderSceneType> _allowedSceneType;
     private ObservableCollection<IfsEquationType> _allowedIfsEquationTypes;
     private bool _isCraneShader = false;
     private TransformVm2 _transformVm1;
     private TransformVm2 _transformVm2;
+    private ObservableCollection<BranchVm> _lSystemBranches;
     private readonly RelayCommand _normalizeIfsC_Command;
     public ICommand NormalizeIfsCCommand => _normalizeIfsC_Command;
-#endregion
+    private readonly RelayCommand _addBranchCommand;
+    #endregion
 
-#region construction
+    #region construction
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public ParameterVm(FractalParams fractalParams, Action<FractalParams> paramsChanged)
@@ -73,6 +76,8 @@ public class ParameterVm : ViewModelBase
             IfsEquationType.Knighty2ndTetrahedral, IfsEquationType.KnightyFullTetrahedral, IfsEquationType.Test
         };
         _normalizeIfsC_Command = new RelayCommand(_ => NormalizeIfsC());
+        LSystemBranches = BranchUtil.WrapBranches(BranchUtil.MakeDefaultBranches());
+        _addBranchCommand = new RelayCommand(_ => AddBranch());
     }
 
 #endregion
@@ -82,7 +87,7 @@ public class ParameterVm : ViewModelBase
     public RelayCommand IsVisibleChangedCommand { get; }
 
     public int ImageWidth
-    {
+    { 
         get => _fractalParams.ImageSize.Width;
         set 
         {
@@ -649,6 +654,17 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public float LSystemRadius
+    {
+        get => _fractalParams.LSystemRadius;
+        set
+        {
+            _fractalParams.LSystemRadius = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
     public ObservableCollection<IfsEquationType> AllowedIfsEquationTypes
     {
         get => _allowedIfsEquationTypes;
@@ -859,9 +875,29 @@ public class ParameterVm : ViewModelBase
             OnPropertyChanged();
         }
     }
-#endregion
 
-#region handlers
+    public Visibility LSystemVisibility
+    {
+        get => _lSystemVisibility;
+        set
+        {
+            _lSystemVisibility = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public ObservableCollection<BranchVm> LSystemBranches
+    {
+        get => _lSystemBranches;
+        set
+        {
+            _lSystemBranches = value;
+            OnPropertyChanged();
+        }
+    }
+    #endregion
+
+    #region handlers
 
     public void ExecuteIsVisibleChangedCommand(DependencyPropertyChangedEventArgs e)
     {
@@ -907,6 +943,17 @@ public class ParameterVm : ViewModelBase
         _onParamsChanged(_fractalParams);
     }
 
+    public ICommand AddBranchCommand => _addBranchCommand;
+
+    private void AddBranch()
+    {
+        var newBranch = new BranchVm(new LSystemBranch());
+        LSystemBranches.Add(newBranch);
+        _fractalParams.LSystemBranches.Add(newBranch.Branch);
+        OnPropertyChanged(nameof(LSystemBranches));
+        _onParamsChanged(_fractalParams);
+    }
+
     #endregion
 
     #region methods
@@ -948,6 +995,8 @@ public class ParameterVm : ViewModelBase
 
         BackgroundVisibility = _fractalParams.ShaderType == ShaderType.CraneShader || _fractalParams.ShaderType == ShaderType.ShadertoyShader ||
             _fractalParams.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+
+        LSystemVisibility = SelectedShaderType == ShaderType.LSystemShader ? Visibility.Visible : Visibility.Collapsed;
 
         UpdateAllowedQuatEquations();
     }

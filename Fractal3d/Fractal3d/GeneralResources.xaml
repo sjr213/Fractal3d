@@ -31,6 +31,13 @@
         <Setter Property="Padding" Value="2" />
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="HeaderTextBlockStyle">
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+
     <Style TargetType="TextBlock" x:Key="SmallTextBlockStyle">
         <Setter Property="Margin" Value="1" />
         <Setter Property="Padding" Value="1" />
