@@ -75,6 +75,15 @@ public static class ParameterConstants
     public const float MinLSystemRadius = 0.0001f;
     public const float MaxLSystemRadius = 10.0f;
 
+    public const float MinLSystemRelativePosition = 0.0f;
+    public const float MaxLSystemRelativePosition = 1.0f;
+
+    public const float MinLSystemAttenuation = 0.0f;
+    public const float MaxLSystemAttenuation = 5.0f;
+
+    public const float MinLSystemAngle = -360.0f;
+    public const float MaxLSystemAngle = 360.0f;
+
     public static Vector3 DefaultIfsC = new Vector3(1.0f, 1.0f,1.0f);
 }
 

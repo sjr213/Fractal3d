@@ -647,16 +647,61 @@
                                                 <ColumnDefinition Width="Auto" SharedSizeGroup="AngleY"/>
                                                 <ColumnDefinition Width="Auto" SharedSizeGroup="AngleZ"/>
                                                 <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                            <TextBox Grid.Column="0" Text="{Binding RelativePositionX}" Margin="11,2"/>
-                                            <TextBox Grid.Column="1" Text="{Binding Attenuation}" Margin="11,2"/>
-                                            <TextBox Grid.Column="2" Text="{Binding AngleXDegrees}" Margin="11,2"/>
-                                            <TextBox Grid.Column="3" Text="{Binding AngleYDegrees}" Margin="11,2"/>
-                                            <TextBox Grid.Column="4" Text="{Binding AngleZDegrees}" Margin="11,2"/>
-                                            <Button Grid.Column="5" Margin="11,2" Content="Delete" Command="{Binding DataContext.DeleteRowCommand, 
+                                            </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Style="{StaticResource TextBoxInError}" Margin="11,2">
+                                            <TextBox.Text>
+                                                <Binding Path="RelativePositionX" UpdateSourceTrigger="LostFocus" >
+                                                    <Binding.ValidationRules>
+                                                        <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinLSystemRelativePosition }" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxLSystemRelativePosition}"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBox Grid.Column="1" Style="{StaticResource TextBoxInError}" Margin="11,2">
+                                            <TextBox.Text>
+                                                <Binding Path="Attenuation" UpdateSourceTrigger="LostFocus" >
+                                                    <Binding.ValidationRules>
+                                                        <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinLSystemAttenuation }" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxLSystemAttenuation}"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBox Grid.Column="2" Style="{StaticResource TextBoxInError}" Margin="11,2">
+                                            <TextBox.Text>
+                                                <Binding Path="AngleXDegrees" UpdateSourceTrigger="LostFocus" >
+                                                    <Binding.ValidationRules>
+                                                        <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinLSystemAngle }" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxLSystemAngle}"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBox Grid.Column="3" Style="{StaticResource TextBoxInError}" Margin="11,2">
+                                            <TextBox.Text>
+                                                <Binding Path="AngleYDegrees" UpdateSourceTrigger="LostFocus" >
+                                                    <Binding.ValidationRules>
+                                                        <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinLSystemAngle }" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxLSystemAngle}"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <TextBox Grid.Column="4" Style="{StaticResource TextBoxInError}" Margin="11,2">
+                                            <TextBox.Text>
+                                                <Binding Path="AngleZDegrees" UpdateSourceTrigger="LostFocus" >
+                                                    <Binding.ValidationRules>
+                                                        <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinLSystemAngle }" 
+                                                                    Max="{x:Static local:ParameterConstants.MaxLSystemAngle}"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                        <Button Grid.Column="5" Margin="11,2" Content="Delete" Command="{Binding DataContext.DeleteRowCommand, 
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
-                                        </Grid>
+
+                                    </Grid>
                                     </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
