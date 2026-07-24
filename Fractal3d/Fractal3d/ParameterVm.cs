@@ -78,6 +78,8 @@ public class ParameterVm : ViewModelBase
         _normalizeIfsC_Command = new RelayCommand(_ => NormalizeIfsC());
         LSystemBranches = BranchUtil.WrapBranches(BranchUtil.MakeDefaultBranches());
         _addBranchCommand = new RelayCommand(_ => AddBranch());
+
+        DeleteRowCommand = new RelayCommand<BranchVm>(DeleteRow);
     }
 
 #endregion
@@ -952,6 +954,16 @@ public class ParameterVm : ViewModelBase
         _fractalParams.LSystemBranches.Add(newBranch.Branch);
         OnPropertyChanged(nameof(LSystemBranches));
         _onParamsChanged(_fractalParams);
+    }
+
+    public ICommand DeleteRowCommand { get; private set; }
+
+    private void DeleteRow(BranchVm itemToRemove)
+    {
+        if (itemToRemove != null && LSystemBranches.Contains(itemToRemove))
+        {
+            LSystemBranches.Remove(itemToRemove);
+        }
     }
 
     #endregion

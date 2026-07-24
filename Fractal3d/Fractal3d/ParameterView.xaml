@@ -626,11 +626,11 @@
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="AngleZ"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="Position" FontWeight="Bold" Margin="8,2"/>
-                            <TextBlock Grid.Column="1" Text="Attenuation" FontWeight="Bold" Margin="8,2"/>
-                            <TextBlock Grid.Column="2" Text="Angle X" FontWeight="Bold" Margin="8,2"/>
-                            <TextBlock Grid.Column="3" Text="Angle Y" FontWeight="Bold" Margin="8,2"/>
-                            <TextBlock Grid.Column="4" Text="Angle Z" FontWeight="Bold" Margin="8,2"/>
+                            <TextBlock Grid.Column="0" Text="Position" FontWeight="Bold" Margin="11,2"/>
+                            <TextBlock Grid.Column="1" Text="Attenuation" FontWeight="Bold" Margin="11,2"/>
+                            <TextBlock Grid.Column="2" Text="Angle X" FontWeight="Bold" Margin="11,2"/>
+                            <TextBlock Grid.Column="3" Text="Angle Y" FontWeight="Bold" Margin="11,2"/>
+                            <TextBlock Grid.Column="4" Text="Angle Z" FontWeight="Bold" Margin="11,2"/>
                         </Grid>
                     </Border>
 
@@ -646,13 +646,16 @@
                                                 <ColumnDefinition Width="Auto" SharedSizeGroup="AngleX"/>
                                                 <ColumnDefinition Width="Auto" SharedSizeGroup="AngleY"/>
                                                 <ColumnDefinition Width="Auto" SharedSizeGroup="AngleZ"/>
-                                            </Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                            <TextBox Grid.Column="0" Text="{Binding RelativePositionX}" Margin="8,2"/>
-                                            <TextBox Grid.Column="1" Text="{Binding Attenuation}" Margin="8,2"/>
-                                            <TextBox Grid.Column="2" Text="{Binding AngleXDegrees}" Margin="8,2"/>
-                                            <TextBox Grid.Column="3" Text="{Binding AngleYDegrees}" Margin="8,2"/>
-                                            <TextBox Grid.Column="4" Text="{Binding AngleZDegrees}" Margin="8,2"/>
+                                            <TextBox Grid.Column="0" Text="{Binding RelativePositionX}" Margin="11,2"/>
+                                            <TextBox Grid.Column="1" Text="{Binding Attenuation}" Margin="11,2"/>
+                                            <TextBox Grid.Column="2" Text="{Binding AngleXDegrees}" Margin="11,2"/>
+                                            <TextBox Grid.Column="3" Text="{Binding AngleYDegrees}" Margin="11,2"/>
+                                            <TextBox Grid.Column="4" Text="{Binding AngleZDegrees}" Margin="11,2"/>
+                                            <Button Grid.Column="5" Margin="11,2" Content="Delete" Command="{Binding DataContext.DeleteRowCommand, 
+                                                RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
