@@ -17,13 +17,4 @@ internal static class BranchUtil
         return branchVms.Select(vm => vm.Branch).ToList();
     }
 
-    public static List<LSystemBranch> MakeDefaultBranches()
-    {
-        return new List<LSystemBranch>
-        {
-            new LSystemBranch(0.5f, 1.0f, 0.0f, 0.0f, 0.30f),
-         //   new LSystemBranch(0.75f, 1.0f, 0.0f, 0.0f, -0.3f),
-         //   new LSystemBranch(1.0f, 1.0f, 10.0f, 10.0f, 0.2f)
-        };
-    }
 }

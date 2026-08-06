@@ -70,11 +70,13 @@ public class FractalParams : ICloneable
 {
     public FractalParams()
     {
+        LSystemBranches = new List<LSystemBranch>();
     }
 
     public FractalParams(List<Light> lights)
     {
         Lights = lights;
+        LSystemBranches = LSystemBranch.MakeDefaultBranches();
     }
 
     public Size ImageSize { get; set; } = new(400, 400);
@@ -168,7 +170,7 @@ public class FractalParams : ICloneable
 
     public float LSystemRadius { get; set; } = 0.1f;
 
-    public List<LSystemBranch> LSystemBranches { get; set; } = new List<LSystemBranch>();
+    public List<LSystemBranch> LSystemBranches { get; set; }
 
     public object Clone()
     {

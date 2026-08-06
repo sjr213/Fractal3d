@@ -1,10 +1,11 @@
 ﻿namespace Fractal3d;
 
-using System.Collections.Generic;
 using BasicWpfLibrary;
 using ImageCalculator;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.Numerics;
 using System.Windows;
@@ -38,10 +39,9 @@ public class ParameterVm : ViewModelBase
     private ObservableCollection<BranchVm> _lSystemBranches;
     private readonly RelayCommand _normalizeIfsC_Command;
     public ICommand NormalizeIfsCCommand => _normalizeIfsC_Command;
-    private readonly RelayCommand _addBranchCommand;
-    #endregion
+#endregion // fields
 
-    #region construction
+#region construction
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public ParameterVm(FractalParams fractalParams, Action<FractalParams> paramsChanged)
@@ -76,13 +76,19 @@ public class ParameterVm : ViewModelBase
             IfsEquationType.Knighty2ndTetrahedral, IfsEquationType.KnightyFullTetrahedral, IfsEquationType.Test
         };
         _normalizeIfsC_Command = new RelayCommand(_ => NormalizeIfsC());
-        LSystemBranches = BranchUtil.WrapBranches(BranchUtil.MakeDefaultBranches());
-        _addBranchCommand = new RelayCommand(_ => AddBranch());
 
-        DeleteRowCommand = new RelayCommand<BranchVm>(DeleteRow);
+        var branches = BranchUtil.WrapBranches(_fractalParams.LSystemBranches);
+        foreach (var branch in branches)
+        {
+            branch.PropertyChanged += OnItemPropertyChanged;
+        }
+        branches.CollectionChanged += OnUsersCollectionChanged;
+        LSystemBranches = branches;
+        AddBranchCommand = new RelayCommand(_ => AddBranch());
+        DeleteRowCommand = new RelayCommand<BranchVm>(DeleteRow);       
     }
 
-#endregion
+#endregion // construction
 
 #region properties
 
@@ -768,6 +774,21 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public ObservableCollection<BranchVm> LSystemBranches
+    {
+        get => _lSystemBranches;
+        set
+        {
+            _lSystemBranches = value;
+            OnPropertyChanged();
+            UpdateBranchesInFractalParams();
+        }
+    }
+
+    public ICommand AddBranchCommand { get; private set; }
+
+    public ICommand DeleteRowCommand { get; private set; }
+
     public Visibility QuatEquationVisibility
     {
         get => _quatEquationVisibility;
@@ -888,18 +909,9 @@ public class ParameterVm : ViewModelBase
         }
     }
 
-    public ObservableCollection<BranchVm> LSystemBranches
-    {
-        get => _lSystemBranches;
-        set
-        {
-            _lSystemBranches = value;
-            OnPropertyChanged();
-        }
-    }
-    #endregion
+#endregion // properties
 
-    #region handlers
+#region handlers
 
     public void ExecuteIsVisibleChangedCommand(DependencyPropertyChangedEventArgs e)
     {
@@ -945,18 +957,11 @@ public class ParameterVm : ViewModelBase
         _onParamsChanged(_fractalParams);
     }
 
-    public ICommand AddBranchCommand => _addBranchCommand;
-
     private void AddBranch()
     {
         var newBranch = new BranchVm(new LSystemBranch());
         LSystemBranches.Add(newBranch);
-        _fractalParams.LSystemBranches.Add(newBranch.Branch);
-        OnPropertyChanged(nameof(LSystemBranches));
-        _onParamsChanged(_fractalParams);
     }
-
-    public ICommand DeleteRowCommand { get; private set; }
 
     private void DeleteRow(BranchVm itemToRemove)
     {
@@ -966,9 +971,9 @@ public class ParameterVm : ViewModelBase
         }
     }
 
-    #endregion
+#endregion // handlers
 
-    #region methods
+#region methods
 
     private void UpdateQuatEquationAndShaderSceneTypeVisibility()
     {
@@ -1037,5 +1042,47 @@ public class ParameterVm : ViewModelBase
         }
     }
 
-#endregion
+    private void UpdateBranchesInFractalParams()
+    {
+        var branches = BranchUtil.UnwrapBranches(LSystemBranches);
+        _fractalParams.LSystemBranches = branches;
+        _onParamsChanged(_fractalParams);
+    }
+
+    private void OnUsersCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        // Subscribe to new items
+        if (e.NewItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.NewItems)
+            {
+                item.PropertyChanged += OnItemPropertyChanged;
+            }
+            UpdateBranchesInFractalParams();
+        }
+
+        // Unsubscribe from removed items to prevent memory leaks
+        if (e.OldItems != null)
+        {
+            foreach (INotifyPropertyChanged item in e.OldItems)
+            {
+                item.PropertyChanged -= OnItemPropertyChanged;
+            }
+            UpdateBranchesInFractalParams();
+        }
+    }
+
+
+    private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(BranchVm.RelativePositionX) ||
+            e.PropertyName == nameof(BranchVm.Attenuation) ||
+            e.PropertyName == nameof(BranchVm.AngleXDegrees) ||
+            e.PropertyName == nameof(BranchVm.AngleYDegrees) ||
+            e.PropertyName == nameof(BranchVm.AngleZDegrees))
+        {
+            UpdateBranchesInFractalParams();
+        }
+    }
+    #endregion // methods
 }

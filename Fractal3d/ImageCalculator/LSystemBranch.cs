@@ -24,4 +24,13 @@ public class LSystemBranch : ICloneable
     {
         return this.MemberwiseClone();
     }
+
+    public static List<LSystemBranch> MakeDefaultBranches()
+    {
+        return new List<LSystemBranch>
+        {
+            new LSystemBranch(1.0f, 1.0f, 0.0f, 0.0f, -30.0f),
+            new LSystemBranch(1.0f, 1.0f, 0.0f, 0.0f, 30.0f)
+        };
+    }
 }
