@@ -15,7 +15,7 @@ public class ParameterVm : ViewModelBase
 {
 
 #region fields
-    private readonly FractalParams _fractalParams;
+    private FractalParams _fractalParams;
     private readonly Action<FractalParams> _onParamsChanged;
     private ObservableCollection<QuaternionEquationType> _allowedQuatEquations;
     private Visibility _quatEquationVisibility = Visibility.Collapsed;
@@ -39,9 +39,10 @@ public class ParameterVm : ViewModelBase
     private ObservableCollection<BranchVm> _lSystemBranches;
     private readonly RelayCommand _normalizeIfsC_Command;
     public ICommand NormalizeIfsCCommand => _normalizeIfsC_Command;
-#endregion // fields
+    public ICommand DefaultFieldsCommand => new RelayCommand(_ => DefaultFields());
+    #endregion // fields
 
-#region construction
+    #region construction
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public ParameterVm(FractalParams fractalParams, Action<FractalParams> paramsChanged)
@@ -971,9 +972,16 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    private void DefaultFields()
+    {
+        _fractalParams = FractalParams.MakeDefaultParams(_fractalParams);
+        OnPropertyChanged(String.Empty);
+        _onParamsChanged(_fractalParams);
+    }
+
 #endregion // handlers
 
-#region methods
+    #region methods
 
     private void UpdateQuatEquationAndShaderSceneTypeVisibility()
     {

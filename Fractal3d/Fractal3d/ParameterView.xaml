@@ -16,7 +16,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Width="420" Height="670" Style="{StaticResource BorderStyle}">
+    <Border Width="420" Height="710" Style="{StaticResource BorderStyle}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -204,6 +204,7 @@
                   IsChecked="{Binding AimToOrigin}">Aim to origin</CheckBox>
             </StackPanel>
             <Separator Grid.Row="4"/>
+            
             <StackPanel Grid.Row="5" Margin="2,5" Orientation="Horizontal" >
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Shader Type" />
@@ -214,8 +215,23 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+
+                    <Button Margin="10,2,2,2" Padding="2" Command="{Binding DefaultFieldsCommand}">Default Fields</Button>
                 </StackPanel>
-                <StackPanel Margin="20, 2,2,2" Orientation="Horizontal" Visibility="{Binding IfsVisibility}">
+            </StackPanel>
+
+            <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal" >
+                <StackPanel Margin="2,5" Orientation="Horizontal" Visibility="{Binding QuatEquationVisibility}">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Quaterion Equation Type" />
+                    <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedQuatEquations}" SelectedItem="{Binding SelectedQuatEquationType}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Margin="2,5" Orientation="Horizontal" Visibility="{Binding IfsVisibility}">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="IFS Equation Type" />
                     <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedIfsEquationTypes}" SelectedItem="{Binding SelectedIfsEquationType}">
                         <ComboBox.ItemTemplate>
@@ -226,19 +242,10 @@
                     </ComboBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal" Visibility="{Binding QuatEquationVisibility}">
-                <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Quaterion Equation Type" />
-                <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedQuatEquations}" SelectedItem="{Binding SelectedQuatEquationType}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
-            <StackPanel Grid.Row="6" Margin="2, 5" Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding ShaderSceneTypeVisibility}">
+
+            <StackPanel Grid.Row="7" Margin="2, 5" Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding ShaderSceneTypeVisibility}">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Shape" />
-                <ComboBox Margin="10,2,2,2" Padding="2" VerticalAlignment="Center"
+                <ComboBox Margin="2" Padding="2" VerticalAlignment="Center"
                           ItemsSource="{Binding AllowedSceneTypes}" 
                           SelectedItem="{Binding SelectedSceneType}">
                     <ComboBox.ItemTemplate>
@@ -248,46 +255,49 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
-            <StackPanel Grid.Row="7" Margin="2,5" Orientation="Horizontal" Visibility="{Binding ConstantC_Visibility}">
-                <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Constant C" />
+            
+            <StackPanel Grid.Row="8" Orientation="Horizontal" >
+                <StackPanel Margin="2,5" Orientation="Horizontal" Visibility="{Binding ConstantC_Visibility}">
+                    <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Constant C" />
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="W:" />
+                        <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cw}" />
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X:" />
+                        <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cx}" />
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y:" />
+                        <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cy}" />
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z:" />
+                        <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cz}" />
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="W:" />
-                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cw}" />
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X:" />
-                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cx}" />
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y:" />
-                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cy}" />
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z:" />
-                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding Cz}" />
-                </StackPanel>
-            </StackPanel>
 
-            <StackPanel Grid.Row="8" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IfsCenterVisibility}">
-                <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="IFS C" />
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X:" />
-                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCx}" />
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y:" />
-                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCy}" />
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z:" />
-                    <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCz}" />
-                </StackPanel>
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <Button Margin="10,2,2,2" Padding="2" Command="{Binding NormalizeIfsCCommand}">Normalize</Button>
+                <StackPanel Margin="2,5" Orientation="Horizontal" Visibility="{Binding IfsCenterVisibility}">
+                    <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="IFS C" />
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="X:" />
+                        <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCx}" />
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Y:" />
+                        <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCy}" />
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Z:" />
+                        <TextBox Style="{StaticResource MinWidthTextBoxStyle}" Text="{Binding IfsCz}" />
+                    </StackPanel>
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <Button Margin="10,2,2,2" Padding="2" Command="{Binding NormalizeIfsCCommand}">Normalize</Button>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
 

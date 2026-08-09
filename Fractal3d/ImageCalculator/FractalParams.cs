@@ -188,4 +188,21 @@ public class FractalParams : ICloneable
             copy.LSystemBranches.Add((LSystemBranch)branch.Clone());
         return copy;
     }
+
+    public static FractalParams MakeDefaultParams(FractalParams oldFractalParams)
+    {
+        var fractalParams = new FractalParams(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(oldFractalParams.Palette.NumberOfColors) };
+        fractalParams.ShaderType = oldFractalParams.ShaderType;
+
+        if(fractalParams.ShaderType == ShaderType.LSystemShader)
+        {
+            fractalParams.FromZ = -0.1f;
+            fractalParams.ToZ = 0.0f;
+            fractalParams.MaxRaySteps = 1;
+            fractalParams.Distance = 0.01f;
+            fractalParams.MaxDistance = 1.0f;
+        }
+
+        return fractalParams;
+    }
 }
