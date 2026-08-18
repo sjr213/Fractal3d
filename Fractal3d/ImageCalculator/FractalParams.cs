@@ -168,7 +168,7 @@ public class FractalParams : ICloneable
 
     public bool IfsAbs { get; set; } = false;
 
-    public float LSystemRadius { get; set; } = 0.1f;
+    public float LSystemRadius { get; set; } = 0.001f;
 
     public List<LSystemBranch> LSystemBranches { get; set; }
 
@@ -198,6 +198,7 @@ public class FractalParams : ICloneable
         {
             fractalParams.FromZ = -0.1f;
             fractalParams.ToZ = 0.0f;
+            fractalParams.Iterations = 4;
             fractalParams.MaxRaySteps = 1;
             fractalParams.Distance = 0.01f;
             fractalParams.MaxDistance = 1.0f;

@@ -990,7 +990,7 @@ public class ParameterVm : ViewModelBase
             Visibility.Visible : Visibility.Collapsed;
 
         // need to update later
-        ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader || SelectedShaderType == ShaderType.LSystemShader ? Visibility.Visible : Visibility.Collapsed;
+        ShaderSceneTypeVisibility = SelectedShaderType == ShaderType.ShapeShader ? Visibility.Visible : Visibility.Collapsed;
 
         RayTraceFieldVisibility = SelectedShaderType == ShaderType.CraneRaymarch || SelectedShaderType == ShaderType.FractalShader || 
             _fractalParams.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
