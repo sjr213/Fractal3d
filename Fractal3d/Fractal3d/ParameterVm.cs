@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
@@ -451,8 +452,10 @@ public class ParameterVm : ViewModelBase
         {             
             if (value == _fractalParams.ShaderType)
                 return;
-            _fractalParams.ShaderType = value;
-            OnPropertyChanged();
+
+            // This updates the default parameters if needed and sets the ShaderType in _fractalParams
+            UpdateDefaultParametersWhenShaderTypeChanges(_fractalParams.ShaderType, value);
+            OnPropertyChanged(String.Empty);
             UpdateQuatEquationAndShaderSceneTypeVisibility();
             _onParamsChanged(_fractalParams);
         }
@@ -1048,6 +1051,21 @@ public class ParameterVm : ViewModelBase
             if (SelectedQuatEquationType == QuaternionEquationType.Q_InglesCubed)
                 SelectedQuatEquationType = QuaternionEquationType.Q_Squared;
         }
+    }
+
+    private void UpdateDefaultParametersWhenShaderTypeChanges(ShaderType oldType, ShaderType newType)
+    {
+        if (oldType != ShaderType.LSystemShader && newType == ShaderType.LSystemShader)
+        {
+            _fractalParams = FractalParams.GetDefaultLsystemParams(_fractalParams.Palette.NumberOfColors);
+        }
+        else if (oldType == ShaderType.LSystemShader && newType != ShaderType.LSystemShader)
+        {
+            _fractalParams = FractalParams.GetDefaultNonLsystemParams(_fractalParams.Palette.NumberOfColors);
+        }
+
+        // This will all ready be set if the above conditions are met, but we set it here to ensure the shader type is updated in the fractal parameters.
+        _fractalParams.ShaderType = newType;
     }
 
     private void UpdateBranchesInFractalParams()

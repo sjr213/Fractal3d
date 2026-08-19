@@ -191,19 +191,29 @@ public class FractalParams : ICloneable
 
     public static FractalParams MakeDefaultParams(FractalParams oldFractalParams)
     {
-        var fractalParams = new FractalParams(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(oldFractalParams.Palette.NumberOfColors) };
+        var fractalParams = (oldFractalParams.ShaderType == ShaderType.LSystemShader) ?
+            GetDefaultLsystemParams(oldFractalParams.Palette.NumberOfColors) :
+            GetDefaultNonLsystemParams(oldFractalParams.Palette.NumberOfColors);
+
         fractalParams.ShaderType = oldFractalParams.ShaderType;
 
-        if(fractalParams.ShaderType == ShaderType.LSystemShader)
-        {
-            fractalParams.FromZ = -0.1f;
-            fractalParams.ToZ = 0.0f;
-            fractalParams.Iterations = 4;
-            fractalParams.MaxRaySteps = 1;
-            fractalParams.Distance = 0.01f;
-            fractalParams.MaxDistance = 1.0f;
-        }
+        return fractalParams;
+    }
 
+    public static FractalParams GetDefaultNonLsystemParams(int numberOfColors)
+    {
+        return new FractalParams(FractalParams.MakeLights()) { Palette = PaletteFactory.CreateStandardPalette(numberOfColors) };
+    }
+
+    public static FractalParams GetDefaultLsystemParams(int numberOfColors)
+    {
+        var fractalParams = GetDefaultNonLsystemParams(numberOfColors);
+        fractalParams.FromZ = -0.1f;
+        fractalParams.ToZ = 0.0f;
+        fractalParams.Iterations = 4;
+        fractalParams.MaxRaySteps = 1;
+        fractalParams.Distance = 0.01f;
+        fractalParams.MaxDistance = 1.0f;
         return fractalParams;
     }
 }
