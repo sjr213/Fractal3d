@@ -54,6 +54,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
     private readonly IDisposable? _progressCraneRaymarchSubject;
     private readonly IDisposable? _progressShadertoySubject;
     private readonly IDisposable? _progressIFSSubject;
+    private readonly IDisposable? _progressLSystemShaderSubject;
     private CancellationTokenSource _cancelSource = new();
     private int _fractalNumber = 1;
     private bool _isDirty;
@@ -121,6 +122,9 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
 
             _progressIFSSubject = _IFS_Factory.Progress.ObserveOn(SynchronizationContext.Current)
                 .Subscribe(progress => PercentProgress = progress);
+
+            _progressLSystemShaderSubject = _lsystemShaderFactory.Progress.ObserveOn(SynchronizationContext.Current) 
+                .Subscribe(progress => PercentProgress = progress);
         }
 
         var fileCmd = new AsyncCommand(() => OpenFileFromStartUp(fileName), () => true, OnOpenFileError);
@@ -154,6 +158,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             _progressCraneRaymarchSubject?.Dispose();
             _progressShadertoySubject?.Dispose();
             _progressIFSSubject?.Dispose();
+            _progressLSystemShaderSubject?.Dispose();
             _shaderFactory.Dispose();
             _fractalParallelFactory.Dispose();
             _craneShaderFactory.Dispose();
@@ -161,6 +166,7 @@ public sealed class MainVm : ViewModelBase, IDisposable, IMoviePlayer, IObserver
             _craneRayMarchFactory.Dispose();
             _shadertoyFactory.Dispose();
             _IFS_Factory.Dispose();
+            _lsystemShaderFactory.Dispose();
             _movieVmObserver.Dispose();
         }
 

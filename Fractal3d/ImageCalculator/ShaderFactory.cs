@@ -4,7 +4,6 @@
 using FractureCommonLib;
 using System.Numerics;
 using System.Reactive.Subjects;
-using Windows.ApplicationModel.Search.Core;
 
 public static class MatrixProvider
 {

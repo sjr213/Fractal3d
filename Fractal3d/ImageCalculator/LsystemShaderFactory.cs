@@ -6,20 +6,6 @@ using System.Reactive.Subjects;
 
 internal record ProcessedBranch(float RelativePosition, float Attenuation, Matrix4x4 RotationMatrix);
 
-public static class MatrixProvider2
-{
-    public static Matrix4x4 GetLeftMatrix()
-    {
-        return TransformationCalculator.CreateRotationMatrix(0, 0, -30.0f);
-    }
-
-    public static Matrix4x4 GetRightMatrix()
-    {
-        return TransformationCalculator.CreateRotationMatrix(0, 0, 30.0f);
-    }
-}
-
-
 
 public class LsystemShaderFactory : IDisposable
 {
