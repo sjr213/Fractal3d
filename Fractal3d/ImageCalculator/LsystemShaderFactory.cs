@@ -63,6 +63,13 @@ public class LsystemShaderFactory : IDisposable
         return RotateEnd2(end, newEnd, mat);
     }
 
+    private static Vector3 GetNewEnd2(Vector3 start, Vector3 end, Matrix4x4 mat, float relativeLength, Vector3 branchEnd)
+    {
+        var v = (end - start) * relativeLength;
+        var newEnd = branchEnd + v;
+        return RotateEnd2(branchEnd, newEnd, mat);
+    }
+
     internal static float EstimateDistanceComposite(Vector3 p, int iterations, float radius, List<ProcessedBranch> processedBranches)
     {
         var start = new Vector3(0.0f, 0.9f, 0.0f);
@@ -88,8 +95,11 @@ public class LsystemShaderFactory : IDisposable
                 foreach(var branch in processedBranches)
                 {
                     var newLength = pt.Length * branch.Attenuation;
-                    var newEnd = GetNewEnd(pt.Start, pt.End, branch.RotationMatrix, newLength);
-                    pts2.Add(new PointPair(pt.End, newEnd, newLength));
+                    var branchStart = (pt.End - pt.Start) * branch.RelativePosition + pt.Start;
+                   
+                    var newEnd = GetNewEnd2(pt.Start, pt.End, branch.RotationMatrix, newLength, branchStart);
+                //    pts2.Add(new PointPair(pt.End, newEnd, newLength));
+                    pts2.Add(new PointPair(branchStart, newEnd, newLength));
                 }
             }
             pts = pts2;
