@@ -13,7 +13,6 @@ public class LsystemShaderFactory : IDisposable
     private readonly Subject<double> _progressSubject = new();
     public IObservable<double> Progress => _progressSubject;
     private List<ProcessedBranch> _processedBranches = new();
-    private Func<Vector3, float> _distanceEstimator = (Vector3 p) => EstimateDistanceComposite(p, 0, 0.0f, new List<ProcessedBranch>());
     private bool _isDisposed;
 
     public void Dispose()
@@ -70,7 +69,7 @@ public class LsystemShaderFactory : IDisposable
         return RotateEnd2(branchEnd, newEnd, mat);
     }
 
-    internal static float EstimateDistanceComposite(Vector3 p, int iterations, float radius, List<ProcessedBranch> processedBranches)
+    internal float EstimateDistanceComposite(Vector3 p)
     {
         var start = new Vector3(0.0f, 0.9f, 0.0f);
         var end = new Vector3(0.0f, 0.2f, 0.0f);
@@ -84,21 +83,22 @@ public class LsystemShaderFactory : IDisposable
         float distance = float.MaxValue;
 
         // NEED TO FIX LENGTH AND ATTENUATION
-        for (int i = 0; i < iterations; i++)
+        for (int i = 0; i < _fractalParams.Iterations; i++)
         {
             var pts2 = new List<PointPair>();
 
-            foreach (var pt in pts.ToList())
+            foreach (var pt in pts)
             {
-                distance = Math.Min(distance, sdCapsule(p, pt.Start, pt.End, radius));
+                distance = Math.Min(distance, sdCapsule(p, pt.Start, pt.End, _fractalParams.LSystemRadius));
+                if(distance < _fractalParams.MinRayDistance)
+                    return distance;
 
-                foreach(var branch in processedBranches)
+                foreach (var branch in _processedBranches)
                 {
                     var newLength = pt.Length * branch.Attenuation;
                     var branchStart = (pt.End - pt.Start) * branch.RelativePosition + pt.Start;
                    
                     var newEnd = GetNewEnd2(pt.Start, pt.End, branch.RotationMatrix, newLength, branchStart);
-                //    pts2.Add(new PointPair(pt.End, newEnd, newLength));
                     pts2.Add(new PointPair(branchStart, newEnd, newLength));
                 }
             }
@@ -112,7 +112,9 @@ public class LsystemShaderFactory : IDisposable
     {
         Vector3 pa = p - a;
         Vector3 ba = b - a;
-        float h = (float)Math.Clamp(Vector3.Dot(pa, ba) / Vector3.Dot(ba, ba), 0.0, 1.0);
+        //        float h = (float)Math.Clamp(Vector3.Dot(pa, ba) / Vector3.Dot(ba, ba), 0.0, 1.0);
+        float baLengthSqInv = 1f / Vector3.Dot(ba, ba);
+        float h = Math.Clamp(Vector3.Dot(pa, ba) * baLengthSqInv, 0f, 1f);
         return (pa - ba * h).Length() - r;
     }
 
@@ -128,7 +130,7 @@ public class LsystemShaderFactory : IDisposable
         {
             pt = totalDistance * direction + startPt;
             var transformedPt = TransformationCalculator.Transform(transformMatrix, pt);
-            float distance = _distanceEstimator(transformedPt);
+            float distance = EstimateDistanceComposite(transformedPt);
 
             if (distance < _fractalParams.MinRayDistance)
             {
@@ -169,7 +171,7 @@ public class LsystemShaderFactory : IDisposable
         var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(_fractalParams.TransformParams);
         var transformedLights = LightUtil.TransformLights(_fractalParams.Lights, transformMatrix);
         var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
-        _distanceEstimator = (Vector3 p) => EstimateDistanceComposite(p, _fractalParams.Iterations, _fractalParams.LSystemRadius, _processedBranches);
+      //  _distanceEstimator = (Vector3 p) => EstimateDistanceComposite(p);
 
         for (var x = 0; x < size.Width; ++x)
         {
@@ -190,7 +192,8 @@ public class LsystemShaderFactory : IDisposable
 
                 var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
 
-                var normal = NormalCalculator.CalculateNormal(_distanceEstimator, _fractalParams.NormalDistance, transformedPt);
+                Func<Vector3, float> distanceEstimator = (Vector3 p) => this.EstimateDistanceComposite(p);
+                var normal = NormalCalculator.CalculateNormal(distanceEstimator, _fractalParams.NormalDistance, transformedPt);
 
                 var lighting = (hit) ? LightUtil.GetPointLight(transformedLights, _fractalParams.LightComboMode, transformedPt, transViewPos, normal) :
                     new Lighting();

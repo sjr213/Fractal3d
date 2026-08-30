@@ -162,7 +162,10 @@ public class LightingVm : ViewModelBase
 
     protected void DeleteLight()
     {
-        _fractalParams.Lights.RemoveAt(SelectedLightIndex - 1);
+        var lightToDelete = SelectedLightIndex - 1;
+        if (lightToDelete < 0 || lightToDelete >= _fractalParams.Lights.Count)
+            return;
+        _fractalParams.Lights.RemoveAt(lightToDelete);
         UpdateLightIndices();
         _onParamsChanged(_fractalParams);
     }
