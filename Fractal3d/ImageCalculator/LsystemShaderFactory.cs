@@ -55,14 +55,7 @@ public class LsystemShaderFactory : IDisposable
 
     record struct PointPair(Vector3 Start, Vector3 End, float Length);
 
-    private static Vector3 GetNewEnd(Vector3 start, Vector3 end, Matrix4x4 mat, float relativeLength)
-    {
-        var v = (end - start) * relativeLength;
-        var newEnd = end + v;
-        return RotateEnd2(end, newEnd, mat);
-    }
-
-    private static Vector3 GetNewEnd2(Vector3 start, Vector3 end, Matrix4x4 mat, float relativeLength, Vector3 branchEnd)
+    private static Vector3 GetNewEnd(Vector3 start, Vector3 end, Matrix4x4 mat, float relativeLength, Vector3 branchEnd)
     {
         var v = (end - start) * relativeLength;
         var newEnd = branchEnd + v;
@@ -75,7 +68,10 @@ public class LsystemShaderFactory : IDisposable
         var end = new Vector3(0.0f, 0.2f, 0.0f);
 
         var length = (end - start).Length();
-        var pts = new List<PointPair>
+
+        // Use capacity hints to reduce reallocations
+        int estimatedCapacity = (int)Math.Pow(_processedBranches.Count, Math.Min(_fractalParams.Iterations, 5));
+        var pts = new List<PointPair>(estimatedCapacity)
         {
             new PointPair(start, end, length)
         };
@@ -85,7 +81,8 @@ public class LsystemShaderFactory : IDisposable
         // NEED TO FIX LENGTH AND ATTENUATION
         for (int i = 0; i < _fractalParams.Iterations; i++)
         {
-            var pts2 = new List<PointPair>();
+            // Reuse capacity from previous iteration
+            var pts2 = new List<PointPair>(pts.Count * _processedBranches.Count);
 
             foreach (var pt in pts)
             {
@@ -98,11 +95,18 @@ public class LsystemShaderFactory : IDisposable
                     var newLength = pt.Length * branch.Attenuation;
                     var branchStart = (pt.End - pt.Start) * branch.RelativePosition + pt.Start;
                    
-                    var newEnd = GetNewEnd2(pt.Start, pt.End, branch.RotationMatrix, newLength, branchStart);
+                    var newEnd = GetNewEnd(pt.Start, pt.End, branch.RotationMatrix, newLength, branchStart);
                     pts2.Add(new PointPair(branchStart, newEnd, newLength));
                 }
             }
+
             pts = pts2;
+
+            // Safety check: prevent memory explosion
+            if (pts.Count > 100000)
+            {
+                break; // Or implement LOD reduction
+            }
         }
         return distance;
     }
