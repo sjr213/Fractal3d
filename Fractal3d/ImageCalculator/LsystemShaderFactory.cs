@@ -46,20 +46,16 @@ public class LsystemShaderFactory : IDisposable
         return processedBranches;
     }
 
-    public static Vector3 RotateEnd2(Vector3 start, Vector3 end, Matrix4x4 mat)
-    {
-        var dif = end - start;
-        var inter = TransformationCalculator.Transform(mat, dif);
-        return inter + start;
-    }
-
     record struct PointPair(Vector3 Start, Vector3 End, float Length);
 
     private static Vector3 GetNewEnd(Vector3 start, Vector3 end, Matrix4x4 mat, float relativeLength, Vector3 branchEnd)
     {
         var v = (end - start) * relativeLength;
         var newEnd = branchEnd + v;
-        return RotateEnd2(branchEnd, newEnd, mat);
+
+        //return RotateEnd2(branchEnd, newEnd, mat);
+        var inter = Vector3.Transform((newEnd - branchEnd), mat);
+        return inter + branchEnd;
     }
 
     internal float EstimateDistanceComposite(Vector3 p)
