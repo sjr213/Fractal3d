@@ -1,6 +1,9 @@
 ﻿namespace ImageCalculator;
 
 using FractureCommonLib;
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Drawing;
 using System.Numerics;
 using System.Reactive.Subjects;
 
@@ -10,6 +13,8 @@ internal record ProcessedBranch(float RelativePosition, float Attenuation, Matri
 public class LsystemShaderFactory : IDisposable
 {
     private FractalParams _fractalParams = new(FractalParams.MakeLights());
+    private static double _totalProgress;
+    private readonly Lock _lockObject = new();
     private readonly Subject<double> _progressSubject = new();
     public IObservable<double> Progress => _progressSubject;
     private List<ProcessedBranch> _processedBranches = new();
@@ -147,11 +152,56 @@ public class LsystemShaderFactory : IDisposable
         return hit;
     }
 
-
-    private void CalculateImageNew(RawLightedImage raw, double startProgress, double sumProgress, CancellationToken cancelToken)
+    public static IList<PixelContainer> CreateContainers(Size size, int depth, int numberOfContainers)
     {
-        _progressSubject.OnNext(startProgress);
+        var containers = new ConcurrentBag<PixelContainer>();
 
+        while (size.Width / numberOfContainers < 3)
+        {
+            numberOfContainers--;
+        }
+
+        if (numberOfContainers == 0)
+            numberOfContainers = 1;
+
+        int containerWidth = size.Width / numberOfContainers;
+
+        for (int i = 0; i < numberOfContainers; ++i)
+        {
+            int fromWidth = i * containerWidth;
+            if (i == numberOfContainers - 1)
+            {
+                containers.Add(new PixelContainer(fromWidth, size.Width - 1, size.Height, depth));
+            }
+            else
+            {
+                containers.Add(new PixelContainer(fromWidth, fromWidth + containerWidth - 1, size.Height, depth));
+            }
+        }
+
+        return containers.ToList();
+    }
+
+    RawLightedImage CombineContainers(IList<PixelContainer> containers)
+    {
+        var size = _fractalParams.ImageSize;
+        var raw = new RawLightedImage(size.Width, size.Height, _fractalParams.Palette.NumberOfColors);
+        raw.LightingOnZeroIndex = _fractalParams.LightingOnZeroIndex;
+
+        foreach (var container in containers)
+        {
+            var pixels = container.PixelValues;
+            var lighting = container.Lighting;
+
+            raw.SetBlock(pixels, lighting, container.FromWidth, container.ToWidth, container.Height, container.Depth);
+        }
+
+        return raw;
+    }
+
+
+    private void CalculateImageNew(PixelContainer raw, CancellationToken cancelToken, double progress)
+    {
         var size = _fractalParams.ImageSize;
         var palette = _fractalParams.Palette;
 
@@ -173,7 +223,7 @@ public class LsystemShaderFactory : IDisposable
         var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
       //  _distanceEstimator = (Vector3 p) => EstimateDistanceComposite(p);
 
-        for (var x = 0; x < size.Width; ++x)
+        for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
         {
             for (var y = 0; y < size.Height; ++y)
             {
@@ -207,35 +257,52 @@ public class LsystemShaderFactory : IDisposable
 
             if (cancelToken.IsCancellationRequested)
                 return;
-
-            var percentDone = startProgress + sumProgress * x / size.Width;
-            _progressSubject.OnNext(percentDone);
         }
 
-        _progressSubject.OnNext(startProgress + sumProgress);
+        lock (_lockObject)
+        {
+            _totalProgress += progress;
+        }
+
+        _progressSubject.OnNext(_totalProgress);
     }
 
     public async Task<FractalResult> CreateShaderAsync(FractalParams fractalParams, double startProgress, double sumProgress, CancellationToken cancelToken)
     {
-        _fractalParams = fractalParams;
+        var watch = Stopwatch.StartNew();
         var size = fractalParams.ImageSize;
-        var raw = new RawLightedImage(size.Width, size.Height, fractalParams.Palette.NumberOfColors);
-        raw.LightingOnZeroIndex = fractalParams.LightingOnZeroIndex;
+        _totalProgress = startProgress;
+        _fractalParams = fractalParams;
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
+
+        _progressSubject.OnNext(startProgress);
+
+        int numberOfContainers = size.Width / 40;
+        var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, numberOfContainers);
+        var fractionProgress = sumProgress / numberOfContainers;
 
         _processedBranches = ProcessBranches(fractalParams.LSystemBranches);
 
-        await Task.Run(() => CalculateImageNew(raw, startProgress, sumProgress, cancelToken), cancelToken);
+        await Task.Run(() => Parallel.ForEach(containers,
+            container => CalculateImageNew(container, cancelToken, fractionProgress)),
+            cancelToken);
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
+
+        _progressSubject.OnNext(startProgress + sumProgress);
+
+        var raw = CombineContainers(containers);
+
+        watch.Stop();
 
         return new FractalResult()
         {
             Params = (FractalParams)fractalParams.Clone(),
-            Image = raw
+            Image = raw,
+            Time = watch.ElapsedMilliseconds
         };
     }
 }
