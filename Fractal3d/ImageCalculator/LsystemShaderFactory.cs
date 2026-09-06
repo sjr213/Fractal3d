@@ -9,7 +9,6 @@ using System.Reactive.Subjects;
 
 internal record ProcessedBranch(float RelativePosition, float Attenuation, Matrix4x4 RotationMatrix);
 
-
 public class LsystemShaderFactory : IDisposable
 {
     private FractalParams _fractalParams = new(FractalParams.MakeLights());
@@ -199,7 +198,6 @@ public class LsystemShaderFactory : IDisposable
         return raw;
     }
 
-
     private void CalculateImageNew(PixelContainer raw, CancellationToken cancelToken, double progress)
     {
         var size = _fractalParams.ImageSize;
@@ -221,7 +219,8 @@ public class LsystemShaderFactory : IDisposable
         var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(_fractalParams.TransformParams);
         var transformedLights = LightUtil.TransformLights(_fractalParams.Lights, transformMatrix);
         var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
-      //  _distanceEstimator = (Vector3 p) => EstimateDistanceComposite(p);
+
+        var widthSegments = raw.ToWidth - raw.FromWidth + 1;
 
         for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
         {
@@ -255,16 +254,16 @@ public class LsystemShaderFactory : IDisposable
                 raw.SetPixel(x, y, depth, light);
             }
 
+            var fractionProgress = (double) 1 / widthSegments * progress;
+            lock (_lockObject)
+            {
+                _totalProgress += fractionProgress;
+            }
+            _progressSubject.OnNext(_totalProgress);
+
             if (cancelToken.IsCancellationRequested)
                 return;
         }
-
-        lock (_lockObject)
-        {
-            _totalProgress += progress;
-        }
-
-        _progressSubject.OnNext(_totalProgress);
     }
 
     public async Task<FractalResult> CreateShaderAsync(FractalParams fractalParams, double startProgress, double sumProgress, CancellationToken cancelToken)
