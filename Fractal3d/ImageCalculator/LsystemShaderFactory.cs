@@ -81,12 +81,13 @@ public class LsystemShaderFactory : IDisposable
         // NEED TO FIX LENGTH AND ATTENUATION
         for (int i = 0; i < _fractalParams.Iterations; i++)
         {
+            var radius = _fractalParams.LSystemRadius / (1 + i);
             // Reuse capacity from previous iteration
             var pts2 = new List<PointPair>(pts.Count * _processedBranches.Count);
 
             foreach (var pt in pts)
             {
-                distance = Math.Min(distance, sdCapsule(p, pt.Start, pt.End, _fractalParams.LSystemRadius));
+                distance = Math.Min(distance, sdCapsule(p, pt.Start, pt.End, radius));
                 if(distance < _fractalParams.MinRayDistance)
                     return distance;
 
@@ -214,7 +215,7 @@ public class LsystemShaderFactory : IDisposable
         float xRange = (right - left) / size.Width;
         float yRange = (top - bottom) / size.Height;
 
-        var viewPos = new Vector3(0, 0, fromZ);
+        var viewPos = new Vector3(0, 0, -1.0f);
 
         var transformMatrix = TransformationCalculator.CreateInvertedTransformationMatrix(_fractalParams.TransformParams);
         var transformedLights = LightUtil.TransformLights(_fractalParams.Lights, transformMatrix);
