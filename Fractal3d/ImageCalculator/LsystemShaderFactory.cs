@@ -81,7 +81,7 @@ public class LsystemShaderFactory : IDisposable
         // NEED TO FIX LENGTH AND ATTENUATION
         for (int i = 0; i < _fractalParams.Iterations; i++)
         {
-            var radius = _fractalParams.LSystemRadius / (1 + i);
+            var radius = _fractalParams.LSystemRadius / Math.Clamp(1 + i * _fractalParams.LSystemRadiusAttenuation, 0.1f, 100f);
             // Reuse capacity from previous iteration
             var pts2 = new List<PointPair>(pts.Count * _processedBranches.Count);
 

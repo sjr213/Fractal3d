@@ -168,9 +168,11 @@ public class FractalParams : ICloneable
 
     public bool IfsAbs { get; set; } = false;
 
-    public float LSystemRadius { get; set; } = 0.01f;
+    public float LSystemRadius { get; set; } = 0.02f;
 
     public List<LSystemBranch> LSystemBranches { get; set; }
+
+    public float LSystemRadiusAttenuation { get; set; } = 0.5f;
 
     public object Clone()
     {

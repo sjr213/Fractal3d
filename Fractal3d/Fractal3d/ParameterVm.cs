@@ -677,6 +677,17 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public float LSystemRadiusAttenuation
+    {
+        get => _fractalParams.LSystemRadiusAttenuation;
+        set
+        {
+            _fractalParams.LSystemRadiusAttenuation = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
     public ObservableCollection<IfsEquationType> AllowedIfsEquationTypes
     {
         get => _allowedIfsEquationTypes;

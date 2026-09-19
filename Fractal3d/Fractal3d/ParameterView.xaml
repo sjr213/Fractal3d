@@ -41,6 +41,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Margin="2,5" Orientation="Horizontal">
@@ -333,8 +334,8 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="12" Margin="2,5" Orientation="Horizontal" >
-                <StackPanel Margin="0,0,20,0" Orientation="Horizontal" Visibility="{Binding IterationVisibility}">
+            <StackPanel Grid.Row="12" Margin="2,5" Orientation="Horizontal" Visibility="{Binding IterationVisibility}">
+                <StackPanel Margin="0,0,20,0" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Iterations" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
@@ -348,7 +349,9 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Visibility="{Binding LSystemVisibility}">
+            </StackPanel>
+            <StackPanel Grid.Row="13" Margin="2,5" Orientation="Horizontal" Visibility="{Binding LSystemVisibility}">
+                <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="L-system Radius" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
                         <TextBox.Text>
@@ -362,8 +365,22 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Radius Attenuation" />
+                    <TextBox Style="{StaticResource TextBoxInError}" >
+                        <TextBox.Text>
+                            <Binding Path="LSystemRadiusAttenuation" 
+                                 UpdateSourceTrigger="LostFocus" >
+                                <Binding.ValidationRules>
+                                    <basicWpfLibrary:FloatRangeRule Min="{x:Static local:ParameterConstants.MinLSystemRadiusAttenuation}" 
+                                                                Max="{x:Static local:ParameterConstants.MaxLSystemRadiusAttenuation}"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="13" Margin="2,5" Orientation="Horizontal" >
+            <StackPanel Grid.Row="14" Margin="2,5" Orientation="Horizontal" >
                 <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Min Ray Distance" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -393,7 +410,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="14" Margin="2,5" Orientation="Horizontal">
+            <StackPanel Grid.Row="15" Margin="2,5" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Distance" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -423,7 +440,7 @@
                     </TextBox>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="15" Margin="2, 5" Orientation="Horizontal" Visibility="{Binding RayTraceFieldVisibility}">
+            <StackPanel Grid.Row="16" Margin="2, 5" Orientation="Horizontal" Visibility="{Binding RayTraceFieldVisibility}">
                 <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Step Divisor" />
                 <TextBox Style="{StaticResource TextBoxInError}" MaxWidth="80">
                     <TextBox.Text>
@@ -438,8 +455,8 @@
                 </TextBox>
             </StackPanel>
 
-            <Separator Grid.Row="16"/>
-            <StackPanel Grid.Row="17" Margin="2,5,2,2" Orientation="Horizontal" Visibility="{Binding EscapeThresholdVisibility}">
+            <Separator Grid.Row="17"/>
+            <StackPanel Grid.Row="18" Margin="2,5,2,2" Orientation="Horizontal" Visibility="{Binding EscapeThresholdVisibility}">
                 <StackPanel Orientation="Horizontal" Margin="0,0,20,0" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Escape Threshold" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -459,7 +476,7 @@
                     UpdateSourceTrigger=PropertyChanged}">Shadows</CheckBox>
             </StackPanel>
 
-            <StackPanel Grid.Row="18" Margin="2,5" Orientation="Horizontal" Style="{StaticResource CranePixelStack}">
+            <StackPanel Grid.Row="19" Margin="2,5" Orientation="Horizontal" Style="{StaticResource CranePixelStack}">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Color Base" />
                     <TextBox Style="{StaticResource TextBoxInError}" >
@@ -491,7 +508,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Row="19" Margin="2,5" Orientation="Horizontal" Visibility="{Binding BackgroundVisibility}">
+            <StackPanel Grid.Row="20" Margin="2,5" Orientation="Horizontal" Visibility="{Binding BackgroundVisibility}">
                 <StackPanel Margin="2,2,10,2" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Background" />
                 </StackPanel>
@@ -553,7 +570,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Row="20" Margin="2, 5" Orientation="Vertical" Visibility="{Binding NonCraneShaderVisibility}">
+            <StackPanel Grid.Row="21" Margin="2, 5" Orientation="Vertical" Visibility="{Binding NonCraneShaderVisibility}">
                 <CheckBox Margin="5,0,5,5" Padding="2" VerticalContentAlignment="Center"
                   IsChecked="{Binding LightingOnZeroIndex}">Lighting on zero index</CheckBox>
                 <StackPanel Margin="2" Orientation="Horizontal" >
@@ -588,7 +605,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Row="21" Orientation="Vertical">
+            <StackPanel Grid.Row="22" Orientation="Vertical">
 
                 <TabControl  Visibility="{Binding IfsVisibility}" Height="200">
                     <TabItem Header="Transform 1" DataContext="{Binding }">
@@ -612,7 +629,7 @@
                 </TabControl>
             </StackPanel>
 
-            <ContentControl Grid.Row="22" Content="{StaticResource LSystemBranchGrid}" />
+            <ContentControl Grid.Row="23" Content="{StaticResource LSystemBranchGrid}" />
 
         </Grid>
     </Border>
