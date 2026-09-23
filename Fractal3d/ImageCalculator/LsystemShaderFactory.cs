@@ -123,7 +123,7 @@ public class LsystemShaderFactory : IDisposable
         return (pa - ba * h).Length() - r;
     }
 
-    private bool RayMarch(Vector3 startPt, Vector3 direction, Matrix4x4 transformMatrix, out Vector3 pt)
+    private (bool, float) RayMarch(Vector3 startPt, Vector3 direction, Matrix4x4 transformMatrix, out Vector3 pt)
     {
         float totalDistance = 0.0f;
         int steps;
@@ -149,7 +149,8 @@ public class LsystemShaderFactory : IDisposable
             totalDistance += distance;
         }
 
-        return hit;
+        var fraction = hit? 1.0f - ((float)steps) / _fractalParams.MaxRaySteps : 0.0f;
+        return (hit, fraction);
     }
 
     public static IList<PixelContainer> CreateContainers(Size size, int depth, int numberOfContainers)
@@ -245,10 +246,13 @@ public class LsystemShaderFactory : IDisposable
                 Func<Vector3, float> distanceEstimator = (Vector3 p) => this.EstimateDistanceComposite(p);
                 var normal = NormalCalculator.CalculateNormal(distanceEstimator, _fractalParams.NormalDistance, transformedPt);
 
-                var lighting = (hit) ? LightUtil.GetPointLight(transformedLights, _fractalParams.LightComboMode, transformedPt, transViewPos, normal) :
+                var lighting = (hit.Item1) ? LightUtil.GetPointLight(transformedLights, _fractalParams.LightComboMode, transformedPt, transViewPos, normal) :
                     new Lighting();
 
-                var depth = (hit) ? (palette.NumberOfColors - 1) : 0;
+                var distance = (hit.Item2 - _fractalParams.MinStretchDistance) / (_fractalParams.MaxStretchDistance - _fractalParams.MinStretchDistance);
+                distance = Math.Clamp(distance, 0.0f, 1.0f);
+
+                var depth = (hit.Item1) ? (int) (distance *(palette.NumberOfColors - 1)) : 0;
 
                 // need a new raw image that stores Vector3
                 var light = lighting.Diffuse + lighting.Specular;
