@@ -204,7 +204,8 @@ public class LsystemShaderFactory : IDisposable
     // Only considers distance from bottom center to in and y
     private static int GetDepth2D(int x, int y, Size size, double distance, int numberOfColors)
     {
-        var distanceX = 2 * Math.Abs(x-size.Width/2); // assumes x is spread evenly across the width of the image
+        // Arbitary scaling factor to make color spread a little more along x-axis
+        var distanceX = 1.3 * Math.Abs(x-size.Width/2); // assumes x is spread evenly across the width of the image
         var distanceY = size.Height-y; // assumes y is spread evenly across the height of the image
         return (int)(Math.Sqrt(distanceX*distanceX + distanceY*distanceY)/distance * (numberOfColors - 1));
     }
@@ -220,9 +221,9 @@ public class LsystemShaderFactory : IDisposable
 
     private static int GetDepth3D(int x, int y, float z, Size size, int sizeZ, double distance, int numberOfColors)
     {
-        var distanceX = 2 * Math.Abs(x - size.Width / 2); // assumes x is spread evenly across the width of the image
+        var distanceX = 1.3 * Math.Abs(x - size.Width / 2); // assumes x is spread evenly across the width of the image
         var distanceY = size.Height - y; // assumes y is spread evenly across the height of the image  (bottom is size.Height, top is 0)
-        var distanceZ = (1.0-z) * sizeZ; // assumes z is spread evenly across the depth of the image, with 0.5 being the center
+        var distanceZ = Math.Abs(1.0 - z) * sizeZ; // assumes z is spread evenly across the depth of the image, with 0.5 being the center
         return (int)(Math.Sqrt(distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ) / distance * (numberOfColors - 1));
     }
 
@@ -284,7 +285,7 @@ public class LsystemShaderFactory : IDisposable
                 // var depth = (hit.Item1) ? (palette.NumberOfColors - 1) : 0;  // original
                 // var depth = (hit.Item1) ? (int) (distance *(palette.NumberOfColors - 1)) : 0; // plain
                 // var depth = (hit.Item1) ? (int)((size.Height-y) / (float)size.Height * (palette.NumberOfColors - 1)) : 0; // Y only
-                //  var depth = (hit.Item1) ? GetDepth2D(x, y, size,pointDistance2D, palette.NumberOfColors) : 0;
+                // var depth = (hit.Item1) ? GetDepth2D(x, y, size,pointDistance2D, palette.NumberOfColors) : 0;
                 var depth = (hit.Item1) ? GetDepth3D(x, y, distance, size, depthZ, pointDistance3D, palette.NumberOfColors) : 0;
 
                 // need a new raw image that stores Vector3
