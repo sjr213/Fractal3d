@@ -4,8 +4,7 @@ using FractureCommonLib;
 using System.ComponentModel;
 using System.Drawing;
 using System.Numerics;
-
-
+using System.Text.Json.Serialization;
 
 [Serializable]
 public enum QuaternionEquationType
@@ -64,6 +63,22 @@ public enum LightCombinationMode
     [Description("Sum")]
     Sum
 }
+
+[Serializable]
+public enum BranchColoringMode
+{
+    [Description("Flat")]
+    Flat,
+    [Description("Depth")]
+    Depth,
+    [Description("1D (Y)")]
+    Y,
+    [Description("2D (X,Y)")]
+    XY,
+    [Description("3D (X,Y,Z)")]
+    XYZ
+}
+
 
 [Serializable]
 public class FractalParams : ICloneable
@@ -173,6 +188,8 @@ public class FractalParams : ICloneable
     public List<LSystemBranch> LSystemBranches { get; set; }
 
     public float LSystemRadiusAttenuation { get; set; } = 0.5f;
+
+    public BranchColoringMode LSystemBranchColoringMode { get; set; } = BranchColoringMode.Flat;
 
     public object Clone()
     {

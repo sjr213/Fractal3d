@@ -800,6 +800,24 @@ public class ParameterVm : ViewModelBase
         }
     }
 
+    public ObservableCollection<BranchColoringMode> AllowedLSystemBranchColoringModes { get; } =
+    [
+        BranchColoringMode.Flat, BranchColoringMode.Depth, BranchColoringMode.Y, BranchColoringMode.XY, BranchColoringMode.XYZ
+    ];
+
+    public BranchColoringMode SelectedLSystemBranchColoringMode
+    {
+        get => _fractalParams.LSystemBranchColoringMode;
+        set
+        {
+            if (value == _fractalParams.LSystemBranchColoringMode)
+                return;
+            _fractalParams.LSystemBranchColoringMode = value;
+            OnPropertyChanged();
+            _onParamsChanged(_fractalParams);
+        }
+    }
+
     public ICommand AddBranchCommand { get; private set; }
 
     public ICommand DeleteRowCommand { get; private set; }
@@ -955,6 +973,7 @@ public class ParameterVm : ViewModelBase
             Transform1 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform1, _onParamsChanged);
             Transform2 = new TransformVm2(_fractalParams, _fractalParams.IfsTransform2, _onParamsChanged);
             SelectedIfsEquationType = _fractalParams.IfsEquation;
+            SelectedLSystemBranchColoringMode = _fractalParams.LSystemBranchColoringMode;
         }
     }
 

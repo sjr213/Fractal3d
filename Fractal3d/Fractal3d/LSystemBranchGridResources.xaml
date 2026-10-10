@@ -6,7 +6,7 @@
         <ResourceDictionary Source="GeneralResources.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <Grid x:Key="LSystemBranchGrid" Margin="2,5" Grid.IsSharedSizeScope="True" Visibility="{Binding LSystemVisibility}">
+    <Grid x:Key="LSystemBranchGrid" Margin="2,5" Grid.IsSharedSizeScope="True" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>

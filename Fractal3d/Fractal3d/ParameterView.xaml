@@ -629,8 +629,26 @@
                 </TabControl>
             </StackPanel>
 
-            <ContentControl Grid.Row="23" Content="{StaticResource LSystemBranchGrid}" />
+            <StackPanel Grid.Row="23" Orientation="Vertical" Visibility="{Binding LSystemVisibility}">
 
+                <Separator/>
+                
+                <StackPanel Margin="2, 5" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="L-system Branch Coloring" />
+                    <ComboBox Margin="2" Padding="2" VerticalAlignment="Center"
+                          ItemsSource="{Binding AllowedLSystemBranchColoringModes}" 
+                          SelectedItem="{Binding SelectedLSystemBranchColoringMode}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                
+                <ContentControl Content="{StaticResource LSystemBranchGrid}"/>
+            </StackPanel>
+                
         </Grid>
     </Border>
 </UserControl>
