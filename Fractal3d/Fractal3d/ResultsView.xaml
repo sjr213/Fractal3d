@@ -34,6 +34,9 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <!-- 19 L-System -->
+                        <RowDefinition Height="Auto" />
+
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -95,6 +98,11 @@
                              Visibility="{Binding IfsGeneral_Visibility}" Text="{Binding Path=IfsRot1 }"/>
                     <TextBlock Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource SmallTextBlockStyle}" 
                              Visibility="{Binding IfsGeneral_Visibility}" Text="{Binding Path=IfsRot2 }"/>
+
+                    <TextBlock Grid.Row="19" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" 
+                               Visibility="{Binding LsystemVisibility}" Text="{Binding Path=LsystemRadius }"/>
+                    <TextBlock Grid.Row="19" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
+                               Visibility="{Binding LsystemVisibility}" Text="{Binding Path=LsystemAttenuation }"/>
                 </Grid>
             </Expander>
         </Border>

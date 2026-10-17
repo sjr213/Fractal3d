@@ -19,6 +19,10 @@ public class FractalResultVm : ViewModelBase
         _number = number;
     }
 
+#region Properties
+
+    public FractalResult Result => _fractalResult;
+
     public int Number
     {
         get => _number;
@@ -71,44 +75,6 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
-    public static string TruncateFloatStringOnRight(float val)
-    {
-        var str = val.ToString("F4");
-        if (str.IndexOf('.', 0) > -1)
-        {
-            char[] charToTrim = { '0' };
-            str = str.TrimEnd(charToTrim);
-        }
-        char[] charsToTrim = { ' ', '.' };
-        return str.TrimEnd(charsToTrim);
-    }
-
-    public static string GetConstantC_String(Vector4 c)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.Append(TruncateFloatStringOnRight(c.W));
-        sb.Append(", ");
-        sb.Append(TruncateFloatStringOnRight(c.X));
-        sb.Append(", ");
-        sb.Append(TruncateFloatStringOnRight(c.Y));
-        sb.Append(", ");
-        sb.Append(TruncateFloatStringOnRight(c.Z));
-
-        return sb.ToString();
-    }
-
-    public string GetRangeString(float left, string meat, float right)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.Append(TruncateFloatStringOnRight(left));
-        sb.Append(" < ");
-        sb.Append(meat);
-        sb.Append(" < ");
-        sb.Append(TruncateFloatStringOnRight(right));
-
-        return sb.ToString();
-    }
-
     public string ConstantC
     {
         get
@@ -121,18 +87,6 @@ public class FractalResultVm : ViewModelBase
             //return $"{c.W,6:N3}, {c.X,6:N3}, {c.Y,6:N3}, {c.Z,6:N3}";
             return GetConstantC_String(c);
         }
-    }
-
-    private string GetIfsC_String(Vector3 c)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.Append(TruncateFloatStringOnRight(c.X));
-        sb.Append(", ");
-        sb.Append(TruncateFloatStringOnRight(c.Y));
-        sb.Append(", ");
-        sb.Append(TruncateFloatStringOnRight(c.Z));
-
-        return sb.ToString();
     }
 
     public string IfsC
@@ -264,7 +218,7 @@ public class FractalResultVm : ViewModelBase
     {
         get
         {
-            if(_fractalResult.Params == null)
+            if (_fractalResult.Params == null)
                 return string.Empty;
 
             return _fractalResult.Params.AimToOrigin ? "Yes" : "No";
@@ -312,18 +266,6 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
-    private static string GetRot_String(TransformationParams tp)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.Append(TruncateFloatStringOnRight(tp.RotateX));
-        sb.Append(", ");
-        sb.Append(TruncateFloatStringOnRight(tp.RotateY));
-        sb.Append(", ");
-        sb.Append(TruncateFloatStringOnRight(tp.RotateZ));
-
-        return sb.ToString();
-    }
-
     public string IfsRot1
     {
         get
@@ -344,6 +286,95 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
+    public string LsystemRadius
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+            return "LS Radius: " + TruncateFloatStringOnRight(_fractalResult.Params.LSystemRadius);
+        }
+    }
+
+    public string LsystemAttenuation
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+            return "LS Attenuation: " + TruncateFloatStringOnRight(_fractalResult.Params.LSystemRadiusAttenuation);
+        }
+    }
+
+    #endregion // Properties
+
+    #region Methods
+
+    private static string TruncateFloatStringOnRight(float val)
+    {
+        var str = val.ToString("F4");
+        if (str.IndexOf('.', 0) > -1)
+        {
+            char[] charToTrim = { '0' };
+            str = str.TrimEnd(charToTrim);
+        }
+        char[] charsToTrim = { ' ', '.' };
+        return str.TrimEnd(charsToTrim);
+    }
+
+    private static string GetConstantC_String(Vector4 c)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(TruncateFloatStringOnRight(c.W));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(c.X));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(c.Y));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(c.Z));
+
+        return sb.ToString();
+    }
+
+    private string GetRangeString(float left, string meat, float right)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(TruncateFloatStringOnRight(left));
+        sb.Append(" < ");
+        sb.Append(meat);
+        sb.Append(" < ");
+        sb.Append(TruncateFloatStringOnRight(right));
+
+        return sb.ToString();
+    }
+
+    private string GetIfsC_String(Vector3 c)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(TruncateFloatStringOnRight(c.X));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(c.Y));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(c.Z));
+
+        return sb.ToString();
+    }
+
+    private static string GetRot_String(TransformationParams tp)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(TruncateFloatStringOnRight(tp.RotateX));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(tp.RotateY));
+        sb.Append(", ");
+        sb.Append(TruncateFloatStringOnRight(tp.RotateZ));
+
+        return sb.ToString();
+    }
+
+#endregion // Methods
+
+#region Visibility Properties
     public Visibility PaletteVisibility
     {
         get
@@ -429,8 +460,17 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
-    public FractalResult Result => _fractalResult;
+    public Visibility LsystemVisibility
+    {
+        get
+        {
+            if(_fractalResult.Params == null)
+                return Visibility.Collapsed;
+            return _fractalResult.Params.ShaderType == ShaderType.LSystemShader ? Visibility.Visible : Visibility.Collapsed;
+        }
+    }
 
+#endregion // Visibility Properties
 };
 
 
