@@ -9,13 +9,7 @@ using System.Windows;
 public class FractalResultVm : ViewModelBase
 {
     private readonly FractalResult _fractalResult;
-    private Visibility _paletteVisibility = Visibility.Collapsed;
-    private Visibility _equationVisibility = Visibility.Collapsed;
-    private Visibility _constantC_Visibility = Visibility.Collapsed;
-    private Visibility _ifsC_Visibility = Visibility.Collapsed;
-    private Visibility _ifsGeneral_Visibility = Visibility.Collapsed;
-    private Visibility _StepDivisorVisibility = Visibility.Collapsed;
-    private Visibility _bailoutVisibility = Visibility.Collapsed;
+    private int _number;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public FractalResultVm(FractalResult fractalResult, int number)
@@ -23,25 +17,7 @@ public class FractalResultVm : ViewModelBase
     {
         _fractalResult = fractalResult;
         _number = number;
-        if (_fractalResult != null && _fractalResult.Params != null)
-        {
-            PaletteVisibility = ShaderTypeUtils.UsesPalette(_fractalResult.Params.ShaderType) ?
-                Visibility.Visible : Visibility.Collapsed;
-            EquationVisibility = (_fractalResult.Params.ShaderType == ShaderType.ShapeShader || _fractalResult.Params.ShaderType == ShaderType.LSystemShader) ? Visibility.Collapsed : Visibility.Visible;
-            ConstantC_Visibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader || _fractalResult.Params.ShaderType == ShaderType.IFSShader || 
-                    _fractalResult.Params.ShaderType == ShaderType.LSystemShader ? Visibility.Collapsed : Visibility.Visible;
-            IfsC_Visibility = _fractalResult.Params.ShaderType == ShaderType.IFSShader && _fractalResult.Params.IfsEquation != IfsEquationType.Test ? Visibility.Visible : Visibility.Collapsed;
-            IfsGeneral_Visibility = _fractalResult.Params.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
-            StepDivisorVisibility = _fractalResult.Params.ShaderType == ShaderType.CraneRaymarch || _fractalResult.Params.ShaderType == ShaderType.FractalShader ||
-                _fractalResult.Params.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
-
-            BailoutVisibility = _fractalResult.Params.ShaderType == ShaderType.ShapeShader || _fractalResult.Params.ShaderType == ShaderType.LSystemShader ||
-                (_fractalResult.Params.ShaderType == ShaderType.IFSShader && (_fractalResult.Params.IfsEquation == IfsEquationType.StandardNoBailout || _fractalResult.Params.IfsEquation == IfsEquationType.KnightyNoBailout)) ?
-                Visibility.Collapsed : Visibility.Visible;
-        }
     }
-
-    private int _number;
 
     public int Number
     {
@@ -370,44 +346,87 @@ public class FractalResultVm : ViewModelBase
 
     public Visibility PaletteVisibility
     {
-        get => _paletteVisibility;
-        set => SetProperty(ref _paletteVisibility, value);
+        get
+        {
+            if( _fractalResult.Params == null)
+                return Visibility.Collapsed;
+            return ShaderTypeUtils.UsesPalette(_fractalResult.Params.ShaderType) ?
+                Visibility.Visible : Visibility.Collapsed;
+        }
     }
 
     public Visibility EquationVisibility
     {
-        get => _equationVisibility;
-        set => SetProperty(ref _equationVisibility, value);
+        get
+        {
+            if(_fractalResult.Params == null)
+                return Visibility.Collapsed;
+            return _fractalResult.Params.ShaderType == ShaderType.ShapeShader || _fractalResult.Params.ShaderType == ShaderType.LSystemShader ? Visibility.Collapsed : Visibility.Visible;
+        }
+    }
+
+    public Visibility IterationVisibility
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return Visibility.Collapsed;
+            return _fractalResult.Params.ShaderType == ShaderType.ShapeShader ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 
     public Visibility ConstantC_Visibility
     {
-        get => _constantC_Visibility;
-        set => SetProperty(ref _constantC_Visibility, value);
+        get
+        {
+            if (_fractalResult.Params == null)
+                return Visibility.Collapsed;
+            return _fractalResult.Params.ShaderType == ShaderType.ShapeShader || _fractalResult.Params.ShaderType == ShaderType.IFSShader ||
+                    _fractalResult.Params.ShaderType == ShaderType.LSystemShader ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 
     public Visibility IfsC_Visibility
     {
-        get => _ifsC_Visibility;
-        set => SetProperty(ref _ifsC_Visibility, value);
+        get
+        {
+            if(_fractalResult.Params == null)
+                return Visibility.Collapsed;
+            return _fractalResult.Params.ShaderType == ShaderType.IFSShader && _fractalResult.Params.IfsEquation != IfsEquationType.Test ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 
     public Visibility IfsGeneral_Visibility
     {
-        get => _ifsGeneral_Visibility;
-        set => SetProperty(ref _ifsGeneral_Visibility, value);
+        get
+        {
+            if(_fractalResult.Params == null)
+                return Visibility.Collapsed;
+            return _fractalResult.Params.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 
     public Visibility StepDivisorVisibility
     {
-        get => _StepDivisorVisibility;
-        set => SetProperty(ref _StepDivisorVisibility, value);
+        get
+        {
+            if( _fractalResult.Params == null)
+                return Visibility.Collapsed;
+            return _fractalResult.Params.ShaderType == ShaderType.CraneRaymarch || _fractalResult.Params.ShaderType == ShaderType.FractalShader ||
+                _fractalResult.Params.ShaderType == ShaderType.IFSShader ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 
     public Visibility BailoutVisibility
     {
-        get => _bailoutVisibility;
-        set => SetProperty(ref _bailoutVisibility, value);
+        get
+        {
+            if(_fractalResult.Params == null)
+                return Visibility.Collapsed;
+            return _fractalResult.Params.ShaderType == ShaderType.ShapeShader || _fractalResult.Params.ShaderType == ShaderType.LSystemShader ||
+                (_fractalResult.Params.ShaderType == ShaderType.IFSShader && (_fractalResult.Params.IfsEquation == IfsEquationType.StandardNoBailout || _fractalResult.Params.IfsEquation == IfsEquationType.KnightyNoBailout)) ?
+                Visibility.Collapsed : Visibility.Visible;
+        }
     }
 
     public FractalResult Result => _fractalResult;
