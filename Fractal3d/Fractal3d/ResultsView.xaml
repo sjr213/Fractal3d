@@ -4,6 +4,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="GeneralResources.xaml"/>
+        <ResourceDictionary Source="/LSystemBranchGridResources.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 
@@ -34,7 +35,8 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <!-- 19 L-System -->
+                        <RowDefinition Height="Auto" />
+                        <!-- 20 -->
                         <RowDefinition Height="Auto" />
 
                     </Grid.RowDefinitions>
@@ -103,6 +105,10 @@
                                Visibility="{Binding LsystemVisibility}" Text="{Binding Path=LsystemRadius }"/>
                     <TextBlock Grid.Row="19" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
                                Visibility="{Binding LsystemVisibility}" Text="{Binding Path=LsystemAttenuation }"/>
+                    <StackPanel Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Vertical" Visibility="{Binding LsystemVisibility}">
+                        <TextBlock Style="{StaticResource SmallTextBlockStyle}" TextDecorations="Underline" Text="LS Branches (Pos, Att, X(dg), Y(dg), Z(dg))"/>
+                        <ContentControl Content="{StaticResource LSystemBranchResultsGrid}"/>
+                    </StackPanel>
                 </Grid>
             </Expander>
         </Border>

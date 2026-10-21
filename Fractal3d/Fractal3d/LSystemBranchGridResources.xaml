@@ -112,6 +112,28 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-
     </Grid>
+
+    <ScrollViewer x:Key="LSystemBranchResultsGrid" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <ItemsControl ItemsSource="{Binding LSystemBranches}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" Margin="2" Text="{Binding Path=RelativePositionX}" />
+                        <TextBlock Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" Margin="2" Text="{Binding Path=Attenuation}" />
+                        <TextBlock Grid.Column="2" Style="{StaticResource SmallTextBlockStyle}" Margin="2" Text="{Binding Path=AngleXDegrees}" />
+                        <TextBlock Grid.Column="3" Style="{StaticResource SmallTextBlockStyle}" Margin="2" Text="{Binding Path=AngleYDegrees}" />
+                        <TextBlock Grid.Column="4" Style="{StaticResource SmallTextBlockStyle}" Margin="2" Text="{Binding Path=AngleZDegrees}" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
 </ResourceDictionary>

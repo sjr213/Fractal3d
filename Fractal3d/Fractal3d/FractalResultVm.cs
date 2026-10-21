@@ -3,6 +3,8 @@ namespace Fractal3d;
 
 using BasicWpfLibrary;
 using ImageCalculator;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 
@@ -306,9 +308,25 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
+    public List<BranchVm> LSystemBranches
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return new List<BranchVm>();
+            var branches = _fractalResult.Params.LSystemBranches;
+            var branchVms = new List<BranchVm>();
+            foreach (var branch in branches)
+            {
+                branchVms.Add(new BranchVm(branch));
+            }
+            return branchVms;
+        }
+    }
+
     #endregion // Properties
 
-    #region Methods
+        #region Methods
 
     private static string TruncateFloatStringOnRight(float val)
     {

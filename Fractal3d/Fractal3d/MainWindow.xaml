@@ -124,7 +124,8 @@
                     </Grid>
                 </ScrollViewer>
 
-                <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" >
+                <!-- The min width keeps the results view from resizing the whole view with different shader results (includes possible scrollbars)-->
+                <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource BorderBlackNarrowStyle}" MinWidth="213">
                     <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" BorderThickness="1">
                         <ListBox ItemsSource="{Binding Path=FractalResults}" BorderThickness="0" SelectedItem="{Binding Path=SelectedFractalResult, Mode=TwoWay}">
                             <ListBox.ItemContainerStyle>
