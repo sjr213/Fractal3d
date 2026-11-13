@@ -1,7 +1,6 @@
 ﻿namespace ImageCalculator;
 
 using FractureCommonLib;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
@@ -12,8 +11,6 @@ internal record ProcessedBranch(float RelativePosition, float Attenuation, Matri
 public class LsystemShaderFactory : IDisposable
 {
     private FractalParams _fractalParams = new(FractalParams.MakeLights());
-    private static double _totalProgress;
-    private readonly Lock _lockObject = new();
     private readonly Subject<double> _progressSubject = new();
     public IObservable<double> Progress => _progressSubject;
     private List<ProcessedBranch> _processedBranches = new();
@@ -55,59 +52,74 @@ public class LsystemShaderFactory : IDisposable
     private static Vector3 GetNewEnd(Vector3 start, Vector3 end, Matrix4x4 mat, float relativeLength, Vector3 branchEnd)
     {
         var v = (end - start) * relativeLength;
-        var newEnd = branchEnd + v;
-
-        //return RotateEnd2(branchEnd, newEnd, mat);
-        var inter = Vector3.Transform((newEnd - branchEnd), mat);
+        var inter = Vector3.Transform(v, mat);
         return inter + branchEnd;
     }
 
-    internal float EstimateDistanceComposite(Vector3 p)
+    record struct Segment(Vector3 Start, Vector3 End, float Radius);
+
+    // Segments of all levels in level order; built once per render
+    private Segment[]? _segments;
+
+    private Segment[] BuildSegments()
     {
         var start = new Vector3(0.0f, 0.9f, 0.0f);
         var end = new Vector3(0.0f, 0.2f, 0.0f);
 
         var length = (end - start).Length();
 
-        // Use capacity hints to reduce reallocations
-        int estimatedCapacity = (int)Math.Pow(_processedBranches.Count, Math.Min(_fractalParams.Iterations, 5));
-        var pts = new List<PointPair>(estimatedCapacity)
+        var branchCount = _processedBranches.Count;
+        var branchMats = new ComputeSharp.Float4x4[branchCount];
+        var branchParams = new ComputeSharp.Float2[branchCount];
+        for (int b = 0; b < branchCount; b++)
         {
-            new PointPair(start, end, length)
-        };
-        
-        float distance = float.MaxValue;
+            branchMats[b] = GpuMethods.ToFloat4x4(_processedBranches[b].RotationMatrix);
+            branchParams[b] = new ComputeSharp.Float2(_processedBranches[b].RelativePosition, _processedBranches[b].Attenuation);
+        }
+
+        // xyz = start, w = length / xyz = end
+        var starts = new[] { new ComputeSharp.Float4(start.X, start.Y, start.Z, length) };
+        var ends = new[] { new ComputeSharp.Float4(end.X, end.Y, end.Z, 0.0f) };
+
+        var segments = new List<Segment>();
 
         // NEED TO FIX LENGTH AND ATTENUATION
         for (int i = 0; i < _fractalParams.Iterations; i++)
         {
             var radius = _fractalParams.LSystemRadius / Math.Clamp(1 + i * _fractalParams.LSystemRadiusAttenuation, 0.1f, 100f);
-            // Reuse capacity from previous iteration
-            var pts2 = new List<PointPair>(pts.Count * _processedBranches.Count);
 
-            foreach (var pt in pts)
+            for (int k = 0; k < starts.Length; k++)
             {
-                distance = Math.Min(distance, sdCapsule(p, pt.Start, pt.End, radius));
-                if(distance < _fractalParams.MinRayDistance)
-                    return distance;
-
-                foreach (var branch in _processedBranches)
-                {
-                    var newLength = pt.Length * branch.Attenuation;
-                    var branchStart = (pt.End - pt.Start) * branch.RelativePosition + pt.Start;
-                   
-                    var newEnd = GetNewEnd(pt.Start, pt.End, branch.RotationMatrix, newLength, branchStart);
-                    pts2.Add(new PointPair(branchStart, newEnd, newLength));
-                }
+                var s = new Vector3(starts[k].X, starts[k].Y, starts[k].Z);
+                var e = new Vector3(ends[k].X, ends[k].Y, ends[k].Z);
+                segments.Add(new Segment(s, e, radius));
             }
 
-            pts = pts2;
+            // Children of the last level are never measured
+            if (i == _fractalParams.Iterations - 1 || branchCount == 0)
+                break;
 
             // Safety check: prevent memory explosion
-            if (pts.Count > 100000)
-            {
-                break; // Or implement LOD reduction
-            }
+            if (starts.Length * branchCount > 100000)
+                break;
+
+            GpuMethods.ExpandLevel(starts, ends, branchMats, branchParams, out starts, out ends);
+        }
+        return segments.ToArray();
+    }
+
+    internal float EstimateDistanceComposite(Vector3 p)
+    {
+        var segments = _segments ??= BuildSegments();
+        var minRayDistance = _fractalParams.MinRayDistance;
+
+        float distance = float.MaxValue;
+        for (int k = 0; k < segments.Length; k++)
+        {
+            ref readonly var seg = ref segments[k];
+            distance = Math.Min(distance, sdCapsule(p, seg.Start, seg.End, seg.Radius));
+            if (distance < minRayDistance)
+                return distance;
         }
         return distance;
     }
@@ -153,53 +165,6 @@ public class LsystemShaderFactory : IDisposable
         return (hit, fraction);
     }
 
-    public static IList<PixelContainer> CreateContainers(Size size, int depth, int numberOfContainers)
-    {
-        var containers = new ConcurrentBag<PixelContainer>();
-
-        while (size.Width / numberOfContainers < 3)
-        {
-            numberOfContainers--;
-        }
-
-        if (numberOfContainers == 0)
-            numberOfContainers = 1;
-
-        int containerWidth = size.Width / numberOfContainers;
-
-        for (int i = 0; i < numberOfContainers; ++i)
-        {
-            int fromWidth = i * containerWidth;
-            if (i == numberOfContainers - 1)
-            {
-                containers.Add(new PixelContainer(fromWidth, size.Width - 1, size.Height, depth));
-            }
-            else
-            {
-                containers.Add(new PixelContainer(fromWidth, fromWidth + containerWidth - 1, size.Height, depth));
-            }
-        }
-
-        return containers.ToList();
-    }
-
-    RawLightedImage CombineContainers(IList<PixelContainer> containers)
-    {
-        var size = _fractalParams.ImageSize;
-        var raw = new RawLightedImage(size.Width, size.Height, _fractalParams.Palette.NumberOfColors);
-        raw.LightingOnZeroIndex = _fractalParams.LightingOnZeroIndex;
-
-        foreach (var container in containers)
-        {
-            var pixels = container.PixelValues;
-            var lighting = container.Lighting;
-
-            raw.SetBlock(pixels, lighting, container.FromWidth, container.ToWidth, container.Height, container.Depth);
-        }
-
-        return raw;
-    }
-
     // Only considers distance from bottom center to in and y
     private static int GetDepth2D(int x, int y, Size size, double distance, int numberOfColors)
     {
@@ -217,8 +182,9 @@ public class LsystemShaderFactory : IDisposable
         return (int)(Math.Sqrt(distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ) / distance * (numberOfColors - 1));
     }
 
-    private void CalculateImageNew(PixelContainer raw, CancellationToken cancelToken, double progress)
+    internal void CalculateImageNew(RawLightedImage raw, double startProgress, double sumProgress, CancellationToken cancelToken)
     {
+        _progressSubject.OnNext(startProgress);
         var size = _fractalParams.ImageSize;
         var palette = _fractalParams.Palette;
 
@@ -239,12 +205,19 @@ public class LsystemShaderFactory : IDisposable
         var transformedLights = LightUtil.TransformLights(_fractalParams.Lights, transformMatrix);
         var transViewPos = TransformationCalculator.Transform(transformMatrix, viewPos);
 
-        var widthSegments = raw.ToWidth - raw.FromWidth + 1;
         var pointDistance2D = Math.Sqrt(size.Width* size.Width + size.Height * size.Height);
         var depthZ = Math.Min(size.Width, size.Height); // z depth ranges from 0 to 1 but we need to scale it to be compatible with x and y for approximating distance
         var pointDistance3D = Math.Sqrt(size.Width * size.Width + size.Height * size.Height + depthZ * depthZ);
 
-        for (var x = raw.FromWidth; x <= raw.ToWidth; ++x)
+        Func<Vector3, float> distanceEstimator = EstimateDistanceComposite;
+
+        // Build before going parallel so worker threads only read the cache
+        _segments ??= BuildSegments();
+
+        int columnsDone = 0;
+        var progressLock = new object();
+
+        Parallel.For(0, size.Width, x =>
         {
             for (var y = 0; y < size.Height; ++y)
             {
@@ -263,7 +236,6 @@ public class LsystemShaderFactory : IDisposable
 
                 var transformedPt = TransformationCalculator.Transform(transformMatrix, outPt);
 
-                Func<Vector3, float> distanceEstimator = (Vector3 p) => this.EstimateDistanceComposite(p);
                 var normal = NormalCalculator.CalculateNormal(distanceEstimator, _fractalParams.NormalDistance, transformedPt);
 
                 var lighting = (hit.Item1) ? LightUtil.GetPointLight(transformedLights, _fractalParams.LightComboMode, transformedPt, transViewPos, normal) :
@@ -297,23 +269,22 @@ public class LsystemShaderFactory : IDisposable
                 raw.SetPixel(x, y, depth, light);
             }
 
-            var fractionProgress = (double) 1 / widthSegments * progress;
-            lock (_lockObject)
+            var done = Interlocked.Increment(ref columnsDone);
+            lock (progressLock)
             {
-                _totalProgress += fractionProgress;
+                _progressSubject.OnNext(startProgress + sumProgress * done / size.Width);
             }
-            _progressSubject.OnNext(_totalProgress);
-
-            if (cancelToken.IsCancellationRequested)
-                return;
-        }
+        });
     }
 
     public async Task<FractalResult> CreateShaderAsync(FractalParams fractalParams, double startProgress, double sumProgress, CancellationToken cancelToken)
     {
         var watch = Stopwatch.StartNew();
         var size = fractalParams.ImageSize;
-        _totalProgress = startProgress;
+
+        var raw = new RawLightedImage(size.Width, size.Height, fractalParams.Palette.NumberOfColors);
+        raw.LightingOnZeroIndex = fractalParams.LightingOnZeroIndex;
+
         _fractalParams = fractalParams;
 
         if (cancelToken.IsCancellationRequested)
@@ -321,22 +292,13 @@ public class LsystemShaderFactory : IDisposable
 
         _progressSubject.OnNext(startProgress);
 
-        int numberOfContainers = size.Width / 40;
-        var containers = CreateContainers(size, fractalParams.Palette.NumberOfColors, numberOfContainers);
-        var fractionProgress = sumProgress / numberOfContainers;
-
         _processedBranches = ProcessBranches(fractalParams.LSystemBranches);
+        _segments = BuildSegments();
 
-        await Task.Run(() => Parallel.ForEach(containers,
-            container => CalculateImageNew(container, cancelToken, fractionProgress)),
-            cancelToken);
+        await Task.Run(() => CalculateImageNew(raw, startProgress, sumProgress, cancelToken), cancelToken);
 
         if (cancelToken.IsCancellationRequested)
             return new FractalResult();
-
-        _progressSubject.OnNext(startProgress + sumProgress);
-
-        var raw = CombineContainers(containers);
 
         watch.Stop();
 
