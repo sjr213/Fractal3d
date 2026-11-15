@@ -324,9 +324,19 @@ public class FractalResultVm : ViewModelBase
         }
     }
 
+    public string LsystemColoring
+    {
+        get
+        {
+            if (_fractalResult.Params == null)
+                return string.Empty;
+            return "LS Branch Coloring: " + _fractalResult.Params.LSystemBranchColoringMode.GetDescription();
+        }
+    }
+
     #endregion // Properties
 
-        #region Methods
+    #region Methods
 
     private static string TruncateFloatStringOnRight(float val)
     {

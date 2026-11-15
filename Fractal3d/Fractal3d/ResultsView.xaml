@@ -37,7 +37,8 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <!-- 20 -->
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />     <!-- LS Branch Coloring -->
+                        <RowDefinition Height="Auto" />     <!-- LS Branches -->
 
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -105,7 +106,9 @@
                                Visibility="{Binding LsystemVisibility}" Text="{Binding Path=LsystemRadius }"/>
                     <TextBlock Grid.Row="19" Grid.Column="1" Style="{StaticResource SmallTextBlockStyle}" 
                                Visibility="{Binding LsystemVisibility}" Text="{Binding Path=LsystemAttenuation }"/>
-                    <StackPanel Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Vertical" Visibility="{Binding LsystemVisibility}">
+                    <TextBlock Grid.Row="20" Grid.Column="0" Style="{StaticResource SmallTextBlockStyle}" 
+                               Visibility="{Binding LsystemVisibility}" Text="{Binding Path=LsystemColoring }"/>
+                    <StackPanel Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Vertical" Visibility="{Binding LsystemVisibility}">
                         <TextBlock Style="{StaticResource SmallTextBlockStyle}" TextDecorations="Underline" Text="LS Branches (Pos, Att, X(dg), Y(dg), Z(dg))"/>
                         <ContentControl Content="{StaticResource LSystemBranchResultsGrid}"/>
                     </StackPanel>
