@@ -79,13 +79,7 @@ public class ParameterVm : ViewModelBase
         };
         _normalizeIfsC_Command = new RelayCommand(_ => NormalizeIfsC());
 
-        var branches = BranchUtil.WrapBranches(_fractalParams.LSystemBranches);
-        foreach (var branch in branches)
-        {
-            branch.PropertyChanged += OnItemPropertyChanged;
-        }
-        branches.CollectionChanged += OnUsersCollectionChanged;
-        LSystemBranches = branches;
+        WrapBranches();
         AddBranchCommand = new RelayCommand(_ => AddBranch());
         DeleteRowCommand = new RelayCommand<BranchVm>(DeleteRow);       
     }
@@ -1008,6 +1002,7 @@ public class ParameterVm : ViewModelBase
     private void DefaultFields()
     {
         _fractalParams = FractalParams.MakeDefaultParams(_fractalParams);
+        WrapBranches();
         OnPropertyChanged(String.Empty);
         _onParamsChanged(_fractalParams);
     }
@@ -1139,6 +1134,17 @@ public class ParameterVm : ViewModelBase
         {
             UpdateBranchesInFractalParams();
         }
+    }
+
+    private void WrapBranches()
+    {
+        var branches = BranchUtil.WrapBranches(_fractalParams.LSystemBranches);
+        foreach (var branch in branches)
+        {
+            branch.PropertyChanged += OnItemPropertyChanged;
+        }
+        branches.CollectionChanged += OnUsersCollectionChanged;
+        LSystemBranches = branches;
     }
     #endregion // methods
 }

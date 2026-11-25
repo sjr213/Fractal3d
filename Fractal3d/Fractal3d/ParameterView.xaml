@@ -223,7 +223,7 @@
 
             <StackPanel Grid.Row="6" Margin="2,5" Orientation="Horizontal" >
                 <StackPanel Margin="2,5" Orientation="Horizontal" Visibility="{Binding QuatEquationVisibility}">
-                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Quaterion Equation Type" />
+                    <TextBlock Style="{StaticResource PlainTextBlockStyle}" Text="Quaternion Equation Type" />
                     <ComboBox Margin="2" Padding="2" ItemsSource="{Binding AllowedQuatEquations}" SelectedItem="{Binding SelectedQuatEquationType}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>

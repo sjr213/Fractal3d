@@ -232,6 +232,7 @@ public class FractalParams : ICloneable
         fractalParams.Iterations = 4;
         fractalParams.MinRayDistance = 0.01f;
         fractalParams.Distance = 0.001f;
+        fractalParams.LSystemBranches = LSystemBranch.MakeDefaultBranches();
         return fractalParams;
     }
 }
